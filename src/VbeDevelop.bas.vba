@@ -56,7 +56,6 @@ Rem
 Rem --------------------------------------------------------------------------------
 Option Explicit
 
-#If VBA7 Then
 Private Declare PtrSafe Function GetKeyboardState _
                         Lib "user32" (pbKeyState As Byte) As Long
 Private Declare PtrSafe Function SetKeyboardState _
@@ -66,38 +65,20 @@ Private Declare PtrSafe Function PostMessage _
                         ByVal hwnd As LongPtr, ByVal wMsg As Long, _
                         ByVal wParam As Long, ByVal lParam As LongPtr _
                         ) As Long
-#Else
-#End If
 
-#If VBA7 Then
-    Private Declare PtrSafe Function FindWindow Lib "user32" Alias "FindWindowA" ( _
-        ByVal lpClassName As String, _
-        ByVal lpWindowName As String) As LongPtr
-        
-    Private Declare PtrSafe Function FindWindowEx Lib "user32" Alias "FindWindowExA" ( _
-        ByVal hwndParent As LongPtr, _
-        ByVal hwndChildAfter As LongPtr, _
-        ByVal lpClassName As String, _
-        ByVal lpWindowName As String) As LongPtr
-        
-    Private Declare PtrSafe Function GetWindow Lib "user32" ( _
-        ByVal hwnd As LongPtr, _
-        ByVal wCmd As Long) As LongPtr
-#Else
-    Private Declare Function FindWindow Lib "user32" Alias "FindWindowA" ( _
-        ByVal lpClassName As String, _
-        ByVal lpWindowName As String) As Long
-        
-    Private Declare Function FindWindowEx Lib "user32" Alias "FindWindowExA" ( _
-        ByVal hwndParent As Long, _
-        ByVal hwndChildAfter As Long, _
-        ByVal lpClassName As String, _
-        ByVal lpWindowName As String) As Long
-        
-    Private Declare Function GetWindow Lib "user32" ( _
-        ByVal hwnd As Long, _
-        ByVal wCmd As Long) As Long
-#End If
+Private Declare PtrSafe Function FindWindow Lib "user32" Alias "FindWindowA" ( _
+    ByVal lpClassName As String, _
+    ByVal lpWindowName As String) As LongPtr
+    
+Private Declare PtrSafe Function FindWindowEx Lib "user32" Alias "FindWindowExA" ( _
+    ByVal hwndParent As LongPtr, _
+    ByVal hwndChildAfter As LongPtr, _
+    ByVal lpClassName As String, _
+    ByVal lpWindowName As String) As LongPtr
+    
+Private Declare PtrSafe Function GetWindow Lib "user32" ( _
+    ByVal hwnd As LongPtr, _
+    ByVal wCmd As Long) As LongPtr
 
                         
 Private Const WM_KEYDOWN As Long = &H100
@@ -1195,7 +1176,7 @@ Private Sub DebugPrintClear3()
     'http://www.dicks-blog.com/excel/2004/06/clear_the_immed.html
     
     
-    Dim hPane As Long
+    Dim hPane As LongPtr
     Dim tmpState(0 To 255) As Byte
     
     
@@ -1238,15 +1219,16 @@ Private Sub PopupGetImmHandle()
     MsgBox GetImmHandle
 End Sub
 
-Private Function GetImmHandle() As Long
+Private Function GetImmHandle() As LongPtr
 Rem This function finds the Immediate Pane and returns a handle.
 Rem Docked or MDI, Desked or Floating, Visible or Hidden
 
 
     Dim oWnd As Object, bDock As Boolean, bShow As Boolean
     Dim sMain$, sDock$, sPane$
-    Dim lMain&, lDock&, lPane&
-    
+    Dim lMain As LongPtr
+    Dim lDock As LongPtr
+    Dim lPane As LongPtr
     
     On Error Resume Next
     sMain = Application.VBE.MainWindow.Caption
