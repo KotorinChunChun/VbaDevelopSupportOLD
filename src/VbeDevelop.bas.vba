@@ -1569,14 +1569,14 @@ Rem  /YYYYMMDD_HHMMSS/code.bas.vba
 Rem
 Public Sub VBComponents_Export_YYYYMMDD()
     
-    Dim binPath As String
-    binPath = kccFuncString_Partial.ToPathParentFolder(Application.VBE.ActiveVBProject.FileName, False)
+    Dim prjPath As String
+    prjPath = Application.VBE.ActiveVBProject.FileName
     
-    Dim prj_name As String
-    prj_name = Application.VBE.ActiveVBProject.FileName
+    Dim binPath As String
+    binPath = kccFuncString_Partial.ToPathParentFolder(prjPath, False)
     
     Dim folder_date As String
-    Select Case MsgBox(prj_name & vbLf & "YES : YYYYMMDD" & vbLf & " NO : YYYYMMDD_HHMMSS", vbYesNoCancel, "ソースコードエクスポート")
+    Select Case MsgBox(prjPath & vbLf & "YES : YYYYMMDD" & vbLf & " NO : YYYYMMDD_HHMMSS", vbYesNoCancel, "ソースコードエクスポート")
         Case vbYes
             folder_date = Format$(Now(), "yyyymmdd")
         Case vbNo
@@ -1585,7 +1585,7 @@ Public Sub VBComponents_Export_YYYYMMDD()
             Exit Sub
     End Select
     
-    Dim srcPath: srcPath = binPath & folder_date & "\"
+    Dim srcPath: srcPath = binPath & "\" & folder_date & "\"
     Call VBComponents_Export(srcPath)
     Debug.Print "VBA Exported : " & srcPath
 End Sub
@@ -1597,16 +1597,18 @@ Rem  /src/code.bas.vba
 Rem
 Public Sub VBComponents_Export_SRC()
     
-    Dim binPath As String
-    binPath = kccFuncString_Partial.ToPathParentFolder(Application.VBE.ActiveVBProject.FileName, False)
-    If Not binPath Like "*bin" Then MsgBox "プロジェクトがbinフォルダにありません": Exit Sub
+    Dim prjPath As String
+    prjPath = Application.VBE.ActiveVBProject.FileName
     
-    Dim prj_name As String
-    prj_name = Application.VBE.ActiveVBProject.FileName
+    Dim binPath As String
+    binPath = kccFuncString_Partial.ToPathParentFolder(prjPath, False)
+    If Not binPath Like "*bin" Then MsgBox "プロジェクトがbinフォルダにありません": Exit Sub
     
     Dim srcPath: srcPath = kccFuncString_Partial.ToPathParentFolder(binPath, False) & "\src"
     
-    fso.DeleteFolder srcPath '\無
+    On Error Resume Next
+    fso.DeleteFolder srcPath
+    On Error GoTo 0
     
     Call VBComponents_Export(srcPath)
     

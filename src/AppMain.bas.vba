@@ -50,8 +50,8 @@ Public Sub Close_Addin(): Call ThisWorkbook.Close(False): End Sub
 
 Rem メニューに追加するプロシージャ
 Public Sub ソースをバックアップとエクスポートする():    Call VBComponents_BackupAndExport: End Sub
-Public Sub ソースをYYYYMMDエクスポートする():           Call VBComponents_Export_YYYYMMDD: End Sub
 Public Sub ソースをSRCにエクスポートする():             Call VBComponents_Export_SRC: End Sub
+Public Sub ソースをYYYYMMDにエクスポートする():           Call VBComponents_Export_YYYYMMDD: End Sub
 Public Sub ソースコードのプロシージャ一覧を出力する():  Call VbeProcInfo_Output: End Sub
 
 Public Sub 全てのコードウインドウを閉じる():            Call CloseCodePanes: End Sub
