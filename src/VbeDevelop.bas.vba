@@ -84,8 +84,6 @@ Private Declare PtrSafe Function GetWindow Lib "user32" ( _
 Private Const WM_KEYDOWN As Long = &H100
 Private Const KEYSTATE_KEYDOWN As Long = &H80
 
-Private savState(0 To 255) As Byte
-
 Private Enum eRecord
     モジュール名 = 1
     モジュールタイプ
@@ -119,12 +117,17 @@ Public Property Get fso() As FileSystemObject
     Set fso = xxFso
 End Property
 
-Rem ソースコードのプロシージャ一覧を新規ブックへ出力
+Rem アクティブブックのソースコードのプロシージャ一覧を新規ブックへ出力
 Public Sub VbeProcInfo_Output()
-    Dim wb As Workbook
-    Set wb = Workbooks.Add
-    Call VbeProcInfo_OutputWorksheet(ThisWorkbook.VBProject, wb.Worksheets(1))
+    Dim prjPath As String
+    prjPath = Application.VBE.ActiveVBProject.FileName
+    Dim wb As Workbook: Set wb = Workbooks(GetPathToBaseFile(prjPath))
+    Call VbeProcInfo_OutputWorksheet(wb.VBProject, Workbooks.Add.Worksheets(1))
 End Sub
+
+Function GetPathToBaseFile(srcPath) As String
+    GetPathToBaseFile = kccFuncString_Partial.GetPath(srcPath, False, True, True)
+End Function
 
 Rem ソースコードのプロシージャ一覧を指定シートへ出力
 Private Sub VbeProcInfo_OutputWorksheet(source_vbp As VBProject, output_ws As Worksheet)
@@ -142,12 +145,13 @@ Private Sub VbeProcInfo_OutputWorksheet(source_vbp As VBProject, output_ws As Wo
             Next
         Next
     End With
+    If dicProcInfo.Count = 0 Then MsgBox "VBAがありません。": Exit Sub
   
     'Dictionaryよりシートに出力
     output_ws.Name = "プロシージャ一覧"
     Dim v 'As VbProcInfo
     Dim data
-    data = Array("モジュール", "行位置", "スコープ", "種別", "プロシージャー", "引数", "戻り値", "コメント", "ソースコード")
+    data = Array("モジュール", "行位置", "スコープ", "種別", "プロシージャー", "引数", "戻り値", "コメント", "宣言文")
     data = WorksheetFunction.Transpose(data)
     ReDim Preserve data(LBound(data) To UBound(data, 1), 1 To dicProcInfo.Count + 1)
     data = WorksheetFunction.Transpose(data)
@@ -166,21 +170,27 @@ Private Sub VbeProcInfo_OutputWorksheet(source_vbp As VBProject, output_ws As Wo
         i = i + 1
     Next
     
+    output_ws.Parent.Activate
+    output_ws.Parent.Windows(1).WindowState = xlMaximized
+    
     With output_ws
         .Cells.Clear
         .Cells(1, 1).Resize(UBound(data, 1), UBound(data, 2)).Value = data
         
-        .Range("A2").Select
-        .Parent.Windows(1).FreezePanes = True
-        .Columns("A:I").EntireColumn.AutoFit
-        .Columns("E:E").ColumnWidth = 10.5
-        .Columns("F:I").ColumnWidth = 10.5
+        '宣言文検証用の式
+        .Range("J1").Value = "宣言文2"
         .Range("J2").FormulaR1C1 = "=RC[-7]&"" ""&RC[-6]&"" ""&RC[-5]&""(""&SUBSTITUTE(RC[-4],""" & Chr(10) & ""","", "")&"")""&IF(RC[-3]="""","""","" As ""&RC[-3])"
+        .Range("K1").Value = "チェック"
         .Range("K2").FormulaR1C1 = "=RC[-2]=RC[-1]"
         '1行余分にフィルされる
         .Range("J2:K2").AutoFill Destination:=Intersect(.UsedRange, .Range("J:K")).offset(1)
         
+        .Range("A2").Select
+        .Parent.Windows(1).FreezePanes = True
         .Cells.AutoFilter
+        .Columns("A:K").EntireColumn.AutoFit
+        .Columns("H:J").ColumnWidth = 16
+        .Cells.WrapText = False
     End With
     
     Set dicProcInfo = Nothing
@@ -200,6 +210,7 @@ Rem         Debug.Print data(i, 1)
 Rem         Debug.Print proc.ToString
         data(i, 2) = proc.ParamsToString(vbLf)
         data(i, 3) = proc.ReturnToString
+        Set proc = Nothing
     Next
     
     ws.Cells(1, 1).Resize(UBound(data, 1), UBound(data, 2)).Value = data
@@ -207,10 +218,8 @@ End Sub
 
 Rem プロシージャ宣言文字列からオブジェクト作成
 Public Function CreateVbProcInfo(modname__, ProcName__, ProcKind__, LineNo__, comment__, Source__) As VbProcInfo
-    Dim proc As VbProcInfo
-    Set proc = New VbProcInfo
-    proc.Init modname__, ProcName__, ProcKind__, LineNo__, comment__, Source__
-    Set CreateVbProcInfo = proc
+    Set CreateVbProcInfo = New VbProcInfo
+    CreateVbProcInfo.Init modname__, ProcName__, ProcKind__, LineNo__, comment__, Source__
 End Function
 
 Rem Dictionaryにプロシージャー・プロパティ情報を格納
@@ -1169,50 +1178,54 @@ Public Sub ShowImmediate()
     Next
 End Sub
 
-
-Private Sub DebugPrintClear3()
+Private Sub DebugPrintClearProc(mode As String)
     'Adapted  by   keepITcool
     'Original from Jamie Collins fka "OneDayWhen"
     'http://www.dicks-blog.com/excel/2004/06/clear_the_immed.html
-    
-    
-    Dim hPane As LongPtr
-    Dim tmpState(0 To 255) As Byte
-    
-    
-    hPane = GetImmHandle
-    If hPane = 0 Then MsgBox "イミディエイトウィンドウが見つかりません。"
-    If hPane < 1 Then Exit Sub
-    
-    
-    'CtrlやShiftの状態を記憶
-    GetKeyboardState savState(0)
-    
-    
-    'Ctrl押し下げ
-    tmpState(vbKeyControl) = KEYSTATE_KEYDOWN
-    SetKeyboardState tmpState(0)
-    'Ctrl+ENDを送信
-    PostMessage hPane, WM_KEYDOWN, vbKeyEnd, 0&
-    'SHIFT押し下げ
-    tmpState(vbKeyShift) = KEYSTATE_KEYDOWN
-    SetKeyboardState tmpState(0)
-    'CTRL+SHIFT+Home
-    PostMessage hPane, WM_KEYDOWN, vbKeyHome, 0&
-    'CTRL+SHIFT+BackSpace
-    PostMessage hPane, WM_KEYDOWN, vbKeyBack, 0&
-    
-    
-    'CtrlやShiftの状態を復元
-    Application.OnTime Now + TimeSerial(0, 0, 0), "DoCleanUp"
 
-
+    Static savState(0 To 255) As Byte
+    
+    Select Case mode
+        Case "Clear"
+            Dim hPane As LongPtr
+            Dim tmpState(0 To 255) As Byte
+            
+            hPane = GetImmHandle
+            If hPane = 0 Then MsgBox "イミディエイトウィンドウが見つかりません。"
+            If hPane < 1 Then Exit Sub
+            
+            'CtrlやShiftの状態を記憶
+            GetKeyboardState savState(0)
+            
+            'Ctrl押し下げ
+            tmpState(vbKeyControl) = KEYSTATE_KEYDOWN
+            SetKeyboardState tmpState(0)
+            'Ctrl+ENDを送信
+            PostMessage hPane, WM_KEYDOWN, vbKeyEnd, 0&
+            'SHIFT押し下げ
+            tmpState(vbKeyShift) = KEYSTATE_KEYDOWN
+            SetKeyboardState tmpState(0)
+            'CTRL+SHIFT+Home
+            PostMessage hPane, WM_KEYDOWN, vbKeyHome, 0&
+            'CTRL+SHIFT+BackSpace
+            PostMessage hPane, WM_KEYDOWN, vbKeyBack, 0&
+            
+            'CtrlやShiftの状態を復元
+            Application.OnTime Now + TimeSerial(0, 0, 0), "DoCleanUp"
+        Case "CleanUp"
+            ' Restore keyboard state
+            SetKeyboardState savState(0)
+        Case Else
+            Stop
+    End Select
 End Sub
 
+Private Sub DebugPrintClear3()
+    Call DebugPrintClearProc("Clear")
+End Sub
 
-Private Sub DoCleanUp()
-    ' Restore keyboard state
-    SetKeyboardState savState(0)
+Private Sub DebugPrintClear3_DoCleanUp()
+    Call DebugPrintClearProc("CleanUp")
 End Sub
 
 Private Sub PopupGetImmHandle()
@@ -1568,7 +1581,7 @@ Public Sub VBComponents_Export_YYYYMMDD()
     End Select
     
     Dim srcPath: srcPath = binPath & "\" & folder_date & "\"
-    Call VBComponents_Export(srcPath)
+    Call VBComponents_Export(Application.VBE.ActiveVBProject, srcPath)
     Debug.Print "VBA Exported : " & srcPath
 End Sub
 
@@ -1592,7 +1605,7 @@ Public Sub VBComponents_Export_SRC()
     fso.DeleteFolder srcPath
     On Error GoTo 0
     
-    Call VBComponents_Export(srcPath)
+    Call VBComponents_Export(Application.VBE.ActiveVBProject, srcPath)
     
     Debug.Print "VBA Exported : " & srcPath
 End Sub
@@ -1600,13 +1613,24 @@ End Sub
 Rem アクティブなプロジェクトをGIT用バックアップ＆エクスポート
 Rem
 Public Sub VBComponents_BackupAndExport()
+    Const PROC_NAME = "VBComponents_BackupAndExport"
     
-    Dim binPath As String
-    binPath = kccFuncString_Partial.ToPathParentFolder(Application.VBE.ActiveVBProject.FileName, False)
-    If Not binPath Like "*bin" Then MsgBox "プロジェクトがbinフォルダにありません" & vbLf & binPath, vbOKOnly, "VBComponents_BackupAndExport": Exit Sub
+    Dim vbPrj As VBProject: Set vbPrj = Application.VBE.ActiveVBProject
     
     Dim prjPath As String
-    prjPath = kccFuncString_Partial.ToPathParentFolder(binPath, False)
+    prjPath = kccFuncString_Partial.ToPathParentFolder(vbPrj.FileName, False)
+    
+    Dim binPath As String
+    binPath = prjPath
+    If Not binPath Like "*bin" Then MsgBox "プロジェクトがbinフォルダにありません" & vbLf & binPath, vbOKOnly, PROC_NAME: Exit Sub
+    
+    If MsgBox(vbPrj.FileName & vbLf & "エクスポートを実行します。" & vbLf & "実行前にプロジェクトを保存します。", vbOKCancel, PROC_NAME) = vbCancel Then Exit Sub
+    
+    Dim prjName As String
+    prjName = kccFuncString_Partial.GetPath(Application.VBE.ActiveVBProject.FileName, False, True, True)
+    Call UserNameStackPush(" ")
+    Workbooks(prjName).Save
+    Call UserNameStackPush
     
     Dim srcPath: srcPath = kccFuncString_Partial.ToPathParentFolder(binPath, False) & "\src"
     If fso.FolderExists(srcPath) Then Else fso.CreateFolder srcPath
@@ -1614,7 +1638,7 @@ Public Sub VBComponents_BackupAndExport()
     Dim f As File
     For Each f In fso.GetFolder(srcPath).Files: f.Delete: Next
     
-    Call VBComponents_Export(srcPath)
+    Call VBComponents_Export(vbPrj, srcPath)
     
     'binとsrcのバックアップ
     Dim copy_to_path As String
@@ -1649,6 +1673,7 @@ Rem  /backup/src/CodeName.bas.vba
     If fso.FolderExists(copy_to_path) Then Else fso.CreateFolder copy_to_path
     For Each f In fso.GetFolder(srcPath).Files: f.Copy copy_to_path & "\" & f.Name: Next
 
+
     copy_to_path = backupPath & "\" & "bin"
     If fso.FolderExists(copy_to_path) Then Else fso.CreateFolder copy_to_path
     For Each f In fso.GetFolder(binPath).Files: f.Copy copy_to_path & "\" & Format$(Now(), "yyyymmdd_hhmmss") & "_" & f.Name: Next
@@ -1656,11 +1681,28 @@ Rem  /backup/src/CodeName.bas.vba
     Debug.Print "VBA Exported : " & srcPath
 End Sub
 
+Rem Application.UserNameを一時的に上書きする
+Rem
+Rem @param OverrideUserName 指定時:一時的に上書きする名前
+Rem                         省略時:元の名前に復元
+Rem
+Sub UserNameStackPush(Optional OverrideUserName)
+    Static lastUserName
+    If IsMissing(OverrideUserName) Then
+        Application.UserName = lastUserName
+    Else
+        If OverrideUserName = "" Then _
+            Err.Raise "ユーザー名を空欄にするのはログイン名に置き換えられるため禁止です"
+        lastUserName = Application.UserName
+        Application.UserName = OverrideUserName
+    End If
+End Sub
+
 Rem アクティブなプロジェクトのソースコードを指定フォルダにエクスポート
 Rem
 Rem
-Private Sub VBComponents_Export(output_path)
-    If Application.VBE.ActiveVBProject Is Nothing Then Exit Sub
+Private Sub VBComponents_Export(prj As VBProject, output_path)
+    If prj Is Nothing Then MsgBox "VBAプロジェクト無し", vbOKOnly, "Export Error": Exit Sub
     
     '\無
     If Right$(output_path, 1) Like "*\" Then output_path = Left(output_path, Len(output_path) - 1)
@@ -1671,7 +1713,7 @@ Private Sub VBComponents_Export(output_path)
     
     Dim i As Long
     Dim cmp As VBComponent
-    With Application.VBE.ActiveVBProject
+    With prj
         For i = 1 To .VBComponents.Count
           Set cmp = .VBComponents(i)
           Dim declDic: Set declDic = GetDecInfoDictionary(cmp.CodeModule)

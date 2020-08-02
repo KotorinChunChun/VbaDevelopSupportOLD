@@ -37,7 +37,7 @@ VBEに機能を追加して、VBA開発を楽にするためのアドインで�
 
 ### 拡張子
 
-ソースコードの拡張子は`.vba`です。
+ソースコードの拡張子は全て`.vba`です。
 
 理由は次の通り
 
@@ -81,7 +81,7 @@ GitHub、WinMerge両方で管理したい場合におすすめです。
 /bin/AddinName.xlam
 /src/CodeName.bas.vba
 /backup/bin/YYYYMMDD_HHMMSS_AddinName.xlam
-/backup/src/CodeName.bas.vba
+/backup/src/YYYYMMDD_HHMMSS/CodeName.bas.vba
 ```
 
 ※一旦、srcにエクスポートした後、backupに複製されます。
@@ -149,7 +149,7 @@ WinMergeによるバージョン管理をする場合におすすめです。
 
 ## VbeDevelop.basについて
 
-検証で使ったものや、ネットからコピペしたものなど、ソースコードがぐちゃぐちゃです。
+検証で使ったものや、開発中のもの、ネットからコピペしたものなど、ソースコードがぐちゃぐちゃです。
 
 お宝が隠れてるかも・・。
 

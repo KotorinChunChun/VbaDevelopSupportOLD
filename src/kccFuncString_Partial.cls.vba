@@ -217,14 +217,16 @@ Rem  @note
 Rem     戻り値やoutNameには\が無いので注意すること
 Rem
 Rem  @example
-Rem    | param FullPath       | AddX3 | return               | outPath       | outName | outExt | IsFolder |
-Rem    | -------------------- | ----- | -------------------- | ------------- | ------- | ------ | -------- |
-Rem    | C:\hoge\fuga         | TTT   | C:\hoge\fuga         | C:\hoge\      | fuga    |        | TRUE     |
-Rem    | C:\hoge\fuga\        | TTT   | C:\hoge\fuga         | C:\hoge\      | fuga    |        | TRUE     |
-Rem    | C:\hoge\fuga\a.txt   | TTT   | C:\hoge\fuga\a.txt   | C:\hoge\fuga\ | a.      | txt    | FALSE    |
-Rem    | C:\hoge\fuga\a.b.txt | TTT   | C:\hoge\fuga\a.b.txt | C:\hoge\fuga\ | a.b.    | txt    | FALSE    |
-Rem    | C:\hoge\fuga\c.c     | TTT   | C:\hoge\fuga\c.c     | C:\hoge\fuga\ | c.c     |        | TRUE     |
-Rem    | C:\hoge\fuga\c.c\    | TTT   | C:\hoge\fuga\c.c     | C:\hoge\fuga\ | c.c     |        | TRUE     |
+Rem     | FullPath          | AddX3 | return            | outPath | outName | outExt | IsFolder |
+Rem     | ----------------- | ----- | ----------------- | ------- | ------- | ------ | -------- |
+Rem     | D:\vba\.txt       | TTT   | D:\vba\.txt       | D:\vba\ |         | .txt   | FALSE    |
+Rem     | D:\vba\file       | TTT   | D:\vba\file       | D:\vba\ | file    |        | FALSE    |
+Rem     | D:\vba\file.txt   | TTT   | D:\vba\file.txt   | D:\vba\ | file    | .txt   | FALSE    |
+Rem     | D:\vba\file.2.txt | TTT   | D:\vba\file.2.txt | D:\vba\ | file.2  | .txt   | FALSE    |
+Rem     | D:\vba\fol        | TTT   | D:\vba\fol        | D:\vba\ | fol     |        | TRUE     |
+Rem     | D:\vba\fol\       | TTT   | D:\vba\fol        | D:\vba\ | fol     |        | TRUE     |
+Rem     | D:\vba\fol.2      | TTT   | D:\vba\fol.2      | D:\vba\ | fol.2   |        | TRUE     |
+Rem     | D:\vba\fol.2\     | TTT   | D:\vba\fol.2      | D:\vba\ | fol.2   |        | TRUE     |
 Rem
 Public Function GetPath( _
         ByVal FullPath, _
@@ -235,8 +237,8 @@ Public Function GetPath( _
         Optional ByRef outName, _
         Optional ByRef outExtension, _
         Optional ByRef outIsFolder) As String
-'    outPath = "": outName = "": outExtension = "": outIsFolder = False
-    outPath = "XXXX": outName = "XXXX": outExtension = "XXXX": outIsFolder = False
+    outPath = "": outName = "": outExtension = "": outIsFolder = False
+'    outPath = "XXXX": outName = "XXXX": outExtension = "XXXX": outIsFolder = False
     
     If IsEmpty(FullPath) Then Exit Function
     If TypeName(FullPath) <> "String" Then Exit Function
@@ -263,6 +265,7 @@ Public Function GetPath( _
     If outIsFolder Then outName = NameAndExt: GoTo ExitProc
     
     'ファイル部と拡張子の抽出
+    If InStr(NameAndExt, ".") = 0 Then outName = NameAndExt: GoTo ExitProc
     outName = Strings.Left(NameAndExt, Strings.InStrRev(NameAndExt, ".") - 1)
     outExtension = Strings.Right(NameAndExt, Strings.Len(NameAndExt) - Strings.InStrRev(NameAndExt, ".") + 1)
     

@@ -5,7 +5,7 @@ Rem  @module        AppMain
 Rem
 Rem  @description   VBA開発を支援するVBE拡張アドイン
 Rem
-Rem  @update        2020/08/01
+Rem  @update        0.1.x
 Rem
 Rem  @author        @KotorinChunChun (GitHub / Twitter)
 Rem
@@ -29,6 +29,8 @@ Rem    2020/08/01 再整備
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @note
+Rem Public Function ParamsToString(Optional Delimiter = " ,") As String のコンマ適切にパースできない不具合がある
+Rem なぜか閉じたはずのブックがゾンビ化する
 Rem
 Rem
 Rem --------------------------------------------------------------------------------
@@ -37,7 +39,7 @@ Option Private Module
 
 Public Const APP_NAME = "VBA開発支援アドイン"
 Public Const APP_CREATER = "@KotorinChunChun"
-Public Const APP_VERSION = "20200801"
+Public Const APP_VERSION = "0.1.x"
 Public Const APP_SETTINGFILE = APP_NAME & ".xml"
 Public Const APP_MENU_MODULE_NAME = "AppMain"
 
@@ -62,3 +64,4 @@ Public Sub VBA開発支援アドインを終了する():             Call Close_Addin: End Su
 'Public Sub テスト関数の場所へジャンプする(): Call TestJump: End Sub
 
 'Public Sub プロシージャ一覧を分解する(): Call プロシージャ一覧から引数を分解する: End Sub
+

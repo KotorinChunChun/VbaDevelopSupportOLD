@@ -69,7 +69,7 @@ Rem  @param proc_defined_str    プロシージャ宣言文字列
 Rem
 Rem  @return As String          パラメータ部の文字列
 Rem
-Function SetProcParse(ByVal proc_defined_str) As String
+Private Function SetProcParse(ByVal proc_defined_str) As String
     If InStr(proc_defined_str, ":") > 0 Then proc_defined_str = Left(proc_defined_str, InStr(proc_defined_str, ":") - 1)
     If InStr(proc_defined_str, "'") > 0 Then proc_defined_str = Left(proc_defined_str, InStr(proc_defined_str, "'") - 1)
 
@@ -111,7 +111,7 @@ Rem  @param proc_defined_str                プロシージャ宣言文字列
 Rem
 Rem  @return As Collection/VbProcParamInfo  パラメータ部の文字列
 Rem
-Function CreateVbProcParamInfo(ParamsText) As Collection
+Private Function CreateVbProcParamInfo(ParamsText) As Collection
     Dim i As Long
     Dim ret As New Collection
     
