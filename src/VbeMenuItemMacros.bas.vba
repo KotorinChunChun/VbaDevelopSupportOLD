@@ -17,7 +17,7 @@ Rem    •s—v
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @refModules
-Rem    kccFuncString_Partial
+Rem    kccFuncString
 Rem    VbeMenuItemCreator
 Rem    VbeMenuItemEventHandler
 Rem    VbeMenuItemInstructions

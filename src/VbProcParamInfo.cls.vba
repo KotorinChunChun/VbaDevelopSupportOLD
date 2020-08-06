@@ -21,7 +21,7 @@ Rem  @license       MIT (http://www.opensource.org/licenses/mit-license.php)
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @refModules
-Rem    kccFuncString_Partial
+Rem    kccFuncString
 Rem
 Rem --------------------------------------------------------------------------------
 Option Explicit
@@ -34,7 +34,7 @@ Public argType          As String
 Public argDefaultValue  As String
 
 Public Function ToString() As String
-    ToString = kccFuncString_Partial.Trim2to1(Join(VBA.Array( _
+    ToString = kccFuncString.Trim2to1(Join(VBA.Array( _
                     argOptional, _
                     argBy, _
                     argParamArray, _

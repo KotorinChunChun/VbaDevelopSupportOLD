@@ -21,7 +21,7 @@ Rem  @license       MIT (http://www.opensource.org/licenses/mit-license.php)
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @refModules
-Rem    kccFuncString_Partial
+Rem    kccFuncString
 Rem    VbProcParamInfo
 Rem
 Rem --------------------------------------------------------------------------------
@@ -44,9 +44,9 @@ Public Property Get LineNo() As Long: LineNo = LineNo_: End Property
 Public Property Get Source() As String: Source = Source_: End Property
 Public Property Get Comment() As String: Comment = Comment_: End Property
 
+Rem プロシージャ宣言文字列からオブジェクト作成
 Public Function Init(modname__, ProcName__, ProcKind__, LineNo__, comment__, proc_defined_str) As VbProcInfo
-    Dim proc As VbProcInfo
-    Set proc = New VbProcInfo
+    Set Init = Me
     
     ModName_ = modname__
     ProcName_ = ProcName__
@@ -59,8 +59,6 @@ Public Function Init(modname__, ProcName__, ProcKind__, LineNo__, comment__, pro
     'Params_
     'Return_
     Call SetProcParse(proc_defined_str)
-    
-    Set Init = proc
 End Function
 
 Rem プロシージャ宣言文字列からパラメータ部の文字列を取得する
@@ -76,12 +74,12 @@ Private Function SetProcParse(ByVal proc_defined_str) As String
     Dim kakkos: kakkos = VBA.Array("{", "(")
     
     Dim repedText As String
-    repedText = kccFuncString_Partial.ReplaceBracketsNest(proc_defined_str, "(", kakkos)
+    repedText = kccFuncString.ReplaceBracketsNest(proc_defined_str, "(", kakkos)
     
     'パラメータ部の文字列
     ParamsText = ""
     Dim paramsOrReturns
-    paramsOrReturns = kccFuncString_Partial.SplitWithInBrackets(repedText, kakkos(0), True)
+    paramsOrReturns = kccFuncString.SplitWithInBrackets(repedText, kakkos(0), True)
     If UBound(paramsOrReturns) >= 0 Then
         ParamsText = paramsOrReturns(0)
     End If
@@ -94,7 +92,7 @@ Private Function SetProcParse(ByVal proc_defined_str) As String
         txt = Replace(repedText, "}", "{", 1, 1)
         Dim blocks
         blocks = Split(txt, "{", 3)
-        ProcName_ = kccFuncString_Partial.RightStrRev(blocks(0), " ")
+        ProcName_ = kccFuncString.RightStrRev(blocks(0), " ")
     
         '戻値名：「} As ～{}:」
         Return_ = Replace(blocks(UBound(blocks)), " As ", "")

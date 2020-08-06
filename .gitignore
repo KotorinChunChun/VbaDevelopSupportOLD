@@ -3,5 +3,6 @@
 bin/backup/*
 src/backup/*
 backup/*
+dev/*
 #*.frx
 docs/*

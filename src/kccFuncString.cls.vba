@@ -2,18 +2,18 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "kccFuncString_Partial"
+Attribute VB_Name = "kccFuncString"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Rem --------------------------------------------------------------------------------
 Rem
-Rem  @module        kccFuncString_Partial
+Rem  @module        kccFuncString
 Rem
 Rem  @description   文字列変換関数
 Rem
-Rem  @update        2020/08/01
+Rem  @update        2020/08/06
 Rem
 Rem  @author        @KotorinChunChun (GitHub / Twitter)
 Rem
@@ -200,6 +200,132 @@ Public Function SplitWithInBrackets(ByVal base_str, _
 
 End Function
 
+
+
+Rem フォルダの絶対パスとファイルの相対パスを合成して、目的のファイルの絶対パスを取得する関数
+Rem
+Rem  @name     AbsolutePathNameEx
+Rem  @oldname  BuildPathEx
+Rem
+Rem  @param base_path      基準パス
+Rem  @param ref_path       基準パスからの移動を示す相対パス（または上書きする絶対パス）
+Rem
+Rem  @return   As String   連結後の絶対パス
+Rem
+Rem  @note
+Rem          fso.GetAbsolutePathName(fso.BuildPath(base_path, ref_path))の問題を解消した関数
+Rem          * UNCに..\した時、PC直下には移動できない
+Rem          * UNC解析が超低速
+Rem          * フォルダ末尾に\が無い
+Rem          *
+Rem         ※UNCパス＝ネットワークコンピュータ上のファイルを参照するパスで\\から始まるアレ
+Rem
+Rem  @example
+Rem     base_path = ""
+Rem          Missing                            >> String ""
+Rem          String ""                          >> String ""
+Rem          String "C:\Book1.xlsx"             >> String "C:\Book1.xlsx"
+Rem
+Rem     base_path = "C:\hoge\fuga\"
+Rem          Missing                            >> String ""
+Rem          String ""                          >> String ""
+Rem          String ".\"                        >> String "C:\hoge\fuga\"
+Rem          String ".\Book1"                   >> String "C:\hoge\fuga\Book1"
+Rem          String ".\Book1.xlsx"              >> String "C:\hoge\fuga\Book1.xlsx"
+Rem          String "..\..\Book1.xlsx"          >> String "C:\Book1.xlsx"
+Rem          String "..\..\Book1xlsx"           >> String "C:\Book1xlsx"
+Rem          String "..\.\Book1.xlsx"           >> String "C:\hoge\Book1.xlsx"
+Rem          String "..\Book1.xlsx"             >> String "C:\hoge\Book1.xlsx"
+Rem          String "..\piyo\Book1.xlsx"        >> String "C:\hoge\piyo\Book1.xlsx"
+Rem          String ".\fuga\piyo\..\Book1.xlsx" >> String "C:\hoge\fuga\fuga\Book1.xlsx"
+Rem          String "\Book1.xlsx"               >> String "C:\hoge\fuga\Book1.xlsx"
+Rem          String "C:\Book1.xlsx"             >> String "C:\Book1.xlsx"
+Rem          String "\\hoge\fuga\"              >> String "\\hoge\fuga\"
+Rem          String "\\127.0.0.1\hoge\fuga\"    >> String "\\127.0.0.1\hoge\fuga\"
+Rem
+Rem     base_path = "\\hoge\fuga\"
+Rem          String ".\"                        >> String "\\hoge\fuga\"
+Rem          String "\Book1.xlsx"               >> String "\\hoge\fuga\Book1.xlsx"
+Rem
+Rem     base_path = "\\127.0.0.1\hoge\fuga\"
+Rem          String ".\Book1"                   >> String "\\127.0.0.1\hoge\fuga\Book1"
+Rem          String ".\fuga\piyo\..\Book1.xlsx" >> String "\\127.0.0.1\hoge\fuga\fuga\Book1.xlsx"
+Rem
+Public Function AbsolutePathNameEx(ByVal base_path As String, ByVal ref_path As String) As String
+    If IsMissing(ref_path) Then Exit Function
+    If ref_path = "" Then Exit Function
+    If ref_path Like "[A-Z]:\?*" Or ref_path Like "\\?*\?*" Then AbsolutePathNameEx = ref_path: Exit Function
+    If IsMissing(base_path) Then Exit Function
+    If base_path = "" Then Exit Function
+    
+    Dim i As Long
+    
+    base_path = Replace(base_path, "/", "\")
+    base_path = Left(base_path, Len(base_path) - IIf(Right(base_path, 1) = "\", 1, 0))
+    
+    ref_path = Replace(ref_path, "/", "\")
+    
+    Dim retVal As String
+    Dim rpArr() As String
+    rpArr = Split(ref_path, "\")
+    
+    For i = LBound(rpArr) To UBound(rpArr)
+        Select Case rpArr(i)
+            Case "", "."
+                If retVal = "" Then retVal = base_path
+                rpArr(i) = ""
+            Case ".."
+                If retVal = "" Then retVal = base_path
+                If InStrRev(retVal, "\") = 0 Then
+                    'Err.Raise 8888, "AbsolutePathNameEx", "到達できないパスを指定しています。"
+                    AbsolutePathNameEx = "到達不能"
+                    Exit Function
+                End If
+                retVal = Left(retVal, InStrRev(retVal, "\") - 1)
+                rpArr(i) = ""
+            Case Else
+                retVal = retVal & IIf(retVal = "", "", "\") & rpArr(i)
+                rpArr(i) = ""
+        End Select
+        '相対パス部分が空欄、.\、..\で終わった時、末尾の\が不足するので補完が必要
+        If i = UBound(rpArr) Then
+            If ref_path <> "" Then
+                If Right(ref_path, 1) = "\" Then
+                    retVal = retVal & "\"
+                End If
+            End If
+        End If
+    Next
+    '連続\の消去とネットワークパス対策
+    retVal = Replace(retVal, "file:\\", "file://")
+    retVal = Replace(retVal, "\\", "\")
+    retVal = IIf(Left(retVal, 1) = "\", "\", "") & retVal
+    AbsolutePathNameEx = retVal
+End Function
+
+Rem  パス名からファイル名を除いて､パスを取得します｡（最後に「\」はつきません。コロン「:」がなくかつ円記号「\」がない場合はファイルとします）
+'Function GetPathName(PathName As String) As String
+'  Dim l As Long ' 文字数
+'  Dim yen As Long ' \ フォルダの区切り記号の位置
+'  Dim colon As Long ' : ドライブの記号の位置
+'
+'  yen = InStrRev(PathName, Application.PathSeparator, compare:=vbBinaryCompare)
+'  colon = InStrRev(PathName, ":", compare:=vbBinaryCompare)
+'  l = Len(PathName)
+'
+'  GetPathName = PathName
+'  If PathName = "." Then Exit Function
+'  If PathName = ".." Then Exit Function
+'
+'  If yen > 0 Then
+'    GetPathName = Left$(PathName, yen - 1)
+'  ElseIf colon > 0 Then
+'    GetPathName = PathName ' ドライブ
+'  Else
+'    GetPathName = vbNullString ' 円記号「\」がない場合はファイルとします
+'  End If
+'End Function
+
 Rem ファイルパスを展開して、ディレクトリ、ファイル名、拡張子　をとりだす
 Rem
 Rem  @param FullPath        フルパスデータ
@@ -244,7 +370,7 @@ Public Function GetPath( _
     If TypeName(FullPath) <> "String" Then Exit Function
     If Len(FullPath) = 0 Then Exit Function
     
-    FullPath = RenewalPath(FullPath)
+'    FullPath = RenewalPath(FullPath)   'これするとファイルフォルダ判定がバグる
     If FullPath = "" Then Exit Function
     
     '最後が\ならフォルダ扱い。
@@ -255,7 +381,7 @@ Public Function GetPath( _
     If outIsFolder Then
         FullPath = Left$(FullPath, Len(FullPath) - 1)
     Else
-        outIsFolder = CreateObject("Scripting.FileSystemObject").FolderExists(FullPath)
+        outIsFolder = fso.FolderExists(FullPath)
     End If
     
     'パス部とファイル部の抽出
@@ -278,8 +404,10 @@ End Function
 
 Rem パスを規定の書式に書き換える。（ネットワークドライブ対応）
 Public Function RenewalPath(ByVal Path As String, Optional AddYen As Boolean = False) As String
+    'ドットの有無でファイル or フォルダ判定　不完全。
     If Strings.InStr(Path, ".") = 0 Then Path = Path & IIf(AddYen, "\", "")
     RenewalPath = Strings.Left(Path, 2) & Strings.Replace(Strings.Replace(Path, "/", "\"), "\\", "\", 3)
+    RenewalPath = ToPathLastYen(RenewalPath, AddYen)
 End Function
 
 Rem 親ディレクトリを返す。
@@ -289,7 +417,8 @@ Public Function ToPathParentFolder(ByVal Path As String, Optional AddYen As Bool
 End Function
 
 Rem パスの最後に\を付ける／消す
-Private Function ToPathLastYen(Path, AddYen As Boolean) As String
+Public Function ToPathLastYen(Path, AddYen As Boolean) As String
+    ToPathLastYen = Path
     If AddYen Then
         If Right(Path, 1) <> "\" Then
             ToPathLastYen = Path & "\"

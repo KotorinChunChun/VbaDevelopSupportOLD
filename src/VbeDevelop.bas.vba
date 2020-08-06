@@ -5,7 +5,7 @@ Rem  @module        ExtDevelop
 Rem
 Rem  @description   開発環境VBE用のモジュール
 Rem
-Rem  @update        2020/08/01
+Rem  @update        2020/08/06
 Rem
 Rem  @author        @KotorinChunChun (GitHub / Twitter)
 Rem
@@ -17,7 +17,7 @@ Rem    Microsoft Visual Basic for Applications Extensibility 5.3
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @refModules
-Rem    kccFuncString_Partial
+Rem    kccFuncString
 Rem    VbProcInfo
 Rem      - VbProcParamInfo
 Rem
@@ -62,7 +62,7 @@ Private Declare PtrSafe Function SetKeyboardState _
                         Lib "user32" (lppbKeyState As Byte) As Long
 Private Declare PtrSafe Function PostMessage _
                         Lib "user32" Alias "PostMessageA" ( _
-                        ByVal hwnd As LongPtr, ByVal wMsg As Long, _
+                        ByVal hWnd As LongPtr, ByVal wMsg As Long, _
                         ByVal wParam As Long, ByVal lParam As LongPtr _
                         ) As Long
 
@@ -77,7 +77,7 @@ Private Declare PtrSafe Function FindWindowEx Lib "user32" Alias "FindWindowExA"
     ByVal lpWindowName As String) As LongPtr
     
 Private Declare PtrSafe Function GetWindow Lib "user32" ( _
-    ByVal hwnd As LongPtr, _
+    ByVal hWnd As LongPtr, _
     ByVal wCmd As Long) As LongPtr
 
                         
@@ -117,47 +117,76 @@ Public Property Get fso() As FileSystemObject
     Set fso = xxFso
 End Property
 
-Rem アクティブブックのソースコードのプロシージャ一覧を新規ブックへ出力
-Public Sub VbeProcInfo_Output()
-    Dim prjPath As String
-    prjPath = Application.VBE.ActiveVBProject.FileName
-    Dim wb As Workbook: Set wb = Workbooks(GetPathToBaseFile(prjPath))
-    Call VbeProcInfo_OutputWorksheet(wb.VBProject, Workbooks.Add.Worksheets(1))
+Rem アクティブなプロジェクトの保存フォルダを開く
+Public Sub OpenProjectFolder()
+On Error Resume Next
+    Dim fn: fn = Application.VBE.ActiveVBProject.FileName
+    Shell "explorer.exe " & fn & ",/select", vbNormalFocus
 End Sub
 
-Function GetPathToBaseFile(srcPath) As String
-    GetPathToBaseFile = kccFuncString_Partial.GetPath(srcPath, False, True, True)
-End Function
+Sub Test_VBP()
+    Dim prjPath As kccPathEx: Set prjPath = VBA.CVar(New kccPathEx).Init(Application.VBE.ActiveVBProject)
+    Dim obj
+    Set obj = prjPath.VBProject
+    Debug.Print obj.Name
+    Stop
+End Sub
+
+Rem 現在アクティブなプロジェクトのワークブックを閉じる
+Public Sub CloseProject()
+    Dim prjPath As kccPathEx: Set prjPath = VBA.CVar(New kccPathEx).Init(Application.VBE.ActiveVBProject)
+    If prjPath Is Nothing Then Exit Sub
+    prjPath.Workbook.Close
+End Sub
+
+Rem アクティブブックのソースコードのプロシージャ一覧を新規ブックへ出力
+Public Sub VbeProcInfo_Output()
+    Dim prjPath As kccPathEx: Set prjPath = VBA.CVar(New kccPathEx).Init(Application.VBE.ActiveVBProject)
+    
+    'プロシージャ一覧を取得して二次元配列を取得する処理
+    Dim data
+    data = VbeProcInfo_GetTable(prjPath.Workbook.VBProject)
+    
+    '二次元配列をブックに出力する処理
+    
+    'ここまでしてもブックのメモリが開放されない謎の減少発生中
+    Dim outWb As Workbook:
+'    Set outWb = ActiveWorkbook
+    Set outWb = Workbooks.Add
+    Dim outWs As Worksheet: Set outWs = outWb.Worksheets(1)
+    Call VbeProcInfo_OutputWorksheet(data, outWs)
+    DoEvents
+    Set outWs = Nothing
+    Set outWb = Nothing
+End Sub
 
 Rem ソースコードのプロシージャ一覧を指定シートへ出力
-Private Sub VbeProcInfo_OutputWorksheet(source_vbp As VBProject, output_ws As Worksheet)
+Private Function VbeProcInfo_GetTable(source_vbp As VBProject) As Variant
     Dim dicProcInfo As New Dictionary
     Dim i As Long
+    Dim dKey
   
     'ブックの全モジュールを処理
-    With source_vbp
-        For i = 1 To .VBComponents.Count
-            Dim dic As Dictionary
-            Set dic = GetProcInfoDictionary(source_vbp.VBComponents(i).CodeModule)
-            Dim dKey
-            For Each dKey In dic.Keys
-                dicProcInfo.Add dKey, dic(dKey)
-            Next
+    For i = 1 To source_vbp.VBComponents.Count
+        Dim dic As Dictionary
+        Set dic = GetProcInfoDictionary(source_vbp.VBComponents(i).CodeModule)
+        For Each dKey In dic.Keys
+            dicProcInfo.Add dKey, dic(dKey)
         Next
-    End With
-    If dicProcInfo.Count = 0 Then MsgBox "VBAがありません。": Exit Sub
+        Set dic = Nothing
+    Next
+    If dicProcInfo.Count = 0 Then MsgBox "VBAがありません。": Exit Function
   
-    'Dictionaryよりシートに出力
-    output_ws.Name = "プロシージャ一覧"
-    Dim v 'As VbProcInfo
     Dim data
     data = Array("モジュール", "行位置", "スコープ", "種別", "プロシージャー", "引数", "戻り値", "コメント", "宣言文")
     data = WorksheetFunction.Transpose(data)
     ReDim Preserve data(LBound(data) To UBound(data, 1), 1 To dicProcInfo.Count + 1)
     data = WorksheetFunction.Transpose(data)
-
+    
     i = 2
-    For Each v In dicProcInfo.items
+    For Each dKey In dicProcInfo.Keys
+        Dim v As VbProcInfo
+        Set v = dicProcInfo(dKey)
         data(i, 1) = v.ModName
         data(i, 2) = v.LineNo
         data(i, 3) = v.Scope
@@ -167,9 +196,20 @@ Private Sub VbeProcInfo_OutputWorksheet(source_vbp As VBProject, output_ws As Wo
         data(i, 7) = v.ReturnToString
         data(i, 8) = "'" & v.Comment
         data(i, 9) = v.Source
+        Set v = Nothing
         i = i + 1
     Next
-    
+
+    Set dicProcInfo = Nothing
+    VbeProcInfo_GetTable = data
+End Function
+
+Rem プロシージャ一覧二次元配列データをシートに出力する
+Rem さらにJ,K列に数式を追加する
+Private Sub VbeProcInfo_OutputWorksheet(data, output_ws As Worksheet)
+
+    'Dictionaryよりシートに出力
+    output_ws.Name = "プロシージャ一覧"
     output_ws.Parent.Activate
     output_ws.Parent.Windows(1).WindowState = xlMaximized
     
@@ -183,7 +223,7 @@ Private Sub VbeProcInfo_OutputWorksheet(source_vbp As VBProject, output_ws As Wo
         .Range("K1").Value = "チェック"
         .Range("K2").FormulaR1C1 = "=RC[-2]=RC[-1]"
         '1行余分にフィルされる
-        .Range("J2:K2").AutoFill Destination:=Intersect(.UsedRange, .Range("J:K")).offset(1)
+        .Range("J2:K2").AutoFill Destination:=ResizeOffset(.UsedRange.Columns("J:K"), 1)
         
         .Range("A2").Select
         .Parent.Windows(1).FreezePanes = True
@@ -193,8 +233,60 @@ Private Sub VbeProcInfo_OutputWorksheet(source_vbp As VBProject, output_ws As Wo
         .Cells.WrapText = False
     End With
     
-    Set dicProcInfo = Nothing
 End Sub
+
+Rem Rangeを指定座標だけOffsetしつつResizeする（先頭側を削るResize）
+Rem
+Rem  @param rng         対象Range
+Rem  @param offsetRow   先頭からオフセット縮小する行数
+Rem  @param offsetCol   先頭からオフセット縮小する列数
+Rem
+Rem  @return As Range   変形後のRange
+Rem
+Function ResizeOffset(rng As Range, Optional offsetRow As Long, _
+                                    Optional offsetCol As Long) As Range
+    Set ResizeOffset = Intersect(rng, rng.Offset(offsetRow, offsetCol))
+End Function
+
+'オートフィルタ方式
+Sub Test_ResizeOffset_AutoFilter()
+    Const TARGET_COL = "C:D"
+    ResizeOffset(ActiveSheet.AutoFilter.Range.Columns(TARGET_COL), 1).Select
+End Sub
+
+Sub Test_ResizeOffset()
+    Const HEAD_ROW = 3, TARGET_COL = "C:D"
+    
+    With ToWorksheet(ActiveSheet)
+        Dim rng As Range
+        
+        'UsedRange方式
+'        Set rng = ResizeOffset(.UsedRange.Columns(TARGET_COL), HEAD_ROW - .UsedRange.Row + 1)
+        
+        'オートフィルタ方式
+'        Set rng = ResizeOffset(.AutoFilter.Range.Columns(TARGET_COL), HEAD_ROW - .AutoFilter.Range.Row + 1)
+
+        'CurrentRegion方式
+'        Set rng = Range("B3").CurrentRegion
+'        Set rng = Intersect(rng, rng.Offset(1)).Columns("C:D")
+
+        rng.Select
+    End With
+End Sub
+
+        
+        'CurrentRegion方式
+'        Set rng = .Range(TARGET_COL).Cells(HEAD_ROW, 1).CurrentRegion
+'        Set rng = ResizeOffset(rng.Columns(TARGET_COL), HEAD_ROW - rng.Row + 1)
+        
+
+'オートフィルタの有無
+'UsedRange外の先頭行列の有無
+
+
+'    Set OffsetResize = rng.Offset(offsetRow, offsetCol).Resize( _
+'                            rng.Rows.CountLarge - offsetRow, _
+'                            rng.Columns.CountLarge - offsetCol)
 
 Rem アクティブシートのA列にプロシージャ情報が記載されているものとする
 Private Sub プロシージャ一覧から引数を分解する()
@@ -206,7 +298,7 @@ Private Sub プロシージャ一覧から引数を分解する()
 Rem         Debug.Print data(i, 1)
         
         Dim proc As VbProcInfo
-        Set proc = CreateVbProcInfo("", "", "", 0, "", data(i, 1))
+        Set proc = VBA.CVar(New VbProcInfo).Init("", "", "", 0, "", data(i, 1))
 Rem         Debug.Print proc.ToString
         data(i, 2) = proc.ParamsToString(vbLf)
         data(i, 3) = proc.ReturnToString
@@ -215,12 +307,6 @@ Rem         Debug.Print proc.ToString
     
     ws.Cells(1, 1).Resize(UBound(data, 1), UBound(data, 2)).Value = data
 End Sub
-
-Rem プロシージャ宣言文字列からオブジェクト作成
-Public Function CreateVbProcInfo(modname__, ProcName__, ProcKind__, LineNo__, comment__, Source__) As VbProcInfo
-    Set CreateVbProcInfo = New VbProcInfo
-    CreateVbProcInfo.Init modname__, ProcName__, ProcKind__, LineNo__, comment__, Source__
-End Function
 
 Rem Dictionaryにプロシージャー・プロパティ情報を格納
 Public Function GetProcInfoDictionary(ByVal objCodeModule As CodeModule) As Dictionary
@@ -240,7 +326,7 @@ Public Function GetProcInfoDictionary(ByVal objCodeModule As CodeModule) As Dict
             If isProcLine(objCodeModule.Lines(codeLine, 1), sProcName) Then
                 If Not dic.Exists(sProcKey) Then
                     Dim cProcInfo As VbProcInfo
-                    Set cProcInfo = CreateVbProcInfo( _
+                    Set cProcInfo = VBA.CVar(New VbProcInfo).Init( _
                                         sMod, _
                                         sProcName, _
                                         iProcKind, _
@@ -857,17 +943,17 @@ If Application.Version >= 16 Then
 ElseIf Application.Version = 15 Then
 On Error Resume Next
 .AddFromGuid GUID_OfficeObject, 2, 8
-If Err.Number <> 0 Then
+If Err.number <> 0 Then
 Err.Clear
 .AddFromGuid GUID_OfficeObject, 2, 7
 End If
-If Err.Number <> 0 Then
+If Err.number <> 0 Then
 Err.Clear
 .AddFromGuid GUID_OfficeObject, 2, 6
 End If
 Rem OutlookSocialProvider
 .AddFromGuid "{E301A065-3DF5-4378-A829-57B1EA986631}", 1, 1 'OutlookSocialProvider
-If Err.Number <> 0 Then
+If Err.number <> 0 Then
 Err.Clear
 .AddFromGuid "{E301A065-3DF5-4378-A829-57B1EA986631}", 1, 0 'OutlookSocialProvider
 End If
@@ -1556,129 +1642,127 @@ Private Sub SelectedVBComponent_Name_Sample()
   MsgBox Prompt:="選択してるモジュール名：" & Application.VBE.SelectedVBComponent.Name, Buttons:=vbYesNo + vbQuestion, Title:="SelectedVBComponent.Name"
 End Sub
 
-Rem アクティブなプロジェクトのソースコードをエクスポートする
-Rem
-Rem  /addin.xlam
-Rem  /YYYYMMDD/code.bas.vba
-Rem  /YYYYMMDD_HHMMSS/code.bas.vba
-Rem
-Public Sub VBComponents_Export_YYYYMMDD()
+Sub Test_kccPathEx_ParentFolderPath()
+    Dim p As kccPathEx
     
-    Dim prjPath As String
-    prjPath = Application.VBE.ActiveVBProject.FileName
+    '明示的にis_file:=Falseとすればフォルダ認識
+    Set p = VBA.CVar(New kccPathEx).Init("C:\vba\hoge", False)
+    Debug.Print p.CurrentFolderPath, p.ParentFolderPath
     
-    Dim binPath As String
-    binPath = kccFuncString_Partial.ToPathParentFolder(prjPath, False)
+    'パスの末尾が￥ならフォルダ認識
+    Set p = VBA.CVar(New kccPathEx).Init("C:\vba\hoge\")
+    Debug.Print p.CurrentFolderPath, p.ParentFolderPath
     
-    Dim folder_date As String
-    Select Case MsgBox(prjPath & vbLf & "YES : YYYYMMDD" & vbLf & " NO : YYYYMMDD_HHMMSS", vbYesNoCancel, "ソースコードエクスポート")
-        Case vbYes
-            folder_date = Format$(Now(), "yyyymmdd")
-        Case vbNo
-            folder_date = Format$(Now(), "yyyymmdd_hhmmss")
-        Case vbCancel
-            Exit Sub
-    End Select
-    
-    Dim srcPath: srcPath = binPath & "\" & folder_date & "\"
-    Call VBComponents_Export(Application.VBE.ActiveVBProject, srcPath)
-    Debug.Print "VBA Exported : " & srcPath
+    '未指定は原則ファイル認識
+    Set p = VBA.CVar(New kccPathEx).Init("C:\vba\hoge\a.xlsm")
+    Debug.Print p.CurrentFolderPath, p.ParentFolderPath
 End Sub
 
-Rem アクティブなプロジェクトのソースコードをgit用にエクスポートする
+Sub Test_AbsolutePathNameEx()
+    Dim s As String
+    Debug.Print kccFuncString.AbsolutePathNameEx("C:\vba\hoge", ".\hoge.xls")
+    Debug.Print kccFuncString.AbsolutePathNameEx("C:\vba\hoge\", ".\hoge.xls")
+    Debug.Print kccFuncString.AbsolutePathNameEx("C:\vba\hoge", "hoge.xls")
+    Debug.Print kccFuncString.AbsolutePathNameEx("C:\vba\hoge\", "hoge.xls")
+End Sub
+
+Rem アクティブなプロジェクトのソースコードを配下にエクスポート
 Rem
-Rem  /bin/addin.xlam
-Rem  /src/code.bas.vba
+Rem  /AddinName.xlam
+Rem  /YYYYMMDD_HHMMSS/CodeName.bas.vba
+Rem
+Public Sub VBComponents_Export_YYYYMMDD()
+    Call VBComponents_BackupAndExport_Sub( _
+            Application.VBE.ActiveVBProject, _
+            "", _
+            ".\src\[YYYYMMDD]_[HHMMSS]\", _
+            "", "")
+End Sub
+
+Rem アクティブなプロジェクトをgit用にエクスポート
+Rem
+Rem  /bin/AddinName.xlam
+Rem  /src/CodeName.bas.vba
 Rem
 Public Sub VBComponents_Export_SRC()
-    
-    Dim prjPath As String
-    prjPath = Application.VBE.ActiveVBProject.FileName
-    
-    Dim binPath As String
-    binPath = kccFuncString_Partial.ToPathParentFolder(prjPath, False)
-    If Not binPath Like "*bin" Then MsgBox "プロジェクトがbinフォルダにありません": Exit Sub
-    
-    Dim srcPath: srcPath = kccFuncString_Partial.ToPathParentFolder(binPath, False) & "\src"
-    
-    On Error Resume Next
-    fso.DeleteFolder srcPath
-    On Error GoTo 0
-    
-    Call VBComponents_Export(Application.VBE.ActiveVBProject, srcPath)
-    
-    Debug.Print "VBA Exported : " & srcPath
+    Call VBComponents_BackupAndExport_Sub( _
+            Application.VBE.ActiveVBProject, _
+            ".\..\bin", _
+            ".\..\src", _
+            "", "")
 End Sub
 
 Rem アクティブなプロジェクトをGIT用バックアップ＆エクスポート
 Rem
-Public Sub VBComponents_BackupAndExport()
-    Const PROC_NAME = "VBComponents_BackupAndExport"
-    
-    Dim vbPrj As VBProject: Set vbPrj = Application.VBE.ActiveVBProject
-    
-    Dim prjPath As String
-    prjPath = kccFuncString_Partial.ToPathParentFolder(vbPrj.FileName, False)
-    
-    Dim binPath As String
-    binPath = prjPath
-    If Not binPath Like "*bin" Then MsgBox "プロジェクトがbinフォルダにありません" & vbLf & binPath, vbOKOnly, PROC_NAME: Exit Sub
-    
-    If MsgBox(vbPrj.FileName & vbLf & "エクスポートを実行します。" & vbLf & "実行前にプロジェクトを保存します。", vbOKCancel, PROC_NAME) = vbCancel Then Exit Sub
-    
-    Dim prjName As String
-    prjName = kccFuncString_Partial.GetPath(Application.VBE.ActiveVBProject.FileName, False, True, True)
-    Call UserNameStackPush(" ")
-    Workbooks(prjName).Save
-    Call UserNameStackPush
-    
-    Dim srcPath: srcPath = kccFuncString_Partial.ToPathParentFolder(binPath, False) & "\src"
-    If fso.FolderExists(srcPath) Then Else fso.CreateFolder srcPath
-    
-    Dim f As File
-    For Each f In fso.GetFolder(srcPath).Files: f.Delete: Next
-    
-    Call VBComponents_Export(vbPrj, srcPath)
-    
-    'binとsrcのバックアップ
-    Dim copy_to_path As String
-    
-Rem  /bin/AddinName.xlam
-Rem  /bin/backup/YYYYMMDD_HHMMSS\AddinName.xlam
-Rem  /src/CodeName.bas.vba
-Rem  /src/backup/YYYYMMDD_HHMMSS\CodeName.bas.vba
-'    copy_to_path = srcPath & "\" & "backup"
-'    If fso.FolderExists(copy_to_path) Then Else fso.CreateFolder copy_to_path
-'    copy_to_path = srcPath & "\" & "backup" & "\" & Format$(Now(), "yyyymmdd_hhmmss")
-'    If fso.FolderExists(copy_to_path) Then Else fso.CreateFolder copy_to_path
-'    For Each f In fso.GetFolder(srcPath).Files: f.Copy copy_to_path & "\" & f.Name: Next
-'
-'    copy_to_path = binPath & "\" & "backup"
-'    If fso.FolderExists(copy_to_path) Then Else fso.CreateFolder copy_to_path
-'    copy_to_path = binPath & "\" & "backup" & "\" & Format$(Now(), "yyyymmdd_hhmmss")
-'    If fso.FolderExists(copy_to_path) Then Else fso.CreateFolder copy_to_path
-'    For Each f In fso.GetFolder(binPath).Files: f.Copy copy_to_path & "\" & f.Name: Next
-    
 Rem  /bin/AddinName.xlam
 Rem  /src/CodeName.bas.vba
 Rem  /backup/bin/YYYYMMDD_HHMMSS_AddinName.xlam
 Rem  /backup/src/CodeName.bas.vba
-    Dim backupPath As String
-    backupPath = prjPath & "\backup"
-    If fso.FolderExists(backupPath) Then Else fso.CreateFolder backupPath
-    
-    copy_to_path = backupPath & "\" & "src"
-    If fso.FolderExists(copy_to_path) Then Else fso.CreateFolder copy_to_path
-    copy_to_path = backupPath & "\" & "src" & "\" & Format$(Now(), "yyyymmdd_hhmmss")
-    If fso.FolderExists(copy_to_path) Then Else fso.CreateFolder copy_to_path
-    For Each f In fso.GetFolder(srcPath).Files: f.Copy copy_to_path & "\" & f.Name: Next
+Rem
+Public Sub VBComponents_BackupAndExport()
+    Call VBComponents_BackupAndExport_Sub( _
+            Application.VBE.ActiveVBProject, _
+            ".\..\bin", _
+            ".\..\src", _
+            ".\..\backup\bin\[YYYYMMDD]_[HHMMSS]_[FILENAME]", _
+            ".\..\backup\src\[YYYYMMDD]_[HHMMSS]\[FILENAME]")
+End Sub
 
-
-    copy_to_path = backupPath & "\" & "bin"
-    If fso.FolderExists(copy_to_path) Then Else fso.CreateFolder copy_to_path
-    For Each f In fso.GetFolder(binPath).Files: f.Copy copy_to_path & "\" & Format$(Now(), "yyyymmdd_hhmmss") & "_" & f.Name: Next
+Rem  プロジェクトのソースコードをエクスポートしたりバックアップする処理
+Rem
+Rem  @param ExportObject    出力プロジェクト（Workbook,VBProject)
+Rem  @param ExportBinFolder binフォルダ
+Rem  @param
+Rem  @param
+Rem  @param
+Rem
+Public Sub VBComponents_BackupAndExport_Sub( _
+            ExportObject As Object, _
+            ExportBinFolder As String, _
+            ExportSrcFolder As String, _
+            BackupBinFile As String, _
+            BackupSrcFile As String)
+    Const proc_name = "VBComponents_Export"
     
-    Debug.Print "VBA Exported : " & srcPath
+    Dim NowDateTime As Date: NowDateTime = Now()
+    Dim prjPath As kccPathEx: Set prjPath = VBA.CVar(New kccPathEx).Init(ExportObject)
+    
+    'プロジェクトの上書き保存
+    If MsgBox(Join(Array( _
+        prjPath.FileName, _
+        "エクスポートを実行します。", _
+        "実行前にプロジェクトを保存します。"), vbLf), vbOKCancel, proc_name) = vbCancel Then Exit Sub
+    Call UserNameStackPush(" ")
+    prjPath.Workbook.Save
+    Call UserNameStackPush
+    
+    'プロジェクトをリリースフォルダへ複製
+    If ExportBinFolder <> "" Then
+        Dim binPath As kccPathEx
+        Set binPath = prjPath.MoveFolder(ExportBinFolder).ReplacePathAuto(DateTime:=NowDateTime)
+        binPath.DeleteFolder
+        binPath.CreateFolder
+        prjPath.CopyFiles binPath
+    End If
+    
+    '既存ソースの削除とエクスポート
+    If ExportSrcFolder <> "" Then
+        Dim srcPath As kccPathEx
+        Set srcPath = prjPath.MoveFolder(ExportSrcFolder).ReplacePathAuto(DateTime:=NowDateTime)
+        srcPath.DeleteFolder
+        srcPath.CreateFolder
+        Call VBComponents_Export(prjPath.VBProject, srcPath)
+    End If
+    
+    'binとsrcのバックアップ
+    If BackupBinFile <> "" Then
+        binPath.CopyFiles prjPath.MoveFile(BackupBinFile).ReplacePathAuto(DateTime:=NowDateTime), withoutFilterString:="*~$*"
+    End If
+    If BackupSrcFile <> "" Then
+        srcPath.CopyFiles prjPath.MoveFile(BackupSrcFile).ReplacePathAuto(DateTime:=NowDateTime)
+    End If
+    
+    Debug.Print "VBA Exported : " & prjPath.FileName
 End Sub
 
 Rem Application.UserNameを一時的に上書きする
@@ -1701,15 +1785,9 @@ End Sub
 Rem アクティブなプロジェクトのソースコードを指定フォルダにエクスポート
 Rem
 Rem
-Private Sub VBComponents_Export(prj As VBProject, output_path)
+Private Sub VBComponents_Export(prj As VBProject, output_path As kccPathEx)
     If prj Is Nothing Then MsgBox "VBAプロジェクト無し", vbOKOnly, "Export Error": Exit Sub
-    
-    '\無
-    If Right$(output_path, 1) Like "*\" Then output_path = Left(output_path, Len(output_path) - 1)
-    If fso.FolderExists(output_path) Then Else fso.CreateFolder output_path
-    
-    '\有
-    If Right$(output_path, 1) <> Application.PathSeparator Then output_path = output_path & Application.PathSeparator
+    output_path.CreateFolder
     
     Dim i As Long
     Dim cmp As VBComponent
@@ -1724,20 +1802,20 @@ Private Sub VBComponents_Export(prj As VBProject, output_path)
               Debug.Print "Export", cmp.Name, , "宣言部", declDic.Count, , "関数部", procDic.Count
               Select Case cmp.Type
                 Case Is = vbext_ct_StdModule
-                  cmp.Export output_path & cmp.Name & ".bas" & ".vba"
+                  cmp.Export output_path.FullPath & "\" & cmp.Name & ".bas" & ".vba"
                   
                 Case Is = vbext_ct_ClassModule
-                  cmp.Export output_path & cmp.Name & ".cls" & ".vba"
+                  cmp.Export output_path.FullPath & "\" & cmp.Name & ".cls" & ".vba"
                   
                 Case Is = vbext_ct_MSForm
-                  cmp.Export output_path & cmp.Name & ".frm" & ".vba"
+                  cmp.Export output_path.FullPath & "\" & cmp.Name & ".frm" & ".vba"
                   
                 ' Workbook, Worksheetなど
                 Case Is = vbext_ct_Document
-                  cmp.Export output_path & cmp.Name & ".cls" & ".vba"
+                  cmp.Export output_path.FullPath & "\" & cmp.Name & ".cls" & ".vba"
                   
                 Case Is = vbext_ct_ActiveXDesigner ' ActiveX デザイナ
-                  cmp.Export output_path & cmp.Name & ".cls" & ".vba"
+                  cmp.Export output_path.FullPath & "\" & cmp.Name & ".cls" & ".vba"
               End Select
           End If
         Next i
