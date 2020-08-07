@@ -69,3 +69,4 @@ Public Sub VBA開発支援アドインを終了する():            Call Close_Addin: End Sub
 
 'Public Sub プロシージャ一覧を分解する(): Call プロシージャ一覧から引数を分解する: End Sub
 
+Sub test(): End Sub
