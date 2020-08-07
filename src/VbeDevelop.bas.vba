@@ -125,7 +125,7 @@ On Error Resume Next
 End Sub
 
 Sub Test_VBP()
-    Dim prjPath As kccPath: Set prjPath = VBA.CVar(New kccPath).Init(Application.VBE.ActiveVBProject)
+    Dim prjPath As kccPath: Set prjPath = kccPath.Init(Application.VBE.ActiveVBProject)
     Dim obj
     Set obj = prjPath.VBProject
     Debug.Print obj.Name
@@ -134,14 +134,14 @@ End Sub
 
 Rem 現在アクティブなプロジェクトのワークブックを閉じる
 Public Sub CloseProject()
-    Dim prjPath As kccPath: Set prjPath = VBA.CVar(New kccPath).Init(Application.VBE.ActiveVBProject)
+    Dim prjPath As kccPath: Set prjPath = kccPath.Init(Application.VBE.ActiveVBProject)
     If prjPath Is Nothing Then Exit Sub
     prjPath.Workbook.Close
 End Sub
 
 Rem アクティブブックのソースコードのプロシージャ一覧を新規ブックへ出力
 Public Sub VbeProcInfo_Output()
-    Dim prjPath As kccPath: Set prjPath = VBA.CVar(New kccPath).Init(Application.VBE.ActiveVBProject)
+    Dim prjPath As kccPath: Set prjPath = kccPath.Init(Application.VBE.ActiveVBProject)
     
     'プロシージャ一覧を取得して二次元配列を取得する処理
     Dim data
@@ -298,7 +298,7 @@ Private Sub プロシージャ一覧から引数を分解する()
 Rem         Debug.Print data(i, 1)
         
         Dim proc As VbProcInfo
-        Set proc = VBA.CVar(New VbProcInfo).Init("", "", "", 0, "", data(i, 1))
+        Set proc = VbProcInfo.Init("", "", "", 0, "", data(i, 1))
 Rem         Debug.Print proc.ToString
         data(i, 2) = proc.ParamsToString(vbLf)
         data(i, 3) = proc.ReturnToString
@@ -326,7 +326,7 @@ Public Function GetProcInfoDictionary(ByVal objCodeModule As CodeModule) As Dict
             If isProcLine(objCodeModule.Lines(codeLine, 1), sProcName) Then
                 If Not dic.Exists(sProcKey) Then
                     Dim cProcInfo As VbProcInfo
-                    Set cProcInfo = VBA.CVar(New VbProcInfo).Init( _
+                    Set cProcInfo = VbProcInfo.Init( _
                                         sMod, _
                                         sProcName, _
                                         iProcKind, _
@@ -1646,15 +1646,15 @@ Sub Test_kccPath_ParentFolderPath()
     Dim p As kccPath
     
     '明示的にis_file:=Falseとすればフォルダ認識
-    Set p = VBA.CVar(New kccPath).Init("C:\vba\hoge", False)
+    Set p = kccPath.Init("C:\vba\hoge", False)
     Debug.Print p.CurrentFolderPath, p.ParentFolderPath
     
     'パスの末尾が￥ならフォルダ認識
-    Set p = VBA.CVar(New kccPath).Init("C:\vba\hoge\")
+    Set p = kccPath.Init("C:\vba\hoge\")
     Debug.Print p.CurrentFolderPath, p.ParentFolderPath
     
     '未指定は原則ファイル認識
-    Set p = VBA.CVar(New kccPath).Init("C:\vba\hoge\a.xlsm")
+    Set p = kccPath.Init("C:\vba\hoge\a.xlsm")
     Debug.Print p.CurrentFolderPath, p.ParentFolderPath
 End Sub
 
@@ -1725,7 +1725,7 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     Const proc_name = "VBComponents_Export"
     
     Dim NowDateTime As Date: NowDateTime = Now()
-    Dim prjPath As kccPath: Set prjPath = VBA.CVar(New kccPath).Init(ExportObject)
+    Dim prjPath As kccPath: Set prjPath = kccPath.Init(ExportObject)
     
     'プロジェクトの上書き保存
     If MsgBox(Join(Array( _
@@ -1821,32 +1821,42 @@ Private Sub VBComponents_Export(prj As VBProject, output_path As kccPath)
     Dim cmp As VBComponent
     With prj
         For i = 1 To .VBComponents.Count
-          Set cmp = .VBComponents(i)
-          Dim declDic: Set declDic = GetDecInfoDictionary(cmp.CodeModule)
-          Dim procDic: Set procDic = GetProcInfoDictionary(cmp.CodeModule)
-          If declDic.Count = 0 And procDic.Count = 0 Then
-              Debug.Print "Skip", cmp.Name
-          Else
-              Debug.Print "Export", cmp.Name, , "宣言部", declDic.Count, , "関数部", procDic.Count
-              Select Case cmp.Type
+            Set cmp = .VBComponents(i)
+            Dim declDic: Set declDic = GetDecInfoDictionary(cmp.CodeModule)
+            Dim procDic: Set procDic = GetProcInfoDictionary(cmp.CodeModule)
+            If declDic.Count = 0 And procDic.Count = 0 Then
+                Debug.Print "Skip", cmp.Name
+                GoTo ForContinue
+            End If
+            
+            Debug.Print "Export", cmp.Name, , "宣言部", declDic.Count, , "関数部", procDic.Count
+            
+            Dim oFullPath As String: oFullPath = ""
+            Select Case cmp.Type
                 Case Is = vbext_ct_StdModule
-                  cmp.Export output_path.FullPath & "\" & cmp.Name & ".bas" & ".vba"
+                    oFullPath = output_path.FullPath & "\" & cmp.Name & ".bas" & ".vba"
                   
                 Case Is = vbext_ct_ClassModule
-                  cmp.Export output_path.FullPath & "\" & cmp.Name & ".cls" & ".vba"
+                    oFullPath = output_path.FullPath & "\" & cmp.Name & ".cls" & ".vba"
                   
                 Case Is = vbext_ct_MSForm
-                  cmp.Export output_path.FullPath & "\" & cmp.Name & ".frm" & ".vba"
+                    oFullPath = output_path.FullPath & "\" & cmp.Name & ".frm" & ".vba"
                   
                 ' Workbook, Worksheetなど
                 Case Is = vbext_ct_Document
-                  cmp.Export output_path.FullPath & "\" & cmp.Name & ".cls" & ".vba"
+                    oFullPath = output_path.FullPath & "\" & cmp.Name & ".cls" & ".vba"
                   
-                Case Is = vbext_ct_ActiveXDesigner ' ActiveX デザイナ
-                  cmp.Export output_path.FullPath & "\" & cmp.Name & ".cls" & ".vba"
-              End Select
-          End If
-        Next i
+                ' ActiveX デザイナ
+                Case Is = vbext_ct_ActiveXDesigner
+                    oFullPath = output_path.FullPath & "\" & cmp.Name & ".cls" & ".vba"
+            End Select
+            
+            If oFullPath <> "" Then
+                cmp.Export oFullPath
+                kccPath.Init(oFullPath, True).ConvertCharCode_SJIS_to_utf8
+            End If
+ForContinue:
+        Next
     End With
 End Sub
 

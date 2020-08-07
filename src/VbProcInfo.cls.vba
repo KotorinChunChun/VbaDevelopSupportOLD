@@ -5,7 +5,7 @@ END
 Attribute VB_Name = "VbProcInfo"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
-Attribute VB_PredeclaredId = False
+Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Rem --------------------------------------------------------------------------------
 Rem
@@ -13,7 +13,7 @@ Rem  @module        VbProcInfo
 Rem
 Rem  @description   VBプログラムのプロシージャ情報
 Rem
-Rem  @update        2020/08/01
+Rem  @update        2020/08/07
 Rem
 Rem  @author        @KotorinChunChun (GitHub / Twitter)
 Rem
@@ -46,6 +46,12 @@ Public Property Get Comment() As String: Comment = Comment_: End Property
 
 Rem プロシージャ宣言文字列からオブジェクト作成
 Public Function Init(modname__, ProcName__, ProcKind__, LineNo__, comment__, proc_defined_str) As VbProcInfo
+    If Me Is VbProcInfo Then
+        With New VbProcInfo
+            Set Init = .Init(modname__, ProcName__, ProcKind__, LineNo__, comment__, proc_defined_str)
+        End With
+        Exit Function
+    End If
     Set Init = Me
     
     ModName_ = modname__
@@ -125,7 +131,7 @@ Private Function CreateVbProcParamInfo(ParamsText) As Collection
     'パラメータ毎のクラスオブジェクトのコレクション
     If UBound(params) >= 0 Then
         For i = LBound(params) To UBound(params)
-            ret.Add Array(New VbProcParamInfo)(0).Init(params(i))
+            ret.Add VbProcParamInfo.Init(params(i))
         Next
     End If
     Set CreateVbProcParamInfo = ret

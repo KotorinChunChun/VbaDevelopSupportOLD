@@ -5,7 +5,7 @@ END
 Attribute VB_Name = "VbProcParamInfo"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
-Attribute VB_PredeclaredId = False
+Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Rem --------------------------------------------------------------------------------
 Rem
@@ -13,7 +13,7 @@ Rem  @module        VbProcParamInfo
 Rem
 Rem  @description   VBプログラムのプロシージャのパラメータ情報
 Rem
-Rem  @update        2020/08/01
+Rem  @update        2020/08/07
 Rem
 Rem  @author        @KotorinChunChun (GitHub / Twitter)
 Rem
@@ -44,6 +44,12 @@ Public Function ToString() As String
 End Function
 
 Public Function Init(ByVal base_str) As VbProcParamInfo
+    If Me Is VbProcParamInfo Then
+        With New VbProcParamInfo
+            Set Init = .Init(base_str)
+        End With
+        Exit Function
+    End If
     Set Init = Me
     
     Dim txt As String

@@ -51,7 +51,14 @@ End Property
 
 Rem オブジェクトの作成
 Public Function Init(obj, Optional is_file As Boolean = True) As kccPath
+    If Me Is kccPath Then
+        With New kccPath
+            Set Init = .Init(obj, is_file)
+        End With
+        Exit Function
+    End If
     Set Init = Me
+    
     Select Case TypeName(obj)
         Case "String":    IsFile = is_file: FullPath = obj
         Case "File":      IsFile = True:    FullPath = ToFile(obj).Path
@@ -74,7 +81,7 @@ End Function
 Property Get Self() As kccPath: Set Self = Me: End Property
 
 Public Function Clone() As kccPath
-    Set Clone = VBA.CVar(New kccPath).Init(Me.FullPath, Me.IsFile)
+    Set Clone = kccPath.Init(Me.FullPath, Me.IsFile)
 End Function
 
 Rem VBProjectから名前を取得する関数
@@ -181,12 +188,12 @@ End Property
 
 Rem 親フォルダオブジェクト
 Property Get CurrentFolder() As kccPath
-    Set CurrentFolder = VBA.CVar(New kccPath).Init(Me.CurrentFolderPath, False)
+    Set CurrentFolder = kccPath.Init(Me.CurrentFolderPath, False)
 End Property
 
 Rem 親フォルダオブジェクト
 Property Get ParentFolder() As kccPath
-    Set ParentFolder = VBA.CVar(New kccPath).Init(Me.ParentFolderPath, False)
+    Set ParentFolder = kccPath.Init(Me.ParentFolderPath, False)
 End Property
 
 Rem 存在しないとエラーになるかも
@@ -231,7 +238,7 @@ Public Function MovePathByFolder(relative_path, Optional KeepFileName As Boolean
     Dim bas As String: bas = Me.CurrentFolderPath
     Dim ref As String: ref = relative_path
     Dim ppp As String: ppp = kccFuncString.AbsolutePathNameEx(bas, ref)
-    Set MovePathByFolder = VBA.CVar(New kccPath).Init(ppp, False)
+    Set MovePathByFolder = kccPath.Init(ppp, False)
 End Function
 
 Rem 相対パスにより移動したファイルのインスタンスを新規生成
@@ -241,7 +248,7 @@ Public Function MovePathByFile(relative_path) As kccPath
     Dim bas As String: bas = Me.CurrentFolderPath
     Dim ref As String: ref = IIf(relative_path Like "*\*", "", ".\") & relative_path
     Dim ppp As String: ppp = kccFuncString.AbsolutePathNameEx(bas, ref)
-    Set MovePathByFile = VBA.CVar(New kccPath).Init(ppp, True)
+    Set MovePathByFile = kccPath.Init(ppp, True)
 End Function
 
 Rem フォルダを一気に作成
@@ -256,6 +263,7 @@ Public Function CreateFolder() As kccPath
     End If
 End Function
 
+Rem フォルダを削除
 Public Function DeleteFolder()
 '    On Error Resume Next
     If fso.FolderExists(Me.CurrentFolderPath) Then
@@ -316,3 +324,46 @@ Public Function ReplacePathAuto(Optional DateTime, Optional FileName) As kccPath
     If VBA.IsMissing(FileName) Then Else Set obj = obj.ReplacePath("[FILENAME]", FileName)
     Set ReplacePathAuto = obj
 End Function
+
+' ファイルの文字コードをSJISからUTF8(BOM無し)に変換する
+Public Sub ConvertCharCode_SJIS_to_utf8()
+    If Me.IsFile Then Else Exit Sub
+    If fso.FileExists(Me.FullPath) Then Else Exit Sub
+    
+    Dim fn As String: fn = Me.FullPath
+    Dim destWithBOM As Object: Set destWithBOM = CreateObject("ADODB.Stream")
+    With destWithBOM
+        .Type = 2
+        .Charset = "utf-8"
+        .Open
+        
+        ' ファイルをSJIS で開いて、dest へ 出力
+        With CreateObject("ADODB.Stream")
+            .Type = 2
+            .Charset = "shift-jis"
+            .Open
+            .LoadFromFile fn
+            .Position = 0
+            .copyTo destWithBOM
+            .Close
+        End With
+        
+        ' BOM消去
+        ' 3バイト無視してからバイナリとして出力
+        .Position = 0
+        .Type = 1 ' adTypeBinary
+        .Position = 3
+        
+        Dim dest: Set dest = CreateObject("ADODB.Stream")
+        With dest
+            .Type = 1 ' adTypeBinary
+            .Open
+            destWithBOM.copyTo dest
+            .savetofile fn, 2
+            .Close
+        End With
+        
+        .Close
+    End With
+End Sub
+
