@@ -13,59 +13,13 @@ Rem  @module        kccFuncString
 Rem
 Rem  @description   文字列変換関数
 Rem
-Rem  @update        2020/08/06
+Rem  @update        2020/08/07
 Rem
 Rem  @author        @KotorinChunChun (GitHub / Twitter)
 Rem
 Rem  @license       MIT (http://www.opensource.org/licenses/mit-license.php)
 Rem
 Rem --------------------------------------------------------------------------------
-
-Rem Right関数拡張  最後に出現する区切り文字列を切れ目として右側の文字を返す
-Rem
-Rem  @param base_str      取り出し元文字列
-Rem  @param cut_str       切断文字列（末尾から検索して該当する文字列の手前までを取り出す）
-Rem  @param cut_inc       切断文字列を含めて返すかどうか（通常は除外する）
-Rem  @param shift_len     取り出し文字列を余分に取り出す文字数（プラス）、削り落とす文字数（マイナス）
-Rem  @param should_fill   存在しない場合は入力文字列で埋めるか（既定True）
-Rem
-Rem  @return As String
-Rem
-Rem  @example
-Rem
-Public Function RightStrRev(base_str, cut_str, _
-                                Optional cut_inc As Boolean = False, _
-                                Optional shift_len As Long = 0, _
-                                Optional should_fill = True) As String
-    If InStrRev(base_str, cut_str, -1) > 0 And cut_str <> "" Then
-        If cut_inc Then
-            RightStrRev = Right(base_str, Len(base_str) - InStrRev(base_str, cut_str, -1) + shift_len + 1)
-        Else
-            RightStrRev = Right(base_str, Len(base_str) - InStrRev(base_str, cut_str, -1) + shift_len + 1 - Len(cut_str))
-        End If
-    ElseIf should_fill Then
-        RightStrRev = base_str
-    Else
-        RightStrRev = ""
-    End If
-End Function
-
-Rem 通常トリムに加えて、文字列中の連続スペースをシングルスペースに変換する。
-Rem Excel関数のTRIM互換
-Rem
-Rem  @param base_str       入力文字列
-Rem
-Rem  @return As String
-Rem
-Rem  @example
-Rem
-Public Function Trim2to1(ByVal base_str) As String
-    Do
-        Trim2to1 = Replace(Trim(base_str), "  ", " ")
-        If Trim2to1 = base_str Then Exit Do
-        base_str = Trim2to1
-    Loop
-End Function
 
 Rem  @description あらゆる初め括弧から閉じ括弧を返す関数
 Rem
@@ -200,7 +154,51 @@ Public Function SplitWithInBrackets(ByVal base_str, _
 
 End Function
 
+Rem 通常トリムに加えて、文字列中の連続スペースをシングルスペースに変換する。
+Rem Excel関数のTRIM互換
+Rem
+Rem  @param base_str       入力文字列
+Rem
+Rem  @return As String
+Rem
+Rem  @example
+Rem
+Public Function Trim2to1(ByVal base_str) As String
+    Do
+        Trim2to1 = Replace(Trim(base_str), "  ", " ")
+        If Trim2to1 = base_str Then Exit Do
+        base_str = Trim2to1
+    Loop
+End Function
 
+Rem Right関数拡張  最後に出現する区切り文字列を切れ目として右側の文字を返す
+Rem
+Rem  @param base_str      取り出し元文字列
+Rem  @param cut_str       切断文字列（末尾から検索して該当する文字列の手前までを取り出す）
+Rem  @param cut_inc       切断文字列を含めて返すかどうか（通常は除外する）
+Rem  @param shift_len     取り出し文字列を余分に取り出す文字数（プラス）、削り落とす文字数（マイナス）
+Rem  @param should_fill   存在しない場合は入力文字列で埋めるか（既定True）
+Rem
+Rem  @return As String
+Rem
+Rem  @example
+Rem
+Public Function RightStrRev(base_str, cut_str, _
+                                Optional cut_inc As Boolean = False, _
+                                Optional shift_len As Long = 0, _
+                                Optional should_fill = True) As String
+    If InStrRev(base_str, cut_str, -1) > 0 And cut_str <> "" Then
+        If cut_inc Then
+            RightStrRev = Right(base_str, Len(base_str) - InStrRev(base_str, cut_str, -1) + shift_len + 1)
+        Else
+            RightStrRev = Right(base_str, Len(base_str) - InStrRev(base_str, cut_str, -1) + shift_len + 1 - Len(cut_str))
+        End If
+    ElseIf should_fill Then
+        RightStrRev = base_str
+    Else
+        RightStrRev = ""
+    End If
+End Function
 
 Rem フォルダの絶対パスとファイルの相対パスを合成して、目的のファイルの絶対パスを取得する関数
 Rem
@@ -373,6 +371,8 @@ Public Function GetPath( _
 '    FullPath = RenewalPath(FullPath)   'これするとファイルフォルダ判定がバグる
     If FullPath = "" Then Exit Function
     
+    Dim fso As Object: Set fso = CreateObject("Scripting.FileSystemObject")
+
     '最後が\ならフォルダ扱い。
     '違ってもfsoで実物から判定する。
     '実在しないフォルダの場合、拡張子の有無で判定をする。
@@ -403,17 +403,17 @@ ExitProc:
 End Function
 
 Rem パスを規定の書式に書き換える。（ネットワークドライブ対応）
-Public Function RenewalPath(ByVal Path As String, Optional AddYen As Boolean = False) As String
-    'ドットの有無でファイル or フォルダ判定　不完全。
-    If Strings.InStr(Path, ".") = 0 Then Path = Path & IIf(AddYen, "\", "")
-    RenewalPath = Strings.Left(Path, 2) & Strings.Replace(Strings.Replace(Path, "/", "\"), "\\", "\", 3)
-    RenewalPath = ToPathLastYen(RenewalPath, AddYen)
-End Function
+'Public Function RenewalPath(ByVal Path As String, Optional AddYen As Boolean = False) As String
+'    'ドットの有無でファイル or フォルダ判定　不完全。
+'    If Strings.InStr(Path, ".") = 0 Then Path = Path & IIf(AddYen, "\", "")
+'    RenewalPath = Strings.Left(Path, 2) & Strings.Replace(Strings.Replace(Path, "/", "\"), "\\", "\", 3)
+'    RenewalPath = ToPathLastYen(RenewalPath, AddYen)
+'End Function
 
 Rem 親ディレクトリを返す。
 Rem \マークは付与しない
 Public Function ToPathParentFolder(ByVal Path As String, Optional AddYen As Boolean = False) As String
-    ToPathParentFolder = ToPathLastYen(GetPath(RenewalPath(Path), True, False, False), AddYen)
+    ToPathParentFolder = ToPathLastYen(GetPath(Path, True, False, False), AddYen)
 End Function
 
 Rem パスの最後に\を付ける／消す
