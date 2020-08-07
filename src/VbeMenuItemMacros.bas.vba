@@ -3,7 +3,7 @@ Rem ----------------------------------------------------------------------------
 Rem
 Rem  @module        VbeMenuItemMacros
 Rem
-Rem  @description   VBEã®ãƒ¡ãƒ‹ãƒ¥ãƒ¼è¿½åŠ ãƒã‚¯ãƒ­
+Rem  @description   VBE‚Ìƒƒjƒ…[’Ç‰Áƒ}ƒNƒ
 Rem
 Rem  @update        2020/08/01
 Rem
@@ -13,7 +13,7 @@ Rem  @license       MIT (http://www.opensource.org/licenses/mit-license.php)
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @references
-Rem    ä¸è¦
+Rem    •s—v
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @refModules
@@ -24,14 +24,14 @@ Rem    VbeMenuItemInstructions
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @history
-Rem    2020/08/01 å†æ•´å‚™
+Rem    2020/08/01 Ä®”õ
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @functions
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @note
-Rem    ãƒ¡ãƒ¢æ›¸ã
+Rem    ƒƒ‚‘‚«
 Rem
 Rem --------------------------------------------------------------------------------
 Option Explicit
@@ -39,10 +39,10 @@ Option Explicit
 Public Sub VbeMenuItemAdd(): Call VbeMenuUpdate("Add", APP_MENU_MODULE_NAME): End Sub
 Public Sub VbeMenuItemDel(): Call VbeMenuUpdate("Del", APP_MENU_MODULE_NAME): End Sub
 
-Rem @param AddOrDel     è¿½åŠ ã‹å‰Šé™¤ã‹
-Rem                     "Add" : ã‚¢ãƒ‰ã‚¤ãƒ³èµ·å‹•æ™‚ã«ä½¿ç”¨ã—ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’è¿½åŠ 
-Rem                     "Del" : ã‚¢ãƒ‰ã‚¤ãƒ³çµ‚äº†æ™‚ã«ä½¿ç”¨ã—ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’å‰Šé™¤
-Rem @param moduleName   è¿½åŠ ã—ãŸã„ã‚³ãƒãƒ³ãƒ‰ã®åˆ—æŒ™ã•ã‚ŒãŸãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«å
+Rem @param AddOrDel     ’Ç‰Á‚©íœ‚©
+Rem                     "Add" : ƒAƒhƒCƒ“‹N“®‚Ég—p‚µƒƒjƒ…[‚ğ’Ç‰Á
+Rem                     "Del" : ƒAƒhƒCƒ“I—¹‚Ég—p‚µƒƒjƒ…[‚ğíœ
+Rem @param moduleName   ’Ç‰Á‚µ‚½‚¢ƒRƒ}ƒ“ƒh‚Ì—ñ‹“‚³‚ê‚½ƒ‚ƒWƒ…[ƒ‹–¼
 Rem
 Private Sub VbeMenuUpdate(AddOrDel, moduleName)
     Static vbc As VBComponent
@@ -50,7 +50,7 @@ Private Sub VbeMenuUpdate(AddOrDel, moduleName)
     If Menu Is Nothing Then
         Set vbc = ThisWorkbook.VBProject.VBComponents(moduleName)
         Set Menu = New VbeMenuItemCreator
-        Menu.Init "VBEé–‹ç™ºæ”¯æ´", "VBEé–‹ç™ºæ”¯æ´(&M)", vbc
+        Menu.Init "VBEŠJ”­x‰‡", "VBEŠJ”­x‰‡(&M)", vbc
     End If
     
     If AddOrDel = "Add" Then
@@ -61,7 +61,7 @@ Private Sub VbeMenuUpdate(AddOrDel, moduleName)
         For i = 0 To UBound(arr)
             Select Case arr(i).ProcName
                 Case "Reset_Addin", "Close_Addin", "Auto_Open", "Auto_Close", "Auto_Sub", "GetInstructions", "VbeMenuItemAdd", "VbeMenuItemDel"
-                    'åŠã³å¼•æ•°æœ‰ã‚Šã€€ã¯å‡¦ç†ã—ãªã„ã€‚
+                    '‹y‚Ñˆø”—L‚è@‚Íˆ—‚µ‚È‚¢B
                 Case Else
                     Menu.AddSubMenu arr(i).ProcName, arr(i).Shortcut
             End Select
@@ -74,7 +74,7 @@ Private Sub VbeMenuUpdate(AddOrDel, moduleName)
     End If
 End Sub
 
-Rem æŒ‡å®šãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«å†…ã®ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ã®ä¸€è¦§ã‚’é…åˆ—ã§è¿”ã™
+Rem w’èƒ‚ƒWƒ…[ƒ‹“à‚ÌƒvƒƒV[ƒWƒƒ‚Ìˆê——‚ğ”z—ñ‚Å•Ô‚·
 Private Function GetInstructions(cmod As CodeModule) As VbeMenuItemInstructions()
     Dim psl As Long, pbl As String
     Dim ret() As VbeMenuItemInstructions: ReDim ret(0)

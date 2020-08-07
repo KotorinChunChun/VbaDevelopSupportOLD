@@ -11,7 +11,7 @@ Rem ----------------------------------------------------------------------------
 Rem
 Rem  @module        VbeMenuItemInstructions
 Rem
-Rem  @description   VBE繝｡繝九Η繝ｼ繝舌�ｼ繧ｳ繝槭Φ繝峨�懊ち繝ｳ
+Rem  @description   VBEメニューバーコマンドボタン
 Rem
 Rem  @update        2020/08/01
 Rem

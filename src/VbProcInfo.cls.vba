@@ -11,7 +11,7 @@ Rem ----------------------------------------------------------------------------
 Rem
 Rem  @module        VbProcInfo
 Rem
-Rem  @description   VBãƒ—ãƒ­ã‚°ãƒ©ãƒ ã®ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£æƒ…å ±
+Rem  @description   VBƒvƒƒOƒ‰ƒ€‚ÌƒvƒƒV[ƒWƒƒî•ñ
 Rem
 Rem  @update        2020/08/07
 Rem
@@ -44,7 +44,7 @@ Public Property Get LineNo() As Long: LineNo = LineNo_: End Property
 Public Property Get Source() As String: Source = Source_: End Property
 Public Property Get Comment() As String: Comment = Comment_: End Property
 
-Rem ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£å®£è¨€æ–‡å­—åˆ—ã‹ã‚‰ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆä½œæˆ
+Rem ƒvƒƒV[ƒWƒƒéŒ¾•¶š—ñ‚©‚çƒIƒuƒWƒFƒNƒgì¬
 Public Function Init(modname__, ProcName__, ProcKind__, LineNo__, comment__, proc_defined_str) As VbProcInfo
     If Me Is VbProcInfo Then
         With New VbProcInfo
@@ -67,11 +67,11 @@ Public Function Init(modname__, ProcName__, ProcKind__, LineNo__, comment__, pro
     Call SetProcParse(proc_defined_str)
 End Function
 
-Rem ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£å®£è¨€æ–‡å­—åˆ—ã‹ã‚‰ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿éƒ¨ã®æ–‡å­—åˆ—ã‚’å–å¾—ã™ã‚‹
+Rem ƒvƒƒV[ƒWƒƒéŒ¾•¶š—ñ‚©‚çƒpƒ‰ƒ[ƒ^•”‚Ì•¶š—ñ‚ğæ“¾‚·‚é
 Rem
-Rem  @param proc_defined_str    ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£å®£è¨€æ–‡å­—åˆ—
+Rem  @param proc_defined_str    ƒvƒƒV[ƒWƒƒéŒ¾•¶š—ñ
 Rem
-Rem  @return As String          ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿éƒ¨ã®æ–‡å­—åˆ—
+Rem  @return As String          ƒpƒ‰ƒ[ƒ^•”‚Ì•¶š—ñ
 Rem
 Private Function SetProcParse(ByVal proc_defined_str) As String
     If InStr(proc_defined_str, ":") > 0 Then proc_defined_str = Left(proc_defined_str, InStr(proc_defined_str, ":") - 1)
@@ -82,25 +82,25 @@ Private Function SetProcParse(ByVal proc_defined_str) As String
     Dim repedText As String
     repedText = kccFuncString.ReplaceBracketsNest(proc_defined_str, "(", kakkos)
     
-    'ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿éƒ¨ã®æ–‡å­—åˆ—
+    'ƒpƒ‰ƒ[ƒ^•”‚Ì•¶š—ñ
     ParamsText = ""
     Dim paramsOrReturns
     paramsOrReturns = kccFuncString.SplitWithInBrackets(repedText, kakkos(0), True)
     If UBound(paramsOrReturns) >= 0 Then
         ParamsText = paramsOrReturns(0)
     End If
-    'ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿æ¯ã®ã‚¯ãƒ©ã‚¹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚³ãƒ¬ã‚¯ã‚·ãƒ§ãƒ³
+    'ƒpƒ‰ƒ[ƒ^–ˆ‚ÌƒNƒ‰ƒXƒIƒuƒWƒFƒNƒg‚ÌƒRƒŒƒNƒVƒ‡ƒ“
     Set Params_ = CreateVbProcParamInfo(ParamsText)
     
     If repedText <> "" Then
-        'é–¢æ•°åï¼šã€Œ ï½{ã€
+        'ŠÖ”–¼Fu `{v
         Dim txt As String
         txt = Replace(repedText, "}", "{", 1, 1)
         Dim blocks
         blocks = Split(txt, "{", 3)
         ProcName_ = kccFuncString.RightStrRev(blocks(0), " ")
     
-        'æˆ»å€¤åï¼šã€Œ} As ï½{}:ã€
+        '–ß’l–¼Fu} As `{}:v
         Return_ = Replace(blocks(UBound(blocks)), " As ", "")
         Return_ = Replace(Replace(Return_, "{", "("), "}", ")")
     End If
@@ -109,17 +109,17 @@ Private Function SetProcParse(ByVal proc_defined_str) As String
 '    Stop
 End Function
 
-Rem ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£å®£è¨€æ–‡å­—åˆ—ã‹ã‚‰ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿éƒ¨ã®ã‚¯ãƒ©ã‚¹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚³ãƒ¬ã‚¯ã‚·ãƒ§ãƒ³ã‚’å–å¾—ã™ã‚‹
+Rem ƒvƒƒV[ƒWƒƒéŒ¾•¶š—ñ‚©‚çƒpƒ‰ƒ[ƒ^•”‚ÌƒNƒ‰ƒXƒIƒuƒWƒFƒNƒgƒRƒŒƒNƒVƒ‡ƒ“‚ğæ“¾‚·‚é
 Rem
-Rem  @param proc_defined_str                ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£å®£è¨€æ–‡å­—åˆ—
+Rem  @param proc_defined_str                ƒvƒƒV[ƒWƒƒéŒ¾•¶š—ñ
 Rem
-Rem  @return As Collection/VbProcParamInfo  ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿éƒ¨ã®æ–‡å­—åˆ—
+Rem  @return As Collection/VbProcParamInfo  ƒpƒ‰ƒ[ƒ^•”‚Ì•¶š—ñ
 Rem
 Private Function CreateVbProcParamInfo(ParamsText) As Collection
     Dim i As Long
     Dim ret As New Collection
     
-    'ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿æ¯ã®æ–‡å­—åˆ—é…åˆ—
+    'ƒpƒ‰ƒ[ƒ^–ˆ‚Ì•¶š—ñ”z—ñ
     Dim params: params = Split(vbNullString)
     If ParamsText <> "" Then
         params = Split(ParamsText, ",")
@@ -128,7 +128,7 @@ Private Function CreateVbProcParamInfo(ParamsText) As Collection
         Next
     End If
     
-    'ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿æ¯ã®ã‚¯ãƒ©ã‚¹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚³ãƒ¬ã‚¯ã‚·ãƒ§ãƒ³
+    'ƒpƒ‰ƒ[ƒ^–ˆ‚ÌƒNƒ‰ƒXƒIƒuƒWƒFƒNƒg‚ÌƒRƒŒƒNƒVƒ‡ƒ“
     If UBound(params) >= 0 Then
         For i = LBound(params) To UBound(params)
             ret.Add VbProcParamInfo.Init(params(i))

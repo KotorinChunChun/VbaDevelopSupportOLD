@@ -3,7 +3,7 @@ Rem ----------------------------------------------------------------------------
 Rem
 Rem  @module        AppMain
 Rem
-Rem  @description   VBAé–‹ç™ºã‚’æ”¯æ´ã™ã‚‹VBEæ‹¡å¼µã‚¢ãƒ‰ã‚¤ãƒ³
+Rem  @description   VBAŠJ”­‚ğx‰‡‚·‚éVBEŠg’£ƒAƒhƒCƒ“
 Rem
 Rem  @update        0.1.x
 Rem
@@ -27,46 +27,45 @@ Rem    kccPath
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @history
-Rem    2020/08/01 å†æ•´å‚™
+Rem    2020/08/01 Ä®”õ
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @note
-Rem Public Function ParamsToString(Optional Delimiter = " ,") As String ã®ã‚³ãƒ³ãƒé©åˆ‡ã«ãƒ‘ãƒ¼ã‚¹ã§ããªã„ä¸å…·åˆãŒã‚ã‚‹
-Rem ãªãœã‹é–‰ã˜ãŸã¯ãšã®ãƒ–ãƒƒã‚¯ãŒã‚¾ãƒ³ãƒ“åŒ–ã™ã‚‹
+Rem Public Function ParamsToString(Optional Delimiter = " ,") As String ‚ÌƒRƒ“ƒ}“KØ‚Éƒp[ƒX‚Å‚«‚È‚¢•s‹ï‡‚ª‚ ‚é
+Rem ‚È‚º‚©•Â‚¶‚½‚Í‚¸‚ÌƒuƒbƒN‚ªƒ]ƒ“ƒr‰»‚·‚é
 Rem
 Rem
 Rem --------------------------------------------------------------------------------
 Option Explicit
-Option Private Module
 
-Public Const APP_NAME = "VBAé–‹ç™ºæ”¯æ´ã‚¢ãƒ‰ã‚¤ãƒ³"
+Public Const APP_NAME = "VBAŠJ”­x‰‡ƒAƒhƒCƒ“"
 Public Const APP_CREATER = "@KotorinChunChun"
 Public Const APP_VERSION = "0.1.x"
 Public Const APP_SETTINGFILE = APP_NAME & ".xml"
 Public Const APP_MENU_MODULE_NAME = "AppMain"
 
-Rem æœ¬ã‚¢ãƒ‰ã‚¤ãƒ³ã§ã€Œåœæ­¢ã€ã—ãŸã‚‰ã“ã‚Œã‚’å®Ÿè¡Œã—ã¦å†èµ·å‹•ã•ã›ã‚‹
+Rem –{ƒAƒhƒCƒ“‚Åu’â~v‚µ‚½‚ç‚±‚ê‚ğÀs‚µ‚ÄÄ‹N“®‚³‚¹‚é
 Public Sub Reset_Addin(): Call VbeMenuItemDel: Call VbeMenuItemAdd: End Sub
 Public Sub Close_Addin(): Call ThisWorkbook.Close(False): End Sub
 
 'Public Sub Auto_Open(): Call Auto_Sub("Open"): End Sub
 'Public Sub Auto_Close(): Call Auto_Sub("Close"): End Sub
 
-Rem ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã«è¿½åŠ ã™ã‚‹ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£
-Public Sub ã‚½ãƒ¼ã‚¹ã‚’ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã¨ã‚¨ã‚¯ã‚¹ãƒãƒ¼ãƒˆã™ã‚‹():    Call VBComponents_BackupAndExport: End Sub
-Public Sub ã‚½ãƒ¼ã‚¹ã‚’SRCã«ã‚¨ã‚¯ã‚¹ãƒãƒ¼ãƒˆã™ã‚‹():            Call VBComponents_Export_SRC: End Sub
-Public Sub ã‚½ãƒ¼ã‚¹ã‚’YYYYMMDã«ã‚¨ã‚¯ã‚¹ãƒãƒ¼ãƒˆã™ã‚‹():        Call VBComponents_Export_YYYYMMDD: End Sub
-Public Sub ã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰ã®ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ä¸€è¦§ã‚’å‡ºåŠ›ã™ã‚‹():  Call VbeProcInfo_Output: End Sub
+Rem ƒƒjƒ…[‚É’Ç‰Á‚·‚éƒvƒƒV[ƒWƒƒ
+Public Sub ƒ\[ƒX‚ğSRC‚ÉƒGƒNƒXƒ|[ƒg‚·‚é():            Call VBComponents_Export_SRC: End Sub
+Public Sub ƒ\[ƒX‚ğƒoƒbƒNƒAƒbƒv‚ÆƒGƒNƒXƒ|[ƒg‚·‚é():    Call VBComponents_BackupAndExport: End Sub
+Public Sub ƒ\[ƒX‚ğYYYYMMD‚ÉƒGƒNƒXƒ|[ƒg‚·‚é():        Call VBComponents_Export_YYYYMMDD: End Sub
+Public Sub ƒ\[ƒXƒR[ƒh‚ÌƒvƒƒV[ƒWƒƒˆê——‚ğo—Í‚·‚é():  Call VbeProcInfo_Output: End Sub
 
-Public Sub ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ•ã‚©ãƒ«ãƒ€ã‚’é–‹ã():             Call OpenProjectFolder: End Sub
-Public Sub ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚’é–‰ã˜ã‚‹():                    Call CloseProject: End Sub
+Public Sub ƒvƒƒWƒFƒNƒg‚ÌƒtƒHƒ‹ƒ_‚ğŠJ‚­():             Call OpenProjectFolder: End Sub
+Public Sub ƒvƒƒWƒFƒNƒg‚ğ•Â‚¶‚é():                    Call CloseProject: End Sub
 
-Public Sub å…¨ã¦ã®ã‚³ãƒ¼ãƒ‰ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚’é–‰ã˜ã‚‹():           Call CloseCodePanes: End Sub
-Public Sub ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’ç©ºã«ã™ã‚‹():       Call ImdClearGAX: End Sub
-Public Sub VBAé–‹ç™ºæ”¯æ´ã‚¢ãƒ‰ã‚¤ãƒ³ã‚’çµ‚äº†ã™ã‚‹():            Call Close_Addin: End Sub
+Public Sub ‘S‚Ä‚ÌƒR[ƒhƒEƒCƒ“ƒhƒE‚ğ•Â‚¶‚é():           Call CloseCodePanes: End Sub
+Public Sub ƒCƒ~ƒfƒBƒGƒCƒgƒEƒBƒ“ƒhƒE‚ğ‹ó‚É‚·‚é():       Call ImdClearGAX: End Sub
+Public Sub VBAŠJ”­x‰‡ƒAƒhƒCƒ“‚ğI—¹‚·‚é():            Call Close_Addin: End Sub
 
-'Public Sub ãƒ†ã‚¹ãƒˆé–¢æ•°ã‚’å®Ÿè¡Œã™ã‚‹():          Call TestExecute: End Sub
-'Public Sub ãƒ†ã‚¹ãƒˆé–¢æ•°ã®å ´æ‰€ã¸ã‚¸ãƒ£ãƒ³ãƒ—ã™ã‚‹(): Call TestJump: End Sub
+'Public Sub ƒeƒXƒgŠÖ”‚ğÀs‚·‚é():          Call TestExecute: End Sub
+'Public Sub ƒeƒXƒgŠÖ”‚ÌêŠ‚ÖƒWƒƒƒ“ƒv‚·‚é(): Call TestJump: End Sub
 
-'Public Sub ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ä¸€è¦§ã‚’åˆ†è§£ã™ã‚‹(): Call ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ä¸€è¦§ã‹ã‚‰å¼•æ•°ã‚’åˆ†è§£ã™ã‚‹: End Sub
+'Public Sub ƒvƒƒV[ƒWƒƒˆê——‚ğ•ª‰ğ‚·‚é(): Call ƒvƒƒV[ƒWƒƒˆê——‚©‚çˆø”‚ğ•ª‰ğ‚·‚é: End Sub
 

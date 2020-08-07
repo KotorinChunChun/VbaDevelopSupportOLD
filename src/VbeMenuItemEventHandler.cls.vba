@@ -11,7 +11,7 @@ Rem ----------------------------------------------------------------------------
 Rem
 Rem  @module        VbeMenuItemEventHandler
 Rem
-Rem  @description   VBE繝｡繝九Η繝ｼ繝舌�ｼ繧､繝吶Φ繝医ワ繝ｳ繝峨Λ
+Rem  @description   VBEメニューバーイベントハンドラ
 Rem
 Rem  @update        2020/08/01
 Rem
