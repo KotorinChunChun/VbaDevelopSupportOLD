@@ -11,7 +11,7 @@ Rem ----------------------------------------------------------------------------
 Rem
 Rem  @module        VbeMenuItemCreator
 Rem
-Rem  @description   VBEƒƒjƒ…[ƒo[ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰
+Rem  @description   VBEãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©
 Rem
 Rem  @update        2020/08/01
 Rem
@@ -62,8 +62,8 @@ Public Sub AddSubMenu(ProcName As String, Shortcut As String)
 End Sub
 
 Public Sub RemoveMenu()
-    'RootMenu.Delete‚Æ‚·‚é‘ã‚í‚è‚ÉA‚í‚´‚í‚´MenuTag‚ÅŒŸõ‚µ‚ÄÁ‚·‚Ì‚ÍA
-    '‘O‰ñ‚ÌˆÙíI—¹‚Åc‚Á‚Ä‚µ‚Ü‚Á‚½ƒƒjƒ…[‚à•Ğ‚Ã‚¯‚é‚½‚ßB
+    'RootMenu.Deleteã¨ã™ã‚‹ä»£ã‚ã‚Šã«ã€ã‚ã–ã‚ã–MenuTagã§æ¤œç´¢ã—ã¦æ¶ˆã™ã®ã¯ã€
+    'å‰å›ã®ç•°å¸¸çµ‚äº†ã§æ®‹ã£ã¦ã—ã¾ã£ãŸãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚‚ç‰‡ã¥ã‘ã‚‹ãŸã‚ã€‚
     Dim MyMenu As CommandBarControl
     Set MyMenu = Application.VBE.CommandBars.FindControl(tag:=MenuTag)
     Do Until MyMenu Is Nothing

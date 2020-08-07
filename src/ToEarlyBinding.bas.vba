@@ -1,7 +1,7 @@
 Attribute VB_Name = "ToEarlyBinding"
 Option Explicit
 
-Rem OfficeQÆİ’è
+Rem Officeå‚ç…§è¨­å®š
 #Const DEF_ACCESS = False
 #Const DEF_EXCEL = True
 #Const DEF_WORD = False
@@ -13,7 +13,7 @@ Rem OfficeQÆİ’è
 #Const DEF_IJCAD = False
 #Const DEF_MicroStation = False
 
-Rem ‘¼‚ÌQÆİ’è
+Rem ä»–ã®å‚ç…§è¨­å®š
 #Const DEF_VBA = True
 #Const DEF_VBIDE = True
 #Const DEF_SCRIPTING = True

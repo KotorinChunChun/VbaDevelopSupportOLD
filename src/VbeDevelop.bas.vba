@@ -3,7 +3,7 @@ Rem ----------------------------------------------------------------------------
 Rem
 Rem  @module        ExtDevelop
 Rem
-Rem  @description   ŠJ”­ŠÂ‹«VBE—p‚Ìƒ‚ƒWƒ…[ƒ‹
+Rem  @description   é–‹ç™ºç’°å¢ƒVBEç”¨ã®ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
 Rem
 Rem  @update        2020/08/06
 Rem
@@ -23,34 +23,34 @@ Rem      - VbProcParamInfo
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @history
-Rem    2020/08/01 Ä®”õ
+Rem    2020/08/01 å†æ•´å‚™
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @note
 Rem     msdn
-Rem       VBA ‚Å‹N“®’†‚Ì‚·‚×‚Ä‚Ì Excel ƒCƒ“ƒXƒ^ƒ“ƒX‚ğŠ®‘S‚Éæ“¾‚µ‚½‚¢
+Rem       VBA ã§èµ·å‹•ä¸­ã®ã™ã¹ã¦ã® Excel ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’å®Œå…¨ã«å–å¾—ã—ãŸã„
 Rem       https://social.msdn.microsoft.com/Forums/ja-JP/7a46a3c9-f904-4fb0-a205-6112fba51fe6/vba-excel-?forum=vbajp
 Rem
 Rem     OKwave
-Rem       •ÊƒCƒ“ƒXƒ^ƒ“ƒX‚ÌƒuƒbƒNiŒÂl—pƒ}ƒNƒƒuƒbƒNˆÈŠOj‚ğ‚·‚×‚Ä•Â‚¶‚é
+Rem       åˆ¥ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ãƒ–ãƒƒã‚¯ï¼ˆå€‹äººç”¨ãƒã‚¯ãƒ­ãƒ–ãƒƒã‚¯ä»¥å¤–ï¼‰ã‚’ã™ã¹ã¦é–‰ã˜ã‚‹
 Rem       MREXCEL.COM > Forum > Question Forums > Excel Questions > GetObject and HWND
 Rem       https://okwave.jp/qa/q9196890.html
 Rem
 Rem     Qita
-Rem       yExcelVBAzVBAƒR[ƒh‚Ìî•ñ‚âŠT—v‚ğƒV[ƒg‚Éˆê——o—Í‚·‚é
+Rem       ã€ExcelVBAã€‘VBAã‚³ãƒ¼ãƒ‰ã®æƒ…å ±ã‚„æ¦‚è¦ã‚’ã‚·ãƒ¼ãƒˆã«ä¸€è¦§å‡ºåŠ›ã™ã‚‹
 Rem       https://qiita.com/Mikoshiba_Kyu/items/46b7243eb576848b3e55
 Rem
-Rem       excel Access VBA ‚Q‚Â‚©1‚Â‚Ìİ’è‚ÅVBA‚ÌQÆİ’è‚ğŠ®—¹‚·‚éƒ}ƒNƒ
+Rem       excel Access VBA ï¼’ã¤ã‹1ã¤ã®è¨­å®šã§VBAã®å‚ç…§è¨­å®šã‚’å®Œäº†ã™ã‚‹ãƒã‚¯ãƒ­
 Rem       https://qiita.com/Q11Q/items/67226e7c8b9def529668
 Rem
-Rem       VBA‚ÅExcel‚ğg‚¤
+Rem       VBAã§Excelã‚’ä½¿ã†
 Rem       https://qiita.com/palglowr/items/04250eb1a8a873fbf9d2
 Rem
 Rem       GetRunningObjectTable
 Rem       https://foren.activevb.de/forum/vb-classic/thread-409498/beitrag-409498/API-GetRunningObjectTable/
 Rem
-Rem       VBA •W€ƒ‚ƒWƒ…[ƒ‹‚Ìƒ}ƒNƒ‚ğ“Ç‚İæ‚Á‚Ä‹N“®‚ÉVBE‚Ì
-Rem       ƒƒjƒ…[‚É©“®“o˜^‚·‚éƒAƒhƒCƒ“‚ğ©ì‚·‚é
+Rem       VBA æ¨™æº–ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®ãƒã‚¯ãƒ­ã‚’èª­ã¿å–ã£ã¦èµ·å‹•æ™‚ã«VBEã®
+Rem       ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã«è‡ªå‹•ç™»éŒ²ã™ã‚‹ã‚¢ãƒ‰ã‚¤ãƒ³ã‚’è‡ªä½œã™ã‚‹
 Rem       https://thom.hateblo.jp/entry/2016/11/12/081256
 Rem
 Rem --------------------------------------------------------------------------------
@@ -85,14 +85,14 @@ Private Const WM_KEYDOWN As Long = &H100
 Private Const KEYSTATE_KEYDOWN As Long = &H80
 
 Private Enum eRecord
-    ƒ‚ƒWƒ…[ƒ‹–¼ = 1
-    ƒ‚ƒWƒ…[ƒ‹ƒ^ƒCƒv
-    ƒvƒƒV[ƒWƒƒ–¼
-    ƒvƒƒV[ƒWƒƒƒ^ƒCƒv
-    s”
-    ˆø”
-    –ß‚è’l
-    ŠT—v
+    ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«å = 1
+    ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ—
+    ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£å
+    ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ã‚¿ã‚¤ãƒ—
+    è¡Œæ•°
+    å¼•æ•°
+    æˆ»ã‚Šå€¤
+    æ¦‚è¦
 End Enum
 
 Rem Sub Test_TextParse_VbProcedure()
@@ -117,7 +117,7 @@ Public Property Get fso() As FileSystemObject
     Set fso = xxFso
 End Property
 
-Rem ƒAƒNƒeƒBƒu‚ÈƒvƒƒWƒFƒNƒg‚Ì•Û‘¶ƒtƒHƒ‹ƒ_‚ğŠJ‚­
+Rem ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãªãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ä¿å­˜ãƒ•ã‚©ãƒ«ãƒ€ã‚’é–‹ã
 Public Sub OpenProjectFolder()
 On Error Resume Next
     Dim fn: fn = Application.VBE.ActiveVBProject.FileName
@@ -132,24 +132,24 @@ Sub Test_VBP()
     Stop
 End Sub
 
-Rem Œ»İƒAƒNƒeƒBƒu‚ÈƒvƒƒWƒFƒNƒg‚Ìƒ[ƒNƒuƒbƒN‚ğ•Â‚¶‚é
+Rem ç¾åœ¨ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãªãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ¯ãƒ¼ã‚¯ãƒ–ãƒƒã‚¯ã‚’é–‰ã˜ã‚‹
 Public Sub CloseProject()
     Dim prjPath As kccPath: Set prjPath = VBA.CVar(New kccPath).Init(Application.VBE.ActiveVBProject)
     If prjPath Is Nothing Then Exit Sub
     prjPath.Workbook.Close
 End Sub
 
-Rem ƒAƒNƒeƒBƒuƒuƒbƒN‚Ìƒ\[ƒXƒR[ƒh‚ÌƒvƒƒV[ƒWƒƒˆê——‚ğV‹KƒuƒbƒN‚Öo—Í
+Rem ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãƒ–ãƒƒã‚¯ã®ã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰ã®ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ä¸€è¦§ã‚’æ–°è¦ãƒ–ãƒƒã‚¯ã¸å‡ºåŠ›
 Public Sub VbeProcInfo_Output()
     Dim prjPath As kccPath: Set prjPath = VBA.CVar(New kccPath).Init(Application.VBE.ActiveVBProject)
     
-    'ƒvƒƒV[ƒWƒƒˆê——‚ğæ“¾‚µ‚Ä“ñŸŒ³”z—ñ‚ğæ“¾‚·‚éˆ—
+    'ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ä¸€è¦§ã‚’å–å¾—ã—ã¦äºŒæ¬¡å…ƒé…åˆ—ã‚’å–å¾—ã™ã‚‹å‡¦ç†
     Dim data
     data = VbeProcInfo_GetTable(prjPath.Workbook.VBProject)
     
-    '“ñŸŒ³”z—ñ‚ğƒuƒbƒN‚Éo—Í‚·‚éˆ—
+    'äºŒæ¬¡å…ƒé…åˆ—ã‚’ãƒ–ãƒƒã‚¯ã«å‡ºåŠ›ã™ã‚‹å‡¦ç†
     
-    '‚±‚±‚Ü‚Å‚µ‚Ä‚àƒuƒbƒN‚Ìƒƒ‚ƒŠ‚ªŠJ•ú‚³‚ê‚È‚¢“ä‚ÌŒ¸­”­¶’†
+    'ã“ã“ã¾ã§ã—ã¦ã‚‚ãƒ–ãƒƒã‚¯ã®ãƒ¡ãƒ¢ãƒªãŒé–‹æ”¾ã•ã‚Œãªã„è¬ã®æ¸›å°‘ç™ºç”Ÿä¸­
     Dim outWb As Workbook:
 '    Set outWb = ActiveWorkbook
     Set outWb = Workbooks.Add
@@ -160,13 +160,13 @@ Public Sub VbeProcInfo_Output()
     Set outWb = Nothing
 End Sub
 
-Rem ƒ\[ƒXƒR[ƒh‚ÌƒvƒƒV[ƒWƒƒˆê——‚ğw’èƒV[ƒg‚Öo—Í
+Rem ã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰ã®ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ä¸€è¦§ã‚’æŒ‡å®šã‚·ãƒ¼ãƒˆã¸å‡ºåŠ›
 Private Function VbeProcInfo_GetTable(source_vbp As VBProject) As Variant
     Dim dicProcInfo As New Dictionary
     Dim i As Long
     Dim dKey
   
-    'ƒuƒbƒN‚Ì‘Sƒ‚ƒWƒ…[ƒ‹‚ğˆ—
+    'ãƒ–ãƒƒã‚¯ã®å…¨ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‚’å‡¦ç†
     For i = 1 To source_vbp.VBComponents.Count
         Dim dic As Dictionary
         Set dic = GetProcInfoDictionary(source_vbp.VBComponents(i).CodeModule)
@@ -175,10 +175,10 @@ Private Function VbeProcInfo_GetTable(source_vbp As VBProject) As Variant
         Next
         Set dic = Nothing
     Next
-    If dicProcInfo.Count = 0 Then MsgBox "VBA‚ª‚ ‚è‚Ü‚¹‚ñB": Exit Function
+    If dicProcInfo.Count = 0 Then MsgBox "VBAãŒã‚ã‚Šã¾ã›ã‚“ã€‚": Exit Function
   
     Dim data
-    data = Array("ƒ‚ƒWƒ…[ƒ‹", "sˆÊ’u", "ƒXƒR[ƒv", "í•Ê", "ƒvƒƒV[ƒWƒƒ[", "ˆø”", "–ß‚è’l", "ƒRƒƒ“ƒg", "éŒ¾•¶")
+    data = Array("ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«", "è¡Œä½ç½®", "ã‚¹ã‚³ãƒ¼ãƒ—", "ç¨®åˆ¥", "ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ãƒ¼", "å¼•æ•°", "æˆ»ã‚Šå€¤", "ã‚³ãƒ¡ãƒ³ãƒˆ", "å®£è¨€æ–‡")
     data = WorksheetFunction.Transpose(data)
     ReDim Preserve data(LBound(data) To UBound(data, 1), 1 To dicProcInfo.Count + 1)
     data = WorksheetFunction.Transpose(data)
@@ -204,12 +204,12 @@ Private Function VbeProcInfo_GetTable(source_vbp As VBProject) As Variant
     VbeProcInfo_GetTable = data
 End Function
 
-Rem ƒvƒƒV[ƒWƒƒˆê——“ñŸŒ³”z—ñƒf[ƒ^‚ğƒV[ƒg‚Éo—Í‚·‚é
-Rem ‚³‚ç‚ÉJ,K—ñ‚É”®‚ğ’Ç‰Á‚·‚é
+Rem ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ä¸€è¦§äºŒæ¬¡å…ƒé…åˆ—ãƒ‡ãƒ¼ã‚¿ã‚’ã‚·ãƒ¼ãƒˆã«å‡ºåŠ›ã™ã‚‹
+Rem ã•ã‚‰ã«J,Kåˆ—ã«æ•°å¼ã‚’è¿½åŠ ã™ã‚‹
 Private Sub VbeProcInfo_OutputWorksheet(data, output_ws As Worksheet)
 
-    'Dictionary‚æ‚èƒV[ƒg‚Éo—Í
-    output_ws.Name = "ƒvƒƒV[ƒWƒƒˆê——"
+    'Dictionaryã‚ˆã‚Šã‚·ãƒ¼ãƒˆã«å‡ºåŠ›
+    output_ws.Name = "ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ä¸€è¦§"
     output_ws.Parent.Activate
     output_ws.Parent.Windows(1).WindowState = xlMaximized
     
@@ -217,12 +217,12 @@ Private Sub VbeProcInfo_OutputWorksheet(data, output_ws As Worksheet)
         .Cells.Clear
         .Cells(1, 1).Resize(UBound(data, 1), UBound(data, 2)).Value = data
         
-        'éŒ¾•¶ŒŸØ—p‚Ì®
-        .Range("J1").Value = "éŒ¾•¶2"
+        'å®£è¨€æ–‡æ¤œè¨¼ç”¨ã®å¼
+        .Range("J1").Value = "å®£è¨€æ–‡2"
         .Range("J2").FormulaR1C1 = "=RC[-7]&"" ""&RC[-6]&"" ""&RC[-5]&""(""&SUBSTITUTE(RC[-4],""" & Chr(10) & ""","", "")&"")""&IF(RC[-3]="""","""","" As ""&RC[-3])"
-        .Range("K1").Value = "ƒ`ƒFƒbƒN"
+        .Range("K1").Value = "ãƒã‚§ãƒƒã‚¯"
         .Range("K2").FormulaR1C1 = "=RC[-2]=RC[-1]"
-        '1s—]•ª‚ÉƒtƒBƒ‹‚³‚ê‚é
+        '1è¡Œä½™åˆ†ã«ãƒ•ã‚£ãƒ«ã•ã‚Œã‚‹
         .Range("J2:K2").AutoFill Destination:=ResizeOffset(.UsedRange.Columns("J:K"), 1)
         
         .Range("A2").Select
@@ -235,20 +235,20 @@ Private Sub VbeProcInfo_OutputWorksheet(data, output_ws As Worksheet)
     
 End Sub
 
-Rem Range‚ğw’èÀ•W‚¾‚¯Offset‚µ‚Â‚ÂResize‚·‚éiæ“ª‘¤‚ğí‚éResizej
+Rem Rangeã‚’æŒ‡å®šåº§æ¨™ã ã‘Offsetã—ã¤ã¤Resizeã™ã‚‹ï¼ˆå…ˆé ­å´ã‚’å‰Šã‚‹Resizeï¼‰
 Rem
-Rem  @param rng         ‘ÎÛRange
-Rem  @param offsetRow   æ“ª‚©‚çƒIƒtƒZƒbƒgk¬‚·‚és”
-Rem  @param offsetCol   æ“ª‚©‚çƒIƒtƒZƒbƒgk¬‚·‚é—ñ”
+Rem  @param rng         å¯¾è±¡Range
+Rem  @param offsetRow   å…ˆé ­ã‹ã‚‰ã‚ªãƒ•ã‚»ãƒƒãƒˆç¸®å°ã™ã‚‹è¡Œæ•°
+Rem  @param offsetCol   å…ˆé ­ã‹ã‚‰ã‚ªãƒ•ã‚»ãƒƒãƒˆç¸®å°ã™ã‚‹åˆ—æ•°
 Rem
-Rem  @return As Range   •ÏŒ`Œã‚ÌRange
+Rem  @return As Range   å¤‰å½¢å¾Œã®Range
 Rem
 Function ResizeOffset(rng As Range, Optional offsetRow As Long, _
                                     Optional offsetCol As Long) As Range
     Set ResizeOffset = Intersect(rng, rng.Offset(offsetRow, offsetCol))
 End Function
 
-'ƒI[ƒgƒtƒBƒ‹ƒ^•û®
+'ã‚ªãƒ¼ãƒˆãƒ•ã‚£ãƒ«ã‚¿æ–¹å¼
 Sub Test_ResizeOffset_AutoFilter()
     Const TARGET_COL = "C:D"
     ResizeOffset(ActiveSheet.AutoFilter.Range.Columns(TARGET_COL), 1).Select
@@ -260,13 +260,13 @@ Sub Test_ResizeOffset()
     With ToWorksheet(ActiveSheet)
         Dim rng As Range
         
-        'UsedRange•û®
+        'UsedRangeæ–¹å¼
 '        Set rng = ResizeOffset(.UsedRange.Columns(TARGET_COL), HEAD_ROW - .UsedRange.Row + 1)
         
-        'ƒI[ƒgƒtƒBƒ‹ƒ^•û®
+        'ã‚ªãƒ¼ãƒˆãƒ•ã‚£ãƒ«ã‚¿æ–¹å¼
 '        Set rng = ResizeOffset(.AutoFilter.Range.Columns(TARGET_COL), HEAD_ROW - .AutoFilter.Range.Row + 1)
 
-        'CurrentRegion•û®
+        'CurrentRegionæ–¹å¼
 '        Set rng = Range("B3").CurrentRegion
 '        Set rng = Intersect(rng, rng.Offset(1)).Columns("C:D")
 
@@ -275,21 +275,21 @@ Sub Test_ResizeOffset()
 End Sub
 
         
-        'CurrentRegion•û®
+        'CurrentRegionæ–¹å¼
 '        Set rng = .Range(TARGET_COL).Cells(HEAD_ROW, 1).CurrentRegion
 '        Set rng = ResizeOffset(rng.Columns(TARGET_COL), HEAD_ROW - rng.Row + 1)
         
 
-'ƒI[ƒgƒtƒBƒ‹ƒ^‚Ì—L–³
-'UsedRangeŠO‚Ìæ“ªs—ñ‚Ì—L–³
+'ã‚ªãƒ¼ãƒˆãƒ•ã‚£ãƒ«ã‚¿ã®æœ‰ç„¡
+'UsedRangeå¤–ã®å…ˆé ­è¡Œåˆ—ã®æœ‰ç„¡
 
 
 '    Set OffsetResize = rng.Offset(offsetRow, offsetCol).Resize( _
 '                            rng.Rows.CountLarge - offsetRow, _
 '                            rng.Columns.CountLarge - offsetCol)
 
-Rem ƒAƒNƒeƒBƒuƒV[ƒg‚ÌA—ñ‚ÉƒvƒƒV[ƒWƒƒî•ñ‚ª‹LÚ‚³‚ê‚Ä‚¢‚é‚à‚Ì‚Æ‚·‚é
-Private Sub ƒvƒƒV[ƒWƒƒˆê——‚©‚çˆø”‚ğ•ª‰ğ‚·‚é()
+Rem ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã‚·ãƒ¼ãƒˆã®Aåˆ—ã«ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£æƒ…å ±ãŒè¨˜è¼‰ã•ã‚Œã¦ã„ã‚‹ã‚‚ã®ã¨ã™ã‚‹
+Private Sub ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ä¸€è¦§ã‹ã‚‰å¼•æ•°ã‚’åˆ†è§£ã™ã‚‹()
     Dim ws As Worksheet: Set ws = ActiveSheet
     Dim data: data = ws.Range(ws.Cells(1, 1), ws.UsedRange)
     
@@ -308,7 +308,7 @@ Rem         Debug.Print proc.ToString
     ws.Cells(1, 1).Resize(UBound(data, 1), UBound(data, 2)).Value = data
 End Sub
 
-Rem Dictionary‚ÉƒvƒƒV[ƒWƒƒ[EƒvƒƒpƒeƒBî•ñ‚ğŠi”[
+Rem Dictionaryã«ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ãƒ¼ãƒ»ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£æƒ…å ±ã‚’æ ¼ç´
 Public Function GetProcInfoDictionary(ByVal objCodeModule As CodeModule) As Dictionary
     Dim dic As Dictionary: Set dic = New Dictionary
     Dim sMod As String: sMod = objCodeModule.Name
@@ -344,7 +344,7 @@ Public Function GetProcInfoDictionary(ByVal objCodeModule As CodeModule) As Dict
     Set GetProcInfoDictionary = dic
 End Function
 
-Rem ƒvƒƒV[ƒWƒƒ[EƒvƒƒpƒeƒB’è‹`s‚©‚Ì”»’è
+Rem ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ãƒ¼ãƒ»ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£å®šç¾©è¡Œã‹ã®åˆ¤å®š
 Private Function isProcLine(ByVal strLine As String, _
                             ByVal ProcName As String) As Boolean
     strLine = " " & Trim(strLine)
@@ -370,7 +370,7 @@ Private Function isProcLine(ByVal strLine As String, _
     End Select
 End Function
 
-Rem Dictionary‚ÉƒvƒƒV[ƒWƒƒ[EƒvƒƒpƒeƒBî•ñ‚ğŠi”[
+Rem Dictionaryã«ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ãƒ¼ãƒ»ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£æƒ…å ±ã‚’æ ¼ç´
 Public Function GetDecInfoDictionary(ByVal objCodeModule As CodeModule) As Dictionary
     Dim dic As Dictionary: Set dic = New Dictionary
     Dim sMod As String: sMod = objCodeModule.Name
@@ -387,8 +387,8 @@ Public Function GetDecInfoDictionary(ByVal objCodeModule As CodeModule) As Dicti
     Set GetDecInfoDictionary = dic
 End Function
 
-Rem éŒ¾•”‚Å•K—v‚Èƒf[ƒ^‚©Šm”F
-Rem —\‚ß  objCodeModule.CountOfDeclarationLines ”»’è‚ğÏ‚Ü‚¹‚½s‚Å‚ ‚é‚±‚ÆB
+Rem å®£è¨€éƒ¨ã§å¿…è¦ãªãƒ‡ãƒ¼ã‚¿ã‹ç¢ºèª
+Rem äºˆã‚  objCodeModule.CountOfDeclarationLines åˆ¤å®šã‚’æ¸ˆã¾ã›ãŸè¡Œã§ã‚ã‚‹ã“ã¨ã€‚
 Private Function isDecLine(ByVal strLine As String) As Boolean
     strLine = Trim(strLine)
     If Len(strLine) = 0 Then Exit Function
@@ -403,7 +403,7 @@ Private Function isDecLine(ByVal strLine As String) As Boolean
     End Select
 End Function
 
-Rem •¶š—ñ‚ªƒRƒƒ“ƒgs‚©
+Rem æ–‡å­—åˆ—ãŒã‚³ãƒ¡ãƒ³ãƒˆè¡Œã‹
 Private Function isComment(ByVal strLine As String) As Boolean
     strLine = Trim(strLine)
     If Len(strLine) = 0 Then Exit Function
@@ -418,8 +418,8 @@ Private Function isComment(ByVal strLine As String) As Boolean
     End Select
 End Function
 
-Rem Œp‘±s( _)‘S‚Ä‚ğ˜AŒ‹‚µ‚½•¶š—ñ‚Å•Ô‚·
-Rem ƒRƒƒ“‚âƒRƒƒ“ƒgˆÈ~‚ÍÁ‚·
+Rem ç¶™ç¶šè¡Œ( _)å…¨ã¦ã‚’é€£çµã—ãŸæ–‡å­—åˆ—ã§è¿”ã™
+Rem ã‚³ãƒ­ãƒ³ã‚„ã‚³ãƒ¡ãƒ³ãƒˆä»¥é™ã¯æ¶ˆã™
 Private Function getProcSource(ByRef codeLine As Long, _
                                ByVal aCodeModule As Object) As String
     getProcSource = ""
@@ -438,7 +438,7 @@ Private Function getProcSource(ByRef codeLine As Long, _
     getProcSource = Trim(getProcSource)
 End Function
 
-Rem ƒvƒƒV[ƒWƒƒ[‚Ì’¼‘O‚ÌƒRƒƒ“ƒg‚ğæ“¾
+Rem ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ãƒ¼ã®ç›´å‰ã®ã‚³ãƒ¡ãƒ³ãƒˆã‚’å–å¾—
 Private Function getProcComment(ByVal codeLine As Long, _
                                 ByVal aCodeModule As Object) As String
     getProcComment = ""
@@ -461,82 +461,82 @@ Private Sub ListUpProcs()
     trgSheet.Name = "Procs"
     On Error GoTo 0
 
-    'ƒwƒbƒ_[ƒŒƒR[ƒh‚ğƒZƒbƒg‚·‚é
+    'ãƒ˜ãƒƒãƒ€ãƒ¼ãƒ¬ã‚³ãƒ¼ãƒ‰ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
     Dim procRecords As Collection: Set procRecords = New Collection
-    Dim procRecord(1 To 8) As String 'ƒŠƒXƒg‚Ì—ñ”
-    procRecord(eRecord.ƒ‚ƒWƒ…[ƒ‹–¼) = "ƒ‚ƒWƒ…[ƒ‹–¼"
-    procRecord(eRecord.ƒ‚ƒWƒ…[ƒ‹ƒ^ƒCƒv) = "ƒ‚ƒWƒ…[ƒ‹ƒ^ƒCƒv"
-    procRecord(eRecord.ƒvƒƒV[ƒWƒƒ–¼) = "ƒvƒƒV[ƒWƒƒ–¼"
-    procRecord(eRecord.ƒvƒƒV[ƒWƒƒƒ^ƒCƒv) = "ƒvƒƒV[ƒWƒƒƒ^ƒCƒv"
-    procRecord(eRecord.s”) = "s”"
-    procRecord(eRecord.ˆø”) = "ˆø”"
-    procRecord(eRecord.–ß‚è’l) = "–ß‚è’l"
-    procRecord(eRecord.ŠT—v) = "ŠT—v"
+    Dim procRecord(1 To 8) As String 'ãƒªã‚¹ãƒˆã®åˆ—æ•°
+    procRecord(eRecord.ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«å) = "ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«å"
+    procRecord(eRecord.ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ—) = "ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ—"
+    procRecord(eRecord.ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£å) = "ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£å"
+    procRecord(eRecord.ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ã‚¿ã‚¤ãƒ—) = "ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ã‚¿ã‚¤ãƒ—"
+    procRecord(eRecord.è¡Œæ•°) = "è¡Œæ•°"
+    procRecord(eRecord.å¼•æ•°) = "å¼•æ•°"
+    procRecord(eRecord.æˆ»ã‚Šå€¤) = "æˆ»ã‚Šå€¤"
+    procRecord(eRecord.æ¦‚è¦) = "æ¦‚è¦"
     procRecords.Add procRecord
 
-    'Module‚ğ‡Ÿˆ—‚·‚é
+    'Moduleã‚’é †æ¬¡å‡¦ç†ã™ã‚‹
     Dim module As Object
     For Each module In trgBook.VBProject.VBComponents
 
-        'ƒ‚ƒWƒ…[ƒ‹–¼‚ğƒZƒbƒg‚·‚é
-        procRecord(eRecord.ƒ‚ƒWƒ…[ƒ‹–¼) = module.Name
+        'ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«åã‚’ã‚»ãƒƒãƒˆã™ã‚‹
+        procRecord(eRecord.ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«å) = module.Name
 
-        'ƒ‚ƒWƒ…[ƒ‹ƒ^ƒCƒv‚ğƒZƒbƒg‚·‚é
-        procRecord(eRecord.ƒ‚ƒWƒ…[ƒ‹ƒ^ƒCƒv) = FIX_MODULE_TYPE(module)
+        'ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ—ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
+        procRecord(eRecord.ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ—) = FIX_MODULE_TYPE(module)
 
-        'Module“à‚ÌProcedureˆê——‚ğƒRƒŒƒNƒVƒ‡ƒ“‚·‚é
+        'Moduleå†…ã®Procedureä¸€è¦§ã‚’ã‚³ãƒ¬ã‚¯ã‚·ãƒ§ãƒ³ã™ã‚‹
         Dim cModule As Object: Set cModule = module.CodeModule
         Dim procNames As Collection: Set procNames = COLLECT_PROCNAMES_IN_MODULE(cModule)
 
-        'Procedure‚Ì“à—e‚ğ‡Ÿˆ—‚·‚é
+        'Procedureã®å†…å®¹ã‚’é †æ¬¡å‡¦ç†ã™ã‚‹
         Dim ProcName As Variant, procTop As String
         For Each ProcName In procNames
 
-            'ƒvƒƒV[ƒWƒƒ–¼‚ğƒZƒbƒg‚·‚é
-            procRecord(eRecord.ƒvƒƒV[ƒWƒƒ–¼) = ProcName
+            'ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£åã‚’ã‚»ãƒƒãƒˆã™ã‚‹
+            procRecord(eRecord.ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£å) = ProcName
 
-            'ƒvƒƒV[ƒWƒƒ‚Ì1s–Ú‚ğæ“¾‚·‚é
+            'ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ã®1è¡Œç›®ã‚’å–å¾—ã™ã‚‹
             procTop = SET_PROC_TOP(CStr(ProcName), cModule)
 
-            'ƒvƒƒV[ƒWƒƒƒ^ƒCƒv‚ğƒZƒbƒg‚·‚é
-            procRecord(eRecord.ƒvƒƒV[ƒWƒƒƒ^ƒCƒv) = FIX_PROC_TYPE(CStr(ProcName), procTop)
+            'ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ã‚¿ã‚¤ãƒ—ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
+            procRecord(eRecord.ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ã‚¿ã‚¤ãƒ—) = FIX_PROC_TYPE(CStr(ProcName), procTop)
 
-            's”‚ğƒZƒbƒg‚·‚é
-            procRecord(eRecord.s”) = cModule.ProcCountLines(ProcName, 0)
+            'è¡Œæ•°ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
+            procRecord(eRecord.è¡Œæ•°) = cModule.ProcCountLines(ProcName, 0)
 
-            'ˆø”‚ğƒZƒbƒg‚·‚é
-Rem             procRecord(eRecord.ˆø”) = FIX_PROC_ARGS(CStr(ProcName), procTop)
+            'å¼•æ•°ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
+Rem             procRecord(eRecord.å¼•æ•°) = FIX_PROC_ARGS(CStr(ProcName), procTop)
 
-            '–ß‚è’l‚ğƒZƒbƒg‚·‚é
-Rem             procRecord(eRecord.–ß‚è’l) = FIX_PROC_RETURN(CStr(ProcName), procTop)
+            'æˆ»ã‚Šå€¤ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
+Rem             procRecord(eRecord.æˆ»ã‚Šå€¤) = FIX_PROC_RETURN(CStr(ProcName), procTop)
 
-            'ŠT—v‚ğƒZƒbƒg‚·‚é
-            procRecord(eRecord.ŠT—v) = FIX_PROC_SUMMARY(CStr(ProcName), cModule)
+            'æ¦‚è¦ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
+            procRecord(eRecord.æ¦‚è¦) = FIX_PROC_SUMMARY(CStr(ProcName), cModule)
 
-            'ƒŒƒR[ƒh‚ğƒRƒŒƒNƒVƒ‡ƒ“‚·‚é
+            'ãƒ¬ã‚³ãƒ¼ãƒ‰ã‚’ã‚³ãƒ¬ã‚¯ã‚·ãƒ§ãƒ³ã™ã‚‹
             procRecords.Add procRecord
 
         Next
     Next
 
-    'ƒV[ƒg‚É‘‚«o‚·
+    'ã‚·ãƒ¼ãƒˆã«æ›¸ãå‡ºã™
     Dim tmp As Variant, i As Long
     For Each tmp In procRecords
         i = i + 1
         With trgSheet
-            .Cells(i, eRecord.ƒ‚ƒWƒ…[ƒ‹–¼) = tmp(eRecord.ƒ‚ƒWƒ…[ƒ‹–¼)
-            .Cells(i, eRecord.ƒ‚ƒWƒ…[ƒ‹ƒ^ƒCƒv) = tmp(eRecord.ƒ‚ƒWƒ…[ƒ‹ƒ^ƒCƒv)
-            .Cells(i, eRecord.ƒvƒƒV[ƒWƒƒ–¼) = tmp(eRecord.ƒvƒƒV[ƒWƒƒ–¼)
-            .Cells(i, eRecord.ƒvƒƒV[ƒWƒƒƒ^ƒCƒv) = tmp(eRecord.ƒvƒƒV[ƒWƒƒƒ^ƒCƒv)
-            .Cells(i, eRecord.s”) = tmp(eRecord.s”)
-            .Cells(i, eRecord.ˆø”) = tmp(eRecord.ˆø”)
-            .Cells(i, eRecord.–ß‚è’l) = tmp(eRecord.–ß‚è’l)
-            .Cells(i, eRecord.ŠT—v) = tmp(eRecord.ŠT—v)
+            .Cells(i, eRecord.ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«å) = tmp(eRecord.ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«å)
+            .Cells(i, eRecord.ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ—) = tmp(eRecord.ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ—)
+            .Cells(i, eRecord.ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£å) = tmp(eRecord.ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£å)
+            .Cells(i, eRecord.ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ã‚¿ã‚¤ãƒ—) = tmp(eRecord.ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ã‚¿ã‚¤ãƒ—)
+            .Cells(i, eRecord.è¡Œæ•°) = tmp(eRecord.è¡Œæ•°)
+            .Cells(i, eRecord.å¼•æ•°) = tmp(eRecord.å¼•æ•°)
+            .Cells(i, eRecord.æˆ»ã‚Šå€¤) = tmp(eRecord.æˆ»ã‚Šå€¤)
+            .Cells(i, eRecord.æ¦‚è¦) = tmp(eRecord.æ¦‚è¦)
         End With
     Next
 
 
-    'Œ©‚½–Ú‚ğ®‚¦‚é
+    'è¦‹ãŸç›®ã‚’æ•´ãˆã‚‹
     ActiveWindow.DisplayGridlines = False
     With trgSheet.Cells
         .Font.Name = "Meiryo UI"
@@ -544,7 +544,7 @@ Rem             procRecord(eRecord.–ß‚è’l) = FIX_PROC_RETURN(CStr(ProcName), pro
         .HorizontalAlignment = xlLeft
         .VerticalAlignment = xlTop
 
-         'Ü‚è•Ô‚µ‚Ä•\¦FlseATrue‚Ì‡‚ÅAutoFit‚ğ2“xs‚¤‚ÆƒŒƒCƒAƒEƒg‚ğƒJƒbƒ`ƒŠ‚Å‚«‚é
+         'æŠ˜ã‚Šè¿”ã—ã¦è¡¨ç¤ºFlseã€Trueã®é †ã§AutoFitã‚’2åº¦è¡Œã†ã¨ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆã‚’ã‚«ãƒƒãƒãƒªã§ãã‚‹
         .WrapText = False
         .Columns.AutoFit
         .Rows.AutoFit
@@ -559,13 +559,13 @@ Rem             procRecord(eRecord.–ß‚è’l) = FIX_PROC_RETURN(CStr(ProcName), pro
 
     Exit Sub
 hundler:
-    MsgBox "ƒV[ƒg–¼uProcsv‚ª‘¶İ‚µ‚Ä‚¢‚Ü‚·B"
+    MsgBox "ã‚·ãƒ¼ãƒˆåã€ŒProcsã€ãŒå­˜åœ¨ã—ã¦ã„ã¾ã™ã€‚"
 
 End Sub
 
 Private Function COLLECT_PROCNAMES_IN_MODULE(cModule As Object) As Collection
 Rem --------------------------------------------------------------------------------
-Rem CodeModule‚ğó‚¯æ‚èAŠÜ‚Ü‚ê‚éƒvƒƒV[ƒWƒƒ–¼‚Ìˆê——‚ğCollection‚Å•Ô‚·B
+Rem CodeModuleã‚’å—ã‘å–ã‚Šã€å«ã¾ã‚Œã‚‹ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£åã®ä¸€è¦§ã‚’Collectionã§è¿”ã™ã€‚
 Rem --------------------------------------------------------------------------------
 
     Dim procNames As Collection: Set procNames = New Collection
@@ -583,18 +583,18 @@ End Function
 
 Private Function FIX_MODULE_TYPE(module As Object) As String
 Rem --------------------------------------------------------------------------------
-Rem Module‚ğó‚¯æ‚èƒ‚ƒWƒ…[ƒ‹ƒ^ƒCƒv‚ğ•¶š—ñ‚Å•Ô‚·B
+Rem Moduleã‚’å—ã‘å–ã‚Šãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ—ã‚’æ–‡å­—åˆ—ã§è¿”ã™ã€‚
 Rem --------------------------------------------------------------------------------
 
     Select Case module.Type
         Case 1
-            FIX_MODULE_TYPE = "•W€ƒ‚ƒWƒ…[ƒ‹"
+            FIX_MODULE_TYPE = "æ¨™æº–ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«"
         Case 2
-            FIX_MODULE_TYPE = "ƒNƒ‰ƒXƒ‚ƒWƒ…[ƒ‹"
+            FIX_MODULE_TYPE = "ã‚¯ãƒ©ã‚¹ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«"
         Case 3
-            FIX_MODULE_TYPE = "ƒ†[ƒU[ƒtƒH[ƒ€"
+            FIX_MODULE_TYPE = "ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒ•ã‚©ãƒ¼ãƒ "
         Case 100
-            FIX_MODULE_TYPE = "ExcelƒIƒuƒWƒFƒNƒg"
+            FIX_MODULE_TYPE = "Excelã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ"
         Case Else
             FIX_MODULE_TYPE = module.Type
     End Select
@@ -602,7 +602,7 @@ End Function
 
 Private Function FIX_PROC_TYPE(ProcName As String, procTop As String) As String
 Rem --------------------------------------------------------------------------------
-Rem ƒvƒƒV[ƒWƒƒ‚Ì1s–Ú‚ğó‚¯æ‚èAƒvƒƒV[ƒWƒƒƒ^ƒCƒv‚ğ’Šo‚µ‚ÄƒeƒLƒXƒg‚Å•Ô‚·B
+Rem ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ã®1è¡Œç›®ã‚’å—ã‘å–ã‚Šã€ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ã‚¿ã‚¤ãƒ—ã‚’æŠ½å‡ºã—ã¦ãƒ†ã‚­ã‚¹ãƒˆã§è¿”ã™ã€‚
 Rem --------------------------------------------------------------------------------
 
     Dim reg As Object: Set reg = CreateObject("VBScript.RegExp")
@@ -644,12 +644,12 @@ Rem End Sub
 Rem
 Rem Function FIX_PROC_ARGS(ProcName, ByVal procTop) As String
 Rem Rem --------------------------------------------------------------------------------
-Rem 'ƒvƒƒV[ƒWƒƒ‚Ì1s–Ú‚ğó‚¯æ‚èAˆø”‚ğ’Šo‚µ‚ÄƒeƒLƒXƒg‚Å•Ô‚·B
-Rem '•¡”‚ ‚éê‡‚ÍƒZƒ‹“à‰üs‚ğ•t—^‚·‚éB
+Rem 'ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ã®1è¡Œç›®ã‚’å—ã‘å–ã‚Šã€å¼•æ•°ã‚’æŠ½å‡ºã—ã¦ãƒ†ã‚­ã‚¹ãƒˆã§è¿”ã™ã€‚
+Rem 'è¤‡æ•°ã‚ã‚‹å ´åˆã¯ã‚»ãƒ«å†…æ”¹è¡Œã‚’ä»˜ä¸ã™ã‚‹ã€‚
 Rem Rem --------------------------------------------------------------------------------
 Rem     If InStr(procTop, ":") > 0 Then procTop = Left(procTop, InStr(procTop, ":") - 1)
 Rem     If InStr(procTop, "'") > 0 Then procTop = Left(procTop, InStr(procTop, "'") - 1)
-Rem     procTop = Trim(procTop) '‹ô‚Éæ“ªƒXƒy[ƒX‚ª‚ ‚é
+Rem     procTop = Trim(procTop) 'å¶ã«å…ˆé ­ã‚¹ãƒšãƒ¼ã‚¹ãŒã‚ã‚‹
 Rem     Dim reg As Object: Set reg = CreateObject("VBScript.RegExp")
 Rem     With reg
 Rem         .Pattern = "(.*" & ProcName & "\()" & "(.*)" & "(\).*)"
@@ -677,11 +677,11 @@ Rem End Sub
 Rem
 Rem Function FIX_PROC_RETURN(ProcName, ByVal procTop) As String
 Rem Rem --------------------------------------------------------------------------------
-Rem 'ƒvƒƒV[ƒWƒƒ‚Ì1s–Ú‚ğó‚¯æ‚èA–ß‚è’l‚ÌŒ^‚ğ’Šo‚µ‚ÄƒeƒLƒXƒg‚Å•Ô‚·B
+Rem 'ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ã®1è¡Œç›®ã‚’å—ã‘å–ã‚Šã€æˆ»ã‚Šå€¤ã®å‹ã‚’æŠ½å‡ºã—ã¦ãƒ†ã‚­ã‚¹ãƒˆã§è¿”ã™ã€‚
 Rem Rem --------------------------------------------------------------------------------
 Rem     If InStr(procTop, ":") > 0 Then procTop = Left(procTop, InStr(procTop, ":") - 1)
 Rem     If InStr(procTop, "'") > 0 Then procTop = Left(procTop, InStr(procTop, "'") - 1)
-Rem     procTop = Trim(procTop) '‹ô‚Éæ“ªƒXƒy[ƒX‚ª‚ ‚é
+Rem     procTop = Trim(procTop) 'å¶ã«å…ˆé ­ã‚¹ãƒšãƒ¼ã‚¹ãŒã‚ã‚‹
 Rem
 Rem     procTop = MidStrForRev(procTop, "(", ")", False, False)
 Rem     Dim reg As Object: Set reg = CreateObject("VBScript.RegExp")
@@ -703,7 +703,7 @@ Rem End Function
 
 Private Function FIX_PROC_SUMMARY(ProcName As String, cModule As Object) As String
 Rem --------------------------------------------------------------------------------
-Rem ProcName‚ÆCodeModule‚ğó‚¯æ‚èA‚»‚ÌƒvƒƒV[ƒWƒƒ‚ÌŠT—v‚ğ•¶š—ñ‚Å•Ô‚·B
+Rem ProcNameã¨CodeModuleã‚’å—ã‘å–ã‚Šã€ãã®ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ã®æ¦‚è¦ã‚’æ–‡å­—åˆ—ã§è¿”ã™ã€‚
 Rem --------------------------------------------------------------------------------
 
     Dim StartRow As Long: StartRow = cModule.ProcStartLine(ProcName, 0)
@@ -711,7 +711,7 @@ Rem ----------------------------------------------------------------------------
 
     Dim reg As Object: Set reg = CreateObject("VBScript.RegExp")
     With reg
-        .Pattern = "'----------.*" 'ƒnƒCƒtƒ“10ŒÂ‚Å”»’è
+        .Pattern = "'----------.*" 'ãƒã‚¤ãƒ•ãƒ³10å€‹ã§åˆ¤å®š
         .IgnoreCase = False
         .Global = True
     End With
@@ -746,7 +746,7 @@ End Function
 
 Private Function SET_PROC_TOP(ProcName As String, cModule As Object) As String
 Rem --------------------------------------------------------------------------------
-Rem ProcName‚ÆCodeModule‚ğó‚¯æ‚èA‚»‚ÌƒvƒƒV[ƒWƒƒ‚Ì1s–Ú‚Ì“à—e‚ğ•¶š—ñ‚Å•Ô‚·B
+Rem ProcNameã¨CodeModuleã‚’å—ã‘å–ã‚Šã€ãã®ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ã®1è¡Œç›®ã®å†…å®¹ã‚’æ–‡å­—åˆ—ã§è¿”ã™ã€‚
 Rem --------------------------------------------------------------------------------
 
     Dim StartRow As Long: StartRow = cModule.ProcStartLine(ProcName, 0)
@@ -771,7 +771,7 @@ End Function
 Private Sub SetVBIDEAccess()
 On Error Resume Next
 Rem  Access 2010 Later
-Rem  Microsoft Visual Basic for Applications Extensibility 5.3 ‚ğƒvƒƒOƒ‰ƒ€‚ÅQÆİ’è‚·‚éƒ}ƒNƒ
+Rem  Microsoft Visual Basic for Applications Extensibility 5.3 ã‚’ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã§å‚ç…§è¨­å®šã™ã‚‹ãƒã‚¯ãƒ­
 Rem  Programatically Set VBIDE.
 On Error Resume Next
 Application.References.AddFromGuid "{0002E157-0000-0000-C000-000000000046}", 5, 3
@@ -784,7 +784,7 @@ Dim i As Long
 Set refs = Application.References
 For i = refs.Count To 1 Step -1
 With refs.item(i)
-Debug.Print .Name, , .FullPath ' ‚±‚Ì‚ÍDescription‚Íg‚¦‚È‚¢
+Debug.Print .Name, , .FullPath ' ã“ã®æ™‚ã¯Descriptionã¯ä½¿ãˆãªã„
 End With
 Next
 On Error Resume Next
@@ -914,7 +914,7 @@ refs.AddFromGuid "{F618C513-DFB8-11D1-A2CF-00805FC79235}", 1, 0 ' COMAdmin      
 
 
 #If Win32 Then
-refs.AddFromGuid "{0109E0F4-91AE-4736-A2CE-9D63E89D0EF6}", 1, 0 'XPS_SHL_DLLLib XPS_SHL_DLL 1.0 Type Library 32 bit”Å‚Ì‚İQÆİ’è‰Â”\
+refs.AddFromGuid "{0109E0F4-91AE-4736-A2CE-9D63E89D0EF6}", 1, 0 'XPS_SHL_DLLLib XPS_SHL_DLL 1.0 Type Library 32 bitç‰ˆã®ã¿å‚ç…§è¨­å®šå¯èƒ½
 #End If
 With refs
 If Application.Version >= 16 Then
@@ -958,7 +958,7 @@ Err.Clear
 .AddFromGuid "{E301A065-3DF5-4378-A829-57B1EA986631}", 1, 0 'OutlookSocialProvider
 End If
 
-Rem  Office 2013 (version 15) ‚ÅMajor,Minor”Ô†‚ª’è‚Ü‚Á‚Ä‚¢‚é‚Æl‚¦‚ç‚ê‚é‚à‚Ì
+Rem  Office 2013 (version 15) ã§Major,Minorç•ªå·ãŒå®šã¾ã£ã¦ã„ã‚‹ã¨è€ƒãˆã‚‰ã‚Œã‚‹ã‚‚ã®
 .AddFromGuid GUID_Excel, 1, 8
 .AddFromGuid GUID_OUTLOOK, 9, 5
 .AddFromGuid GUID_POWERPOINT, 2, 11
@@ -969,7 +969,7 @@ Rem  Office 2013 (version 15) ‚ÅMajor,Minor”Ô†‚ª’è‚Ü‚Á‚Ä‚¢‚é‚Æl‚¦‚ç‚ê‚é‚à‚Ì
 .AddFromGuid GUID_WinWord, 8, 6 'Microsoft Word 15.0 Object Library
 
 ElseIf Application.Version = 14 Then
-.AddFromGuid "{E301A065-3DF5-4378-A829-57B1EA986631}", 1, 0 'OutlookSocialProvider 2013 ˆÈ~‚Í‚È‚¢
+.AddFromGuid "{E301A065-3DF5-4378-A829-57B1EA986631}", 1, 0 'OutlookSocialProvider 2013 ä»¥é™ã¯ãªã„
 .AddFromGuid GUID_OfficeObject, 2, 5
 .AddFromGuid GUID_Excel, 1, 7
 .AddFromGuid GUID_OUTLOOK, 9, 4
@@ -984,7 +984,7 @@ End If
 End With
 
 If Not refs Is Nothing Then Set refs = Nothing
-Set refs = Application.VBE.ActiveVBProject.References 'Application.References‚Å‚ÍDescription‚ªo‚È‚¢B‚±‚Ì‚½‚ß@Refs ‚ğ Nothing ‚É‚µ‚ÄA ¶‚Ì‚æ‚¤‚É‘‚«Š·‚¦‚é
+Set refs = Application.VBE.ActiveVBProject.References 'Application.Referencesã§ã¯DescriptionãŒå‡ºãªã„ã€‚ã“ã®ãŸã‚ã€€Refs ã‚’ Nothing ã«ã—ã¦ã€ å·¦ã®ã‚ˆã†ã«æ›¸ãæ›ãˆã‚‹
 For Each ref In refs
 If ref.IsBroken = False Then
 Debug.Print ref.Name, ref.GUID, ref.Major, ref.Minor, ref.Description, ref.FullPath
@@ -994,8 +994,8 @@ End If
 Next
 End Sub
     
-Rem 14Œ…–ˆ‚É‚È‚é‚æ‚¤‚É‰EŠñ‚¹‚É‚·‚é
-Rem ¦14Œ…ˆÈã‚Ìƒf[ƒ^‚ÍãˆÊ‚ÌŒ…‚ªÁ‚¦‚é
+Rem 14æ¡æ¯ã«ãªã‚‹ã‚ˆã†ã«å³å¯„ã›ã«ã™ã‚‹
+Rem â€»14æ¡ä»¥ä¸Šã®ãƒ‡ãƒ¼ã‚¿ã¯ä¸Šä½ã®æ¡ãŒæ¶ˆãˆã‚‹
 Rem Function dpr(ParamArray vals() As Variant) As String
 Rem     Dim v As Variant
 Rem     For Each v In vals
@@ -1015,10 +1015,10 @@ Rem Debug.Print VBA.String(200, vbNewLine)
 Rem http://beatdjam.hatenablog.com/entry/2014/10/08/023925
 Rem /**
 Rem  * OutputLog
-Rem  * ƒfƒoƒbƒOƒƒO‚ğƒtƒ@ƒCƒ‹‚Éo—Í‚·‚é
-Rem  * @param varData              : o—Í‘ÎÛ‚Ìƒf[ƒ^
-Rem  * @param Optional strFileNm   :(o—Íƒtƒ@ƒCƒ‹–¼‚ğw’è‚·‚éê‡)ƒtƒ@ƒCƒ‹–¼
-Rem  * @param Optional lngDebugFLG :(0=ƒfƒoƒbƒOEƒtƒ@ƒCƒ‹o—Í,1=ƒfƒoƒbƒO‚Ì‚İo—Í,2=ƒtƒ@ƒCƒ‹‚Ì‚İo—Í)
+Rem  * ãƒ‡ãƒãƒƒã‚°ãƒ­ã‚°ã‚’ãƒ•ã‚¡ã‚¤ãƒ«ã«å‡ºåŠ›ã™ã‚‹
+Rem  * @param varData              : å‡ºåŠ›å¯¾è±¡ã®ãƒ‡ãƒ¼ã‚¿
+Rem  * @param Optional strFileNm   :(å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«åã‚’æŒ‡å®šã™ã‚‹å ´åˆ)ãƒ•ã‚¡ã‚¤ãƒ«å
+Rem  * @param Optional lngDebugFLG :(0=ãƒ‡ãƒãƒƒã‚°ãƒ»ãƒ•ã‚¡ã‚¤ãƒ«å‡ºåŠ›,1=ãƒ‡ãƒãƒƒã‚°ã®ã¿å‡ºåŠ›,2=ãƒ•ã‚¡ã‚¤ãƒ«ã®ã¿å‡ºåŠ›)
 Rem  */
 Public Sub OutputLog(ByVal varData As Variant, _
                      Optional ByVal lngDebugFLG As Long = 1, _
@@ -1027,18 +1027,18 @@ Public Sub OutputLog(ByVal varData As Variant, _
     Dim lngFileNum As Long
     Dim strLogFile As String
       
-    'ƒtƒ@ƒCƒ‹o—Í‘ÎÛ‚Ìê‡
+    'ãƒ•ã‚¡ã‚¤ãƒ«å‡ºåŠ›å¯¾è±¡ã®å ´åˆ
     If lngDebugFLG = 0 Or lngDebugFLG = 2 Then
-        ' ƒtƒ@ƒCƒ‹–¼‚Ìw’è‚ª‚È‚¢ê‡AŒ»İ‚Ì”NŒ“ú‚ğƒtƒ@ƒCƒ‹–¼‚Æ‚·‚é
-        ' ˆø”‚Ìƒtƒ@ƒCƒ‹–¼‚ÉŠg’£q‚ª‘¶İ‚µ‚È‚¢ê‡AŠg’£q‚ğ•t‰Á‚·‚é
+        ' ãƒ•ã‚¡ã‚¤ãƒ«åã®æŒ‡å®šãŒãªã„å ´åˆã€ç¾åœ¨ã®å¹´æœˆæ—¥ã‚’ãƒ•ã‚¡ã‚¤ãƒ«åã¨ã™ã‚‹
+        ' å¼•æ•°ã®ãƒ•ã‚¡ã‚¤ãƒ«åã«æ‹¡å¼µå­ãŒå­˜åœ¨ã—ãªã„å ´åˆã€æ‹¡å¼µå­ã‚’ä»˜åŠ ã™ã‚‹
         If strFileNm = "" Then
           strFileNm = Format(Now(), "yyyymmdd") & ".txt"
         ElseIf InStr(strFileNm, ".txt") = 0 Then
           strFileNm = strFileNm & ".txt"
         End If
         
-        ' o—Íæƒtƒ@ƒCƒ‹İ’è
-        ' Access‚Å—˜—p‚·‚éê‡‚ÍCurrentProjectƒIƒuƒWƒFƒNƒg‚ğg‚¤
+        ' å‡ºåŠ›å…ˆãƒ•ã‚¡ã‚¤ãƒ«è¨­å®š
+        ' Accessã§åˆ©ç”¨ã™ã‚‹å ´åˆã¯CurrentProjectã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½¿ã†
         ' strLogFile = CurrentProject.Path & "\" & strFileNm
         strLogFile = ActiveWorkbook.Path & "\" & strFileNm
         lngFileNum = FreeFile()
@@ -1047,19 +1047,19 @@ Public Sub OutputLog(ByVal varData As Variant, _
         Close #lngFileNum
     End If
     
-    'ƒfƒoƒbƒOƒƒOo—Í‘ÎÛ‚Ìê‡
+    'ãƒ‡ãƒãƒƒã‚°ãƒ­ã‚°å‡ºåŠ›å¯¾è±¡ã®å ´åˆ
     If lngDebugFLG = 0 Or lngDebugFLG = 1 Then
         Debug.Print varData
     End If
 
 End Sub
 
-Rem msg‚ğƒƒbƒZ[ƒWƒ{ƒbƒNƒX‚É•\¦‚·‚é
+Rem msgã‚’ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒœãƒƒã‚¯ã‚¹ã«è¡¨ç¤ºã™ã‚‹
 Private Sub proc(msg As String)
     MsgBox msg
 End Sub
 
-Rem n‚Æm‚ğ‘«‚·ŠÖ”
+Rem nã¨mã‚’è¶³ã™é–¢æ•°
 Private Function FuncSum(n As Long, M As Long) As Long
     FuncSum = n + M
 End Function
@@ -1067,7 +1067,7 @@ End Function
 Private Sub Test1()
     Dim i As Long
     For i = 1 To 10
-        If ActiveSheet.Cells(i, 2) = "‚±‚Æ‚è" Then Stop
+        If ActiveSheet.Cells(i, 2) = "ã“ã¨ã‚Š" Then Stop
     Next
 End Sub
 
@@ -1075,8 +1075,8 @@ Private Sub Test2()
     Dim arr As Variant
     ReDim arr(1 To 3)
     arr(1) = Array("1", "2", "3", "4", "5")
-    arr(2) = Array("‚Ğ‚æ‚±", "‚±‚Æ‚è", "‚¢‚Ê", "‚Ğ‚Â‚¶", "‚Ë‚±")
-    arr(3) = Array("‚Ò‚æ‚Ò‚æ", "‚¿‚ã‚ñ‚¿‚ã‚ñ", "‚í‚ñ‚í‚ñ", "‚à‚Ó‚à‚Ó", "‚É‚á‚ñ‚É‚á‚ñ")
+    arr(2) = Array("ã²ã‚ˆã“", "ã“ã¨ã‚Š", "ã„ã¬", "ã²ã¤ã˜", "ã­ã“")
+    arr(3) = Array("ã´ã‚ˆã´ã‚ˆ", "ã¡ã‚…ã‚“ã¡ã‚…ã‚“", "ã‚ã‚“ã‚ã‚“", "ã‚‚ãµã‚‚ãµ", "ã«ã‚ƒã‚“ã«ã‚ƒã‚“")
 End Sub
 
 Rem Sub ForEachTest()
@@ -1091,38 +1091,38 @@ Rem End Sub
 Rem https://www.moug.net/tech/exvba/0150101.html
 
 
-Private Sub FormatŠÖ”‚Å”š‚Ìæ“ª‚É0‚ğ•t‚¯‚é()
-  Debug.Print Format("123", "00000") ' æ“ª‚É0‚ğ•t‚¯‚éi”š‚Ì‚İj00123
-  Debug.Print "[" & Format("ABC", "@@@@@") & "]"  ' ”¼Šp‚ÌƒXƒy[ƒX‚ğ–„‚ß‚Ä‰EŠñ‚¹  [  ABC]
-  Debug.Print "[" & Format("ABC", "!@@@@@") & "]" ' ”¼Šp‚ÌƒXƒy[ƒX‚ğ–„‚ß‚Ä¶Šñ‚¹  [ABC  ]
+Private Sub Formaté–¢æ•°ã§æ•°å­—ã®å…ˆé ­ã«0ã‚’ä»˜ã‘ã‚‹()
+  Debug.Print Format("123", "00000") ' å…ˆé ­ã«0ã‚’ä»˜ã‘ã‚‹ï¼ˆæ•°å­—ã®ã¿ï¼‰00123
+  Debug.Print "[" & Format("ABC", "@@@@@") & "]"  ' åŠè§’ã®ã‚¹ãƒšãƒ¼ã‚¹ã‚’åŸ‹ã‚ã¦å³å¯„ã›  [  ABC]
+  Debug.Print "[" & Format("ABC", "!@@@@@") & "]" ' åŠè§’ã®ã‚¹ãƒšãƒ¼ã‚¹ã‚’åŸ‹ã‚ã¦å·¦å¯„ã›  [ABC  ]
 End Sub
 
 
 Rem http://yumem.cocolog-nifty.com/excelvba/2011/05/post-82d3.html
-Rem ‹ó—“‚ÅƒƒO‚ğ—¬‚·
-Rem ƒJ[ƒ\ƒ‹‚ª––”ö‚É‚È‚¢‚ÆˆÓ–¡‚ª‚È‚¢
-Rem ƒCƒ~ƒfƒBƒGƒCƒgƒEƒBƒ“ƒhƒE‚Í200s‚µ‚©•\¦‚Å‚«‚È‚¢‚Ì‚Å199o—Í‚µ‚½“_‚Å‘S–Å‚·‚é
+Rem ç©ºæ¬„ã§ãƒ­ã‚°ã‚’æµã™
+Rem ã‚«ãƒ¼ã‚½ãƒ«ãŒæœ«å°¾ã«ãªã„ã¨æ„å‘³ãŒãªã„
+Rem ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã¯200è¡Œã—ã‹è¡¨ç¤ºã§ããªã„ã®ã§199å‡ºåŠ›ã—ãŸæ™‚ç‚¹ã§å…¨æ»…ã™ã‚‹
 Private Sub ImdFlush()
     Dim i As Long: For i = 1 To 199: Debug.Print: Next
 End Sub
 
-Rem ƒCƒ~ƒfƒBƒGƒCƒg‚É“K“–‚Éƒf[ƒ^‚ğo—Í
-Rem @‚½‚¾‚µƒJ[ƒ\ƒ‹‚ÌˆÊ’uŸ‘æ‚Åƒ_ƒ
-Rem @“®ì‚ªd‚¢
+Rem ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆã«é©å½“ã«ãƒ‡ãƒ¼ã‚¿ã‚’å‡ºåŠ›
+Rem ã€€ãŸã ã—ã‚«ãƒ¼ã‚½ãƒ«ã®ä½ç½®æ¬¡ç¬¬ã§ãƒ€ãƒ¡
+Rem ã€€å‹•ä½œãŒé‡ã„
 Private Sub ImdRandomData()
     Dim i As Long: For i = 1 To 10: Debug.Print Rnd: Next
 End Sub
 
-Rem ƒCƒ~ƒfƒBƒGƒCƒgƒEƒBƒ“ƒhƒE‚ğ‘S‚Äíœ‚·‚é
-Rem  ”ñ•\¦‚Ì‚Í“®ì‚µ‚È‚¢Bi•K—v‚È‚¢‚©‚ç–â‘è‚È‚µj
-Rem  VBEƒIƒuƒWƒFƒNƒgƒAƒNƒZƒX‚Ì‹–‰Â‚ª•K—v
-Rem  ˆÀ’è‚µ‚Ä“®ì‚µ‚È‚¢
+Rem ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’å…¨ã¦å‰Šé™¤ã™ã‚‹
+Rem  éè¡¨ç¤ºã®æ™‚ã¯å‹•ä½œã—ãªã„ã€‚ï¼ˆå¿…è¦ãªã„ã‹ã‚‰å•é¡Œãªã—ï¼‰
+Rem  VBEã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¢ã‚¯ã‚»ã‚¹ã®è¨±å¯ãŒå¿…è¦
+Rem  å®‰å®šã—ã¦å‹•ä½œã—ãªã„
 Private Sub ImdClear_G_Home_End_Del_F7()
     On Error GoTo ENDPOINT
     If Application.VBE.MainWindow.Visible And _
-        Application.VBE.Windows("ƒCƒ~ƒfƒBƒGƒCƒg").Visible Then
+        Application.VBE.Windows("ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆ").Visible Then
             SendKeys "^{g}", True
-Rem             DoEvents               '‚±‚ê‚ğ“ü‚ê‚é‚ÆAƒ|ƒbƒvƒAƒbƒv’†‚ÍƒR[ƒhƒEƒBƒ“ƒhƒE‚ª‚«”ò‚Ô
+Rem             DoEvents               'ã“ã‚Œã‚’å…¥ã‚Œã‚‹ã¨ã€ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—ä¸­ã¯ã‚³ãƒ¼ãƒ‰ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒå¹ãé£›ã¶
             SendKeys "^{Home}", True
             SendKeys "^+{End}", True
             SendKeys "{Del}", True
@@ -1131,16 +1131,16 @@ Rem             DoEvents               '‚±‚ê‚ğ“ü‚ê‚é‚ÆAƒ|ƒbƒvƒAƒbƒv’†‚ÍƒR[ƒhƒE
 ENDPOINT:
 End Sub
 
-Rem ‚±‚Ì•û–@‚É‚Í‚Ü‚¾–â‘è‚ª‚ ‚èA
-Rem ‘±‚¯‚ÄDebug.Print ‚ğ‚·‚é‚ÆAíœ¨o—Í‚Ì—¬‚ê‚ªA‘S‚Äo—Í¨VBAI—¹Œã‚Éíœ
-Rem DoEvents‚ğ“ü‚ê‚é‚ÆAíœ‚ªˆêØ“­‚©‚È‚¢B
+Rem ã“ã®æ–¹æ³•ã«ã¯ã¾ã å•é¡ŒãŒã‚ã‚Šã€
+Rem ç¶šã‘ã¦Debug.Print ã‚’ã™ã‚‹ã¨ã€å‰Šé™¤â†’å‡ºåŠ›ã®æµã‚ŒãŒã€å…¨ã¦å‡ºåŠ›â†’VBAçµ‚äº†å¾Œã«å‰Šé™¤
+Rem DoEventsã‚’å…¥ã‚Œã‚‹ã¨ã€å‰Šé™¤ãŒä¸€åˆ‡åƒã‹ãªã„ã€‚
 Rem
 Rem
 Private Sub ImdClear_G_A_Del_F7()
     On Error GoTo ENDPOINT
     If Application.VBE.MainWindow.Visible And _
-        Application.VBE.Windows("ƒCƒ~ƒfƒBƒGƒCƒg").Visible Then
-Rem             Application.VBE.Windows("ƒCƒ~ƒfƒBƒGƒCƒg").Visible = True
+        Application.VBE.Windows("ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆ").Visible Then
+Rem             Application.VBE.Windows("ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆ").Visible = True
             SendKeys "^g", True
             SendKeys "^a", True
             SendKeys "{Del}", True
@@ -1149,12 +1149,12 @@ Rem             Application.VBE.Windows("ƒCƒ~ƒfƒBƒGƒCƒg").Visible = True
 ENDPOINT:
 End Sub
 
-Rem ƒCƒ~ƒfƒBƒGƒCƒgƒEƒBƒ“ƒhƒE‚Ìæ“ªs‚ğœ‚¢‚Ä‚·‚×‚Äíœ‚·‚é
-Rem  ƒtƒH[ƒJƒX‚ğƒCƒ~ƒfƒBƒGƒCƒgƒEƒBƒ“ƒhƒE‚Éc‚·
-Rem  ˆÀ’è‚µ‚Ä“®ì‚µ‚È‚¢
+Rem ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®å…ˆé ­è¡Œã‚’é™¤ã„ã¦ã™ã¹ã¦å‰Šé™¤ã™ã‚‹
+Rem  ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã‚’ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«æ®‹ã™
+Rem  å®‰å®šã—ã¦å‹•ä½œã—ãªã„
 Private Sub ImdClear_G_Home_Down_End_Del_F7()
     If Application.VBE.MainWindow.Visible And _
-        Application.VBE.Windows("ƒCƒ~ƒfƒBƒGƒCƒg").Visible Then
+        Application.VBE.Windows("ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆ").Visible Then
             SendKeys "^{g}", True
 Rem             DoEvents
             SendKeys "^{Home}", True
@@ -1165,10 +1165,10 @@ Rem             DoEvents
     End If
 End Sub
 
-Rem ƒCƒ~ƒfƒBƒGƒCƒgƒEƒBƒ“ƒhƒE‚Ì––”ö‚ÉƒtƒH[ƒJƒX‚ğˆÚ“®‚·‚é
+Rem ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®æœ«å°¾ã«ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã‚’ç§»å‹•ã™ã‚‹
 Private Sub ImdCursolMoveToLast()
     If Application.VBE.MainWindow.Visible And _
-        Application.VBE.Windows("ƒCƒ~ƒfƒBƒGƒCƒg").Visible Then
+        Application.VBE.Windows("ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆ").Visible Then
             SendKeys "^{g}", False
 Rem             DoEvents
             SendKeys "^+{End}", False
@@ -1177,63 +1177,63 @@ Rem             DoEvents
     End If
 End Sub
 
-Rem  ƒCƒ~ƒfƒBƒGƒCƒgƒEƒBƒ“ƒhƒE‚Ì“à—e‚ğ–•Á
-Rem 1. ƒEƒBƒ“ƒhƒEØ‚è‘Ö‚¦
+Rem  ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®å†…å®¹ã‚’æŠ¹æ¶ˆ
+Rem 1. ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦åˆ‡ã‚Šæ›¿ãˆ
 Rem 2. Ctrl+A
 Rem 3. Delete
-Rem 4. ƒAƒNƒfƒBƒuƒEƒBƒ“ƒhƒE‚ğŒ³‚Ö
+Rem 4. ã‚¢ã‚¯ãƒ‡ã‚£ãƒ–ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’å…ƒã¸
 Public Sub ImdClear()
  
     Dim wd      As Object
     Dim wdwk    As Object
      
-    Set wd = Application.VBE.Windows("ƒCƒ~ƒfƒBƒGƒCƒg")
+    Set wd = Application.VBE.Windows("ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆ")
     
-    Application.VBE.Windows("ƒCƒ~ƒfƒBƒGƒCƒg").Visible = True
+    Application.VBE.Windows("ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆ").Visible = True
     
     Dim IsImdDocking As Boolean
     IsImdDocking = False
     
-    'ƒhƒbƒLƒ“ƒO’†‚È‚ç ¦Œë‚Á‚ÄÀs‚·‚é‚ÆƒR[ƒh‚ªÁ‚¦‚é
+    'ãƒ‰ãƒƒã‚­ãƒ³ã‚°ä¸­ãªã‚‰ â€»èª¤ã£ã¦å®Ÿè¡Œã™ã‚‹ã¨ã‚³ãƒ¼ãƒ‰ãŒæ¶ˆãˆã‚‹
     If IsImdDocking Then
         wd.SetFocus
         SendKeys "^a", False
         SendKeys "{Del}", False
         'Application.SendKeys "^g ^a {DEL}"
     Else
-    'ƒ|ƒbƒvƒAƒbƒv’†‚È‚ç
+    'ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—ä¸­ãªã‚‰
     
     End If
     
 End Sub
 
 Public Sub ImdClearGAX()
-    SendKeys "^g", Wait:=True ' ƒCƒ~ƒfƒBƒGƒCƒg ƒEƒBƒ“ƒhƒE‚ğ•\¦‚µ‚Ü‚·B
-    SendKeys "^a", Wait:=True ' ‚·‚×‚Ä‘I‘ğ
-Rem     SendKeys "^x", Wait:=True ' Ø‚èæ‚è
-    SendKeys "{Del}", Wait:=True ' íœ
+    SendKeys "^g", Wait:=True ' ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆ ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’è¡¨ç¤ºã—ã¾ã™ã€‚
+    SendKeys "^a", Wait:=True ' ã™ã¹ã¦é¸æŠ
+Rem     SendKeys "^x", Wait:=True ' åˆ‡ã‚Šå–ã‚Š
+    SendKeys "{Del}", Wait:=True ' å‰Šé™¤
 End Sub
 
 Private Sub Test_ImdCursolMoveToLast()
     Call ImdCursolMoveToLast
-    Debug.Print "ÅŒã‚©‚ço—Í"
+    Debug.Print "æœ€å¾Œã‹ã‚‰å‡ºåŠ›"
 End Sub
 
-Private Sub VBEƒEƒBƒ“ƒhƒE‚ğ‘S‚Ä—ñ‹“()
+Private Sub VBEã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’å…¨ã¦åˆ—æŒ™()
     Dim item
     For Each item In Application.VBE.Windows
         Debug.Print item.Caption
     Next
 End Sub
 
-Private Sub VBEƒEƒBƒ“ƒhƒE‚ğw’è‚µ‚½Œ^‚¾‚¯—ñ‹“()
+Private Sub VBEã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’æŒ‡å®šã—ãŸå‹ã ã‘åˆ—æŒ™()
     Dim item
     For Each item In GetVbeWindow(vbext_wt_Immediate)
         Debug.Print item.Caption
     Next
 End Sub
 
-Private Sub VBEƒEƒBƒ“ƒhƒE‚Ìƒ|ƒbƒvƒAƒbƒv‚¾‚¯—ñ‹“()
+Private Sub VBEã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—ã ã‘åˆ—æŒ™()
     Dim item
     For Each item In GetVbeWindow(vbext_wt_Immediate)
         Debug.Print item.Caption
@@ -1249,10 +1249,10 @@ Private Function GetVbeWindow(t As VBIDE.VBExt_WindowType) As Collection
     Set GetVbeWindow = retCol
 End Function
 
-Rem ˆêu‚ÅVBE‚ğŠJ‚¢‚Ä HomePersonal ƒvƒƒWƒFƒNƒg‚ğ‘I‘ğ‚µAƒCƒ~ƒfƒBƒGƒCƒg‚ğƒtƒH[ƒJƒX‚·‚é
+Rem ä¸€ç¬ã§VBEã‚’é–‹ã„ã¦ HomePersonal ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚’é¸æŠã—ã€ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆã‚’ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã™ã‚‹
 Rem https://thom.hateblo.jp/entry/2015/08/16/025140
-Rem ‚PDVBIDE‚ğg—p‚·‚éê‡‚Íuƒc[ƒ‹v‚ÌuQÆİ’èvƒƒjƒ…[‚Å
-Rem uMicrosoft Visiual Basic for Applications Extensibilityv‚ğ’Ç‰Á‚µ‚Ü‚·B
+Rem ï¼‘ï¼VBIDEã‚’ä½¿ç”¨ã™ã‚‹å ´åˆã¯ã€Œãƒ„ãƒ¼ãƒ«ã€ã®ã€Œå‚ç…§è¨­å®šã€ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã§
+Rem ã€ŒMicrosoft Visiual Basic for Applications Extensibilityã€ã‚’è¿½åŠ ã—ã¾ã™ã€‚
 Public Sub ShowImmediate()
     Application.VBE.MainWindow.Visible = True
     Dim W As VBIDE.Window
@@ -1277,18 +1277,18 @@ Private Sub DebugPrintClearProc(mode As String)
             Dim tmpState(0 To 255) As Byte
             
             hPane = GetImmHandle
-            If hPane = 0 Then MsgBox "ƒCƒ~ƒfƒBƒGƒCƒgƒEƒBƒ“ƒhƒE‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñB"
+            If hPane = 0 Then MsgBox "ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚"
             If hPane < 1 Then Exit Sub
             
-            'Ctrl‚âShift‚Ìó‘Ô‚ğ‹L‰¯
+            'Ctrlã‚„Shiftã®çŠ¶æ…‹ã‚’è¨˜æ†¶
             GetKeyboardState savState(0)
             
-            'Ctrl‰Ÿ‚µ‰º‚°
+            'CtrlæŠ¼ã—ä¸‹ã’
             tmpState(vbKeyControl) = KEYSTATE_KEYDOWN
             SetKeyboardState tmpState(0)
-            'Ctrl+END‚ğ‘—M
+            'Ctrl+ENDã‚’é€ä¿¡
             PostMessage hPane, WM_KEYDOWN, vbKeyEnd, 0&
-            'SHIFT‰Ÿ‚µ‰º‚°
+            'SHIFTæŠ¼ã—ä¸‹ã’
             tmpState(vbKeyShift) = KEYSTATE_KEYDOWN
             SetKeyboardState tmpState(0)
             'CTRL+SHIFT+Home
@@ -1296,7 +1296,7 @@ Private Sub DebugPrintClearProc(mode As String)
             'CTRL+SHIFT+BackSpace
             PostMessage hPane, WM_KEYDOWN, vbKeyBack, 0&
             
-            'Ctrl‚âShift‚Ìó‘Ô‚ğ•œŒ³
+            'Ctrlã‚„Shiftã®çŠ¶æ…‹ã‚’å¾©å…ƒ
             Application.OnTime Now + TimeSerial(0, 0, 0), "DoCleanUp"
         Case "CleanUp"
             ' Restore keyboard state
@@ -1332,7 +1332,7 @@ Rem Docked or MDI, Desked or Floating, Visible or Hidden
     On Error Resume Next
     sMain = Application.VBE.MainWindow.Caption
     If Err <> 0 Then
-        MsgBox "VBAƒvƒƒWƒFƒNƒg‚ÉƒAƒNƒZƒX‚Å‚«‚Ü‚¹‚ñB"
+        MsgBox "VBAãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã«ã‚¢ã‚¯ã‚»ã‚¹ã§ãã¾ã›ã‚“ã€‚"
         GetImmHandle = -1
         Exit Function
         ' Excel2003: Registry Editor (Regedit.exe)
@@ -1385,44 +1385,44 @@ Rem Docked or MDI, Desked or Floating, Visible or Hidden
 End Function
 
 Private Sub CheckImdVisible()
-    'VBE‚ª•\¦‚³‚ê‚Ä‚¢‚é‚©
+    'VBEãŒè¡¨ç¤ºã•ã‚Œã¦ã„ã‚‹ã‹
     MsgBox Application.VBE.MainWindow.Visible
     
-    'ƒCƒ~ƒfƒBƒGƒCƒg‚ª•\¦‚³‚ê‚Ä‚¢‚é‚©
-    MsgBox Application.VBE.Windows("ƒCƒ~ƒfƒBƒGƒCƒg").Visible
+    'ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆãŒè¡¨ç¤ºã•ã‚Œã¦ã„ã‚‹ã‹
+    MsgBox Application.VBE.Windows("ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆ").Visible
     
-    'ƒCƒ~ƒfƒBƒGƒCƒg‚ªƒhƒbƒLƒ“ƒO‚³‚ê‚Ä‚¢‚é‚©
-    'ƒCƒ~ƒfƒBƒGƒCƒg‚Íƒ|ƒbƒvƒAƒbƒv•\¦‚©
+    'ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆãŒãƒ‰ãƒƒã‚­ãƒ³ã‚°ã•ã‚Œã¦ã„ã‚‹ã‹
+    'ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆã¯ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—è¡¨ç¤ºã‹
     
-    'Œ»İƒtƒH[ƒJƒX‚Ì‚ ‚éƒEƒBƒ“ƒhƒE‚Í‚Ç‚ê‚©
+    'ç¾åœ¨ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã®ã‚ã‚‹ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã¯ã©ã‚Œã‹
     
     
 End Sub
 
-Rem ƒCƒ~ƒfƒBƒGƒCƒgƒEƒBƒ“ƒhƒE‚ğ”ñ•\¦
+Rem ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’éè¡¨ç¤º
 Private Sub ImdClose()
-    Application.VBE.Windows("ƒCƒ~ƒfƒBƒGƒCƒg").Visible = False
+    Application.VBE.Windows("ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆ").Visible = False
     Debug.Print Application.VBE.ActiveWindow.Caption
 End Sub
 
-Rem ƒCƒ~ƒfƒBƒGƒCƒgƒEƒBƒ“ƒhƒE‚ğ•\¦
+Rem ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’è¡¨ç¤º
 Private Sub ImdShow()
-    'ƒCƒ~ƒfƒBƒGƒCƒgƒEƒBƒ“ƒhƒE‚ğ•\¦
-    'True‚É‚·‚é‚ÆƒtƒH[ƒJƒX‚ªƒCƒ~ƒfƒBƒGƒCƒg‚ÉˆÚ‚é
-    Application.VBE.Windows("ƒCƒ~ƒfƒBƒGƒCƒg").Visible = True
+    'ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’è¡¨ç¤º
+    'Trueã«ã™ã‚‹ã¨ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ãŒã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆã«ç§»ã‚‹
+    Application.VBE.Windows("ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆ").Visible = True
     Debug.Print Application.VBE.ActiveWindow.Caption
-    'ƒCƒ~ƒfƒBƒGƒCƒg@‚Æo—Í
-    '‚½‚¾‚µAVBAI—¹Œã‚ÌƒtƒH[ƒJƒX‚ª
-    '@ƒhƒbƒLƒ“ƒO’†‚ÍƒCƒ~ƒfƒBƒGƒCƒg
-    '@ƒ|ƒbƒvƒAƒbƒv’†‚ÍƒR[ƒhƒEƒBƒ“ƒhƒE
-    '‚É–ß‚é
+    'ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆã€€ã¨å‡ºåŠ›
+    'ãŸã ã—ã€VBAçµ‚äº†å¾Œã®ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ãŒ
+    'ã€€ãƒ‰ãƒƒã‚­ãƒ³ã‚°ä¸­ã¯ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆ
+    'ã€€ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—ä¸­ã¯ã‚³ãƒ¼ãƒ‰ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦
+    'ã«æˆ»ã‚‹
 End Sub
 
-Rem ƒCƒ~ƒfƒBƒGƒCƒgƒEƒBƒ“ƒhƒE‚ğ•\¦‚µ‚ÄƒtƒH[ƒJƒX‚ğVBE‚É–ß‚·
+Rem ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’è¡¨ç¤ºã—ã¦ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã‚’VBEã«æˆ»ã™
 Private Sub ImdShow_UnFocus()
     Dim win As Object
     Set win = Application.VBE.ActiveWindow
-    Application.VBE.Windows("ƒCƒ~ƒfƒBƒGƒCƒg").Visible = True
+    Application.VBE.Windows("ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆ").Visible = True
     Debug.Print Application.VBE.ActiveWindow.Caption
     win.SetFocus
     Debug.Print Application.VBE.ActiveWindow.Caption
@@ -1433,12 +1433,12 @@ Rem ----------
 
 Rem http://suyamasoft.blue.coocan.jp/ExcelVBA/Sample/VBProject/index.html
 
-Rem  VBE‚Ìƒo[ƒWƒ‡ƒ“‚ğ•\¦‚µ‚Ü‚·B
+Rem  VBEã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã‚’è¡¨ç¤ºã—ã¾ã™ã€‚
 Private Sub Display_VBE_Version_Sample()
   MsgBox Prompt:="VBE.Version = " & Application.VBE.Version, Buttons:=vbInformation, Title:="VBE.Version"
 End Sub
 
-Rem  VBE‚ÌƒvƒƒpƒeƒB‚ğƒCƒ~ƒfƒBƒGƒCƒg ƒEƒBƒ“ƒhƒE‚É•\¦‚µ‚Ü‚·B
+Rem  VBEã®ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ã‚’ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆ ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«è¡¨ç¤ºã—ã¾ã™ã€‚
 Private Sub VBE_Sample()
   With Application.VBE
     Debug.Print "ActiveCodePane.TopLine: " & .ActiveCodePane.TopLine
@@ -1455,7 +1455,7 @@ Private Sub VBE_Sample()
   End With
 End Sub
 
-Rem  VBE‚ÌƒRƒ}ƒ“ƒhƒo[‚Ìˆê——‚ÌƒuƒbƒN‚ğì¬‚µ‚Ü‚·B
+Rem  VBEã®ã‚³ãƒãƒ³ãƒ‰ãƒãƒ¼ã®ä¸€è¦§ã®ãƒ–ãƒƒã‚¯ã‚’ä½œæˆã—ã¾ã™ã€‚
 Private Sub Crate_CommandBars_List()
   Dim i As Long
   Dim wb As Workbook
@@ -1476,33 +1476,33 @@ Private Sub Crate_CommandBars_List()
   wb.Worksheets(1).Range("A1").Select
 End Sub
 
-Rem  ƒRƒ}ƒ“ƒh ƒo[‚ÌƒŠƒZƒbƒg‚µ‚Ü‚·B
+Rem  ã‚³ãƒãƒ³ãƒ‰ ãƒãƒ¼ã®ãƒªã‚»ãƒƒãƒˆã—ã¾ã™ã€‚
 Private Sub ResetCommandBars()
   Dim cb As CommandBar
 
-  If MsgBox(Prompt:="‚â‚è’¼‚µ‚Å‚«‚Ü‚¹‚ñ‚ªA‚·‚×‚Ä‚ÌVBE‚ÌƒRƒ}ƒ“ƒhƒo[‚ğƒŠƒZƒbƒg‚µ‚Ü‚·‚©H", Buttons:=vbYesNo + vbQuestion, Title:="Šm”F") <> vbYes Then Exit Sub
+  If MsgBox(Prompt:="ã‚„ã‚Šç›´ã—ã§ãã¾ã›ã‚“ãŒã€ã™ã¹ã¦ã®VBEã®ã‚³ãƒãƒ³ãƒ‰ãƒãƒ¼ã‚’ãƒªã‚»ãƒƒãƒˆã—ã¾ã™ã‹ï¼Ÿ", Buttons:=vbYesNo + vbQuestion, Title:="ç¢ºèª") <> vbYes Then Exit Sub
   On Error Resume Next
-  Application.cursor = xlWait ' »ŒvŒ^ƒJ[ƒ\ƒ‹ƒ|ƒCƒ“ƒ^
-  Application.StatusBar = "‚·‚×‚Ä‚ÌVBE‚ÌƒRƒ}ƒ“ƒhƒo[‚ğƒŠƒZƒbƒg‚µ‚Ä‚Ü‚·B‚µ‚Î‚ç‚­‚¨‘Ò‚¿‚­‚¾‚³‚¢..."
+  Application.cursor = xlWait ' ç ‚æ™‚è¨ˆå‹ã‚«ãƒ¼ã‚½ãƒ«ãƒã‚¤ãƒ³ã‚¿
+  Application.StatusBar = "ã™ã¹ã¦ã®VBEã®ã‚³ãƒãƒ³ãƒ‰ãƒãƒ¼ã‚’ãƒªã‚»ãƒƒãƒˆã—ã¦ã¾ã™ã€‚ã—ã°ã‚‰ããŠå¾…ã¡ãã ã•ã„..."
   For Each cb In Application.VBE.CommandBars
     If cb.BuiltIn Then
-      cb.Reset ' •W€‚ÌƒRƒ}ƒ“ƒh ƒo[‚ÍƒŠƒZƒbƒg
+      cb.Reset ' æ¨™æº–ã®ã‚³ãƒãƒ³ãƒ‰ ãƒãƒ¼ã¯ãƒªã‚»ãƒƒãƒˆ
     Else
-      cb.Delete ' ƒ†[ƒU[‚ÌƒRƒ}ƒ“ƒh ƒo[‚Ííœ
+      cb.Delete ' ãƒ¦ãƒ¼ã‚¶ãƒ¼ã®ã‚³ãƒãƒ³ãƒ‰ ãƒãƒ¼ã¯å‰Šé™¤
     End If
   Next
   Application.StatusBar = ""
-  Application.cursor = xlDefault ' •W€‚ÌƒJ[ƒ\ƒ‹ƒ|ƒCƒ“ƒ^
+  Application.cursor = xlDefault ' æ¨™æº–ã®ã‚«ãƒ¼ã‚½ãƒ«ãƒã‚¤ãƒ³ã‚¿
   On Error GoTo 0
 End Sub
 
-Rem  VBE‚ÌƒAƒhƒCƒ“ˆê——‚ğƒCƒ~ƒfƒBƒGƒCƒg ƒEƒBƒ“ƒhƒE‚É•\¦‚µ‚Ü‚·B
+Rem  VBEã®ã‚¢ãƒ‰ã‚¤ãƒ³ä¸€è¦§ã‚’ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆ ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«è¡¨ç¤ºã—ã¾ã™ã€‚
 Private Sub Addin_Sample()
   Dim i As Long
 
   With Application.VBE.AddIns
     If .Count < 1 Then
-      MsgBox Prompt:="VBE‚ÌƒAƒhƒCƒ“‚ÍƒCƒ“ƒXƒg[ƒ‹‚µ‚Ä‚Ü‚¹‚ñI", Buttons:=vbInformation, Title:="VBE.AddIns.Count"
+      MsgBox Prompt:="VBEã®ã‚¢ãƒ‰ã‚¤ãƒ³ã¯ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã—ã¦ã¾ã›ã‚“ï¼", Buttons:=vbInformation, Title:="VBE.AddIns.Count"
       Exit Sub
     End If
     For i = 1 To .Count
@@ -1515,8 +1515,8 @@ Private Sub Addin_Sample()
   End With
 End Sub
 
-Rem  Window‚Ìˆê——‚ğƒCƒ~ƒfƒBƒGƒCƒg ƒEƒBƒ“ƒhƒE‚É•\¦‚µ‚Ü‚·B
-Rem  vbext_WindowTypei0=vbext_wt_CodeWindow, 5=vbext_wt_Immediate, 6=vbext_wt_ProjectWindow‚È‚Çj
+Rem  Windowã®ä¸€è¦§ã‚’ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆ ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«è¡¨ç¤ºã—ã¾ã™ã€‚
+Rem  vbext_WindowTypeï¼ˆ0=vbext_wt_CodeWindow, 5=vbext_wt_Immediate, 6=vbext_wt_ProjectWindowãªã©ï¼‰
 Private Sub Windows_Sample()
   Dim i As Long
 
@@ -1535,7 +1535,7 @@ Private Sub Windows_Sample()
   End With
 End Sub
 
-Rem  ƒCƒ~ƒfƒBƒGƒCƒg ƒEƒBƒ“ƒhƒE‚ğ•\¦‚µƒAƒNƒeƒBƒu‚É‚µ‚Ü‚·B
+Rem  ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆ ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’è¡¨ç¤ºã—ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã«ã—ã¾ã™ã€‚
 Private Sub Immediate_Window_SetFocus_Sample()
   Dim i As Long
 
@@ -1550,7 +1550,7 @@ Private Sub Immediate_Window_SetFocus_Sample()
   End With
 End Sub
 
-Rem  ‚·‚×‚Ä‚ÌƒvƒƒWƒFƒNƒg‚Ìƒtƒ@ƒCƒ‹–¼‚ğƒCƒ~ƒfƒBƒGƒCƒg ƒEƒBƒ“ƒhƒE‚É•\¦‚µ‚Ü‚·B
+Rem  ã™ã¹ã¦ã®ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ•ã‚¡ã‚¤ãƒ«åã‚’ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆ ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«è¡¨ç¤ºã—ã¾ã™ã€‚
 Private Sub VBProjects_Sample()
   Dim i As Long
 
@@ -1559,7 +1559,7 @@ Private Sub VBProjects_Sample()
   Next i
 End Sub
 
-Rem  ƒAƒNƒeƒBƒu ƒvƒƒWƒFƒNƒg‚ÌƒvƒƒpƒeƒB‚ğƒCƒ~ƒfƒBƒGƒCƒg ƒEƒBƒ“ƒhƒE‚É•\¦‚µ‚Ü‚·B
+Rem  ã‚¢ã‚¯ãƒ†ã‚£ãƒ– ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ã‚’ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆ ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«è¡¨ç¤ºã—ã¾ã™ã€‚
 Private Sub ActiveVBProject_Sample()
   With Application.VBE.ActiveVBProject
     Debug.Print "BuildFileName:" & .BuildFileName
@@ -1573,7 +1573,7 @@ Private Sub ActiveVBProject_Sample()
   End With
 End Sub
 
-Rem  ƒAƒNƒeƒBƒu ƒvƒƒWƒFƒNƒg‚Ìƒ‚[ƒh‚ğƒCƒ~ƒfƒBƒGƒCƒg ƒEƒBƒ“ƒhƒE‚É•\¦‚µ‚Ü‚·B
+Rem  ã‚¢ã‚¯ãƒ†ã‚£ãƒ– ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ¢ãƒ¼ãƒ‰ã‚’ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆ ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«è¡¨ç¤ºã—ã¾ã™ã€‚
 Private Sub VBAMode_Sample()
   Select Case Application.VBE.ActiveVBProject.mode
     Case vbext_vm_Run
@@ -1585,13 +1585,13 @@ Private Sub VBAMode_Sample()
   End Select
 End Sub
 
-Rem  ƒvƒƒWƒFƒNƒg‚ğ•Û‘¶‚µ‚½‚©•\¦‚µ‚Ü‚·B
+Rem  ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚’ä¿å­˜ã—ãŸã‹è¡¨ç¤ºã—ã¾ã™ã€‚
 Private Sub Display_VBE_ActiveVBProject_Saved()
   MsgBox Prompt:="VBE.ActiveVBProject.Saved = " & Application.VBE.ActiveVBProject.Saved, Buttons:=vbInformation, Title:="VBE.ActiveVBProject.Saved"
 End Sub
 
-Rem   ƒAƒNƒeƒBƒu ƒvƒƒWƒFƒNƒguQÆİ’èv‚Ìˆê——‚ğƒCƒ~ƒfƒBƒGƒCƒg ƒEƒBƒ“ƒhƒE‚É•\¦‚µ‚Ü‚·B
-Rem  ƒGƒNƒZƒ‹‚ÌƒV[ƒg‚É“\‚è•t‚¯‚½Œã‚Å•¡”‚Ì—ñ‚É•ª‚¯‚é‚É‚ÍAuƒf[ƒ^vƒ^ƒu‚Ìu‹æØ‚èˆÊ’uv‚ğÀs‚µƒJƒ“ƒ}‚ğ‘I‘ğ‚µ‚Ü‚·B
+Rem   ã‚¢ã‚¯ãƒ†ã‚£ãƒ– ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã€Œå‚ç…§è¨­å®šã€ã®ä¸€è¦§ã‚’ã‚¤ãƒŸãƒ‡ã‚£ã‚¨ã‚¤ãƒˆ ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«è¡¨ç¤ºã—ã¾ã™ã€‚
+Rem  ã‚¨ã‚¯ã‚»ãƒ«ã®ã‚·ãƒ¼ãƒˆã«è²¼ã‚Šä»˜ã‘ãŸå¾Œã§è¤‡æ•°ã®åˆ—ã«åˆ†ã‘ã‚‹ã«ã¯ã€ã€Œãƒ‡ãƒ¼ã‚¿ã€ã‚¿ãƒ–ã®ã€ŒåŒºåˆ‡ã‚Šä½ç½®ã€ã‚’å®Ÿè¡Œã—ã‚«ãƒ³ãƒã‚’é¸æŠã—ã¾ã™ã€‚
 Private Sub Debug_Print_References()
   Dim i As Long
 
@@ -1604,13 +1604,13 @@ Private Sub Debug_Print_References()
   End With
 End Sub
 
-Rem  ƒRƒ“ƒ|[ƒlƒ“ƒg‚Ìƒ^ƒCƒv‚ğæ“¾‚µ‚Ü‚·B
+Rem  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®ã‚¿ã‚¤ãƒ—ã‚’å–å¾—ã—ã¾ã™ã€‚
 Rem  vbext_ComponentType
-Rem      1 vbext_ct_StdModule = •W€ƒ‚ƒWƒ…[ƒ‹
-Rem      2 vbext_ct_ClassModule = ƒNƒ‰ƒXƒ‚ƒWƒ…[ƒ‹
-Rem      3 vbext_ct_MSForm = ƒtƒH[ƒ€
+Rem      1 vbext_ct_StdModule = æ¨™æº–ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
+Rem      2 vbext_ct_ClassModule = ã‚¯ãƒ©ã‚¹ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
+Rem      3 vbext_ct_MSForm = ãƒ•ã‚©ãƒ¼ãƒ 
 Rem     11 vbext_ct_ActiveXDesigner = ActiveXDesigner
-Rem    100 vbext_ct_Document = ƒhƒLƒ…ƒƒ“ƒgiWorkbook,Worksheet‚È‚Çj
+Rem    100 vbext_ct_Document = ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆï¼ˆWorkbook,Worksheetãªã©ï¼‰
 Private Sub VBComponents_Type_Sample()
   Dim i As Long
 
@@ -1621,7 +1621,7 @@ Private Sub VBComponents_Type_Sample()
     Next i
   End With
 End Sub
-Rem  DeleteModuleƒ‚ƒWƒ…[ƒ‹‚ğíœ‚µ‚Ü‚·B
+Rem  DeleteModuleãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‚’å‰Šé™¤ã—ã¾ã™ã€‚
 Private Sub VBComponents_Remove_Sample()
   Const DeleteName = "DeleteModule"
   Dim ret As VbMsgBoxResult
@@ -1630,30 +1630,30 @@ Private Sub VBComponents_Remove_Sample()
   On Error Resume Next
   Set vbc = ThisWorkbook.VBProject.VBComponents(DeleteName)
   On Error GoTo 0
-  If vbc Is Nothing Then Exit Sub ' ƒ‚ƒWƒ…[ƒ‹‚Í‘¶İ‚µ‚È‚¢I
-  ret = MsgBox(Prompt:=DeleteName & " ƒ‚ƒWƒ…[ƒ‹‚ğíœ‚µ‚Ü‚·‚©H", Buttons:=vbYesNo + vbQuestion, Title:="Šm”F")
+  If vbc Is Nothing Then Exit Sub ' ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã¯å­˜åœ¨ã—ãªã„ï¼
+  ret = MsgBox(Prompt:=DeleteName & " ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‚’å‰Šé™¤ã—ã¾ã™ã‹ï¼Ÿ", Buttons:=vbYesNo + vbQuestion, Title:="ç¢ºèª")
   If ret <> vbYes Then Exit Sub
   With ThisWorkbook.VBProject.VBComponents
     .Remove .item(DeleteName)
   End With
 End Sub
-Rem  ‘I‘ğ‚µ‚Ä‚éƒ‚ƒWƒ…[ƒ‹–¼‚ğ•\¦‚µ‚Ü‚·B
+Rem  é¸æŠã—ã¦ã‚‹ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«åã‚’è¡¨ç¤ºã—ã¾ã™ã€‚
 Private Sub SelectedVBComponent_Name_Sample()
-  MsgBox Prompt:="‘I‘ğ‚µ‚Ä‚éƒ‚ƒWƒ…[ƒ‹–¼F" & Application.VBE.SelectedVBComponent.Name, Buttons:=vbYesNo + vbQuestion, Title:="SelectedVBComponent.Name"
+  MsgBox Prompt:="é¸æŠã—ã¦ã‚‹ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«åï¼š" & Application.VBE.SelectedVBComponent.Name, Buttons:=vbYesNo + vbQuestion, Title:="SelectedVBComponent.Name"
 End Sub
 
 Sub Test_kccPath_ParentFolderPath()
     Dim p As kccPath
     
-    '–¾¦“I‚Éis_file:=False‚Æ‚·‚ê‚ÎƒtƒHƒ‹ƒ_”F¯
+    'æ˜ç¤ºçš„ã«is_file:=Falseã¨ã™ã‚Œã°ãƒ•ã‚©ãƒ«ãƒ€èªè­˜
     Set p = VBA.CVar(New kccPath).Init("C:\vba\hoge", False)
     Debug.Print p.CurrentFolderPath, p.ParentFolderPath
     
-    'ƒpƒX‚Ì––”ö‚ª‚È‚çƒtƒHƒ‹ƒ_”F¯
+    'ãƒ‘ã‚¹ã®æœ«å°¾ãŒï¿¥ãªã‚‰ãƒ•ã‚©ãƒ«ãƒ€èªè­˜
     Set p = VBA.CVar(New kccPath).Init("C:\vba\hoge\")
     Debug.Print p.CurrentFolderPath, p.ParentFolderPath
     
-    '–¢w’è‚ÍŒ´‘¥ƒtƒ@ƒCƒ‹”F¯
+    'æœªæŒ‡å®šã¯åŸå‰‡ãƒ•ã‚¡ã‚¤ãƒ«èªè­˜
     Set p = VBA.CVar(New kccPath).Init("C:\vba\hoge\a.xlsm")
     Debug.Print p.CurrentFolderPath, p.ParentFolderPath
 End Sub
@@ -1666,7 +1666,7 @@ Sub Test_AbsolutePathNameEx()
     Debug.Print kccFuncString.AbsolutePathNameEx("C:\vba\hoge\", "hoge.xls")
 End Sub
 
-Rem ƒAƒNƒeƒBƒu‚ÈƒvƒƒWƒFƒNƒg‚Ìƒ\[ƒXƒR[ƒh‚ğ”z‰º‚ÉƒGƒNƒXƒ|[ƒg
+Rem ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãªãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰ã‚’é…ä¸‹ã«ã‚¨ã‚¯ã‚¹ãƒãƒ¼ãƒˆ
 Rem
 Rem  /AddinName.xlam
 Rem  /YYYYMMDD_HHMMSS/CodeName.bas.vba
@@ -1679,7 +1679,7 @@ Public Sub VBComponents_Export_YYYYMMDD()
             "", "")
 End Sub
 
-Rem ƒAƒNƒeƒBƒu‚ÈƒvƒƒWƒFƒNƒg‚ğgit—p‚ÉƒGƒNƒXƒ|[ƒg
+Rem ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãªãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚’gitç”¨ã«ã‚¨ã‚¯ã‚¹ãƒãƒ¼ãƒˆ
 Rem
 Rem  /bin/AddinName.xlam
 Rem  /src/CodeName.bas.vba
@@ -1692,7 +1692,7 @@ Public Sub VBComponents_Export_SRC()
             "", "")
 End Sub
 
-Rem ƒAƒNƒeƒBƒu‚ÈƒvƒƒWƒFƒNƒg‚ğGIT—pƒoƒbƒNƒAƒbƒv•ƒGƒNƒXƒ|[ƒg
+Rem ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãªãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚’GITç”¨ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ï¼†ã‚¨ã‚¯ã‚¹ãƒãƒ¼ãƒˆ
 Rem
 Rem  /bin/AddinName.xlam
 Rem  /src/CodeName.bas.vba
@@ -1708,13 +1708,13 @@ Public Sub VBComponents_BackupAndExport()
             ".\..\backup\src\[YYYYMMDD]_[HHMMSS]\[FILENAME]")
 End Sub
 
-Rem  ƒvƒƒWƒFƒNƒg‚Ìƒ\[ƒXƒR[ƒh‚ğƒGƒNƒXƒ|[ƒg‚µ‚½‚èƒoƒbƒNƒAƒbƒv‚·‚éˆ—
+Rem  ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰ã‚’ã‚¨ã‚¯ã‚¹ãƒãƒ¼ãƒˆã—ãŸã‚Šãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã™ã‚‹å‡¦ç†
 Rem
-Rem  @param ExportObject    o—ÍƒvƒƒWƒFƒNƒgiWorkbook,VBProject)
-Rem  @param ExportBinFolder ƒGƒNƒXƒ|[ƒgbinƒtƒHƒ‹ƒ_
-Rem  @param ExportSrcFolder ƒGƒNƒXƒ|[ƒgsrcƒtƒHƒ‹ƒ_
-Rem  @param BackupBinFile   ƒoƒbƒNƒAƒbƒvbinƒtƒ@ƒCƒ‹–½–¼‹K‘¥
-Rem  @param BackupSrcFile   ƒGƒNƒXƒ|[ƒgsrcƒtƒ@ƒCƒ‹–½–¼‹K‘¥
+Rem  @param ExportObject    å‡ºåŠ›ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆï¼ˆWorkbook,VBProject)
+Rem  @param ExportBinFolder ã‚¨ã‚¯ã‚¹ãƒãƒ¼ãƒˆbinãƒ•ã‚©ãƒ«ãƒ€
+Rem  @param ExportSrcFolder ã‚¨ã‚¯ã‚¹ãƒãƒ¼ãƒˆsrcãƒ•ã‚©ãƒ«ãƒ€
+Rem  @param BackupBinFile   ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—binãƒ•ã‚¡ã‚¤ãƒ«å‘½åè¦å‰‡
+Rem  @param BackupSrcFile   ã‚¨ã‚¯ã‚¹ãƒãƒ¼ãƒˆsrcãƒ•ã‚¡ã‚¤ãƒ«å‘½åè¦å‰‡
 Rem
 Public Sub VBComponents_BackupAndExport_Sub( _
             ExportObject As Object, _
@@ -1727,16 +1727,16 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     Dim NowDateTime As Date: NowDateTime = Now()
     Dim prjPath As kccPath: Set prjPath = VBA.CVar(New kccPath).Init(ExportObject)
     
-    'ƒvƒƒWƒFƒNƒg‚Ìã‘‚«•Û‘¶
+    'ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ä¸Šæ›¸ãä¿å­˜
     If MsgBox(Join(Array( _
         prjPath.FileName, _
-        "ƒGƒNƒXƒ|[ƒg‚ğÀs‚µ‚Ü‚·B", _
-        "Às‘O‚ÉƒvƒƒWƒFƒNƒg‚ğ•Û‘¶‚µ‚Ü‚·B"), vbLf), vbOKCancel, proc_name) = vbCancel Then Exit Sub
+        "ã‚¨ã‚¯ã‚¹ãƒãƒ¼ãƒˆã‚’å®Ÿè¡Œã—ã¾ã™ã€‚", _
+        "å®Ÿè¡Œå‰ã«ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚’ä¿å­˜ã—ã¾ã™ã€‚"), vbLf), vbOKCancel, proc_name) = vbCancel Then Exit Sub
     Call UserNameStackPush(" ")
     prjPath.Workbook.Save
     Call UserNameStackPush
     
-    'ƒvƒƒWƒFƒNƒg‚ğƒŠƒŠ[ƒXƒtƒHƒ‹ƒ_‚Ö•¡»
+    'ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚’ãƒªãƒªãƒ¼ã‚¹ãƒ•ã‚©ãƒ«ãƒ€ã¸è¤‡è£½
     If ExportBinFolder <> "" Then
         Dim binPath As kccPath
         Set binPath = prjPath.MovePathByFolder(ExportBinFolder).ReplacePathAuto(DateTime:=NowDateTime)
@@ -1746,8 +1746,8 @@ Public Sub VBComponents_BackupAndExport_Sub( _
         prjPath.CopyFiles binPath
     End If
     
-    'Šù‘¶ƒ\[ƒX‚Ìíœ‚ÆƒGƒNƒXƒ|[ƒg
-    'Šù‘¶ƒ\[ƒX‚ğˆê’U•Ê‚ÌƒtƒHƒ‹ƒ_‚ÉˆÚ“®‚µ‚ÄAo—ÍŒã‚É”äŠr‚µ‚ÄAŠ®‘Sˆê’v‚È‚çŠª‚«–ß‚·B
+    'æ—¢å­˜ã‚½ãƒ¼ã‚¹ã®å‰Šé™¤ã¨ã‚¨ã‚¯ã‚¹ãƒãƒ¼ãƒˆ
+    'æ—¢å­˜ã‚½ãƒ¼ã‚¹ã‚’ä¸€æ—¦åˆ¥ã®ãƒ•ã‚©ãƒ«ãƒ€ã«ç§»å‹•ã—ã¦ã€å‡ºåŠ›å¾Œã«æ¯”è¼ƒã—ã¦ã€å®Œå…¨ä¸€è‡´ãªã‚‰å·»ãæˆ»ã™ã€‚
     If ExportSrcFolder <> "" Then
         Dim srcPath As kccPath
         Set srcPath = prjPath.MovePathByFolder(ExportSrcFolder).ReplacePathAuto(DateTime:=NowDateTime)
@@ -1769,7 +1769,7 @@ Public Sub VBComponents_BackupAndExport_Sub( _
                 For Each f2 In backPath.Folder.Files
                     If f1.Name = f2.Name Then
                         If f1.Size = f2.Size Then
-                            'ˆê’v
+                            'ä¸€è‡´
                             Debug.Print "restore : " & f1.Name
                             f2.Copy f1.Path, True
                         End If
@@ -1782,7 +1782,7 @@ Public Sub VBComponents_BackupAndExport_Sub( _
         
     End If
     
-    'bin‚Æsrc‚ÌƒoƒbƒNƒAƒbƒv
+    'binã¨srcã®ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—
     If BackupBinFile <> "" Then
         binPath.CopyFiles prjPath.MovePathByFile(BackupBinFile).ReplacePathAuto(DateTime:=NowDateTime), withoutFilterString:="*~$*"
     End If
@@ -1793,10 +1793,10 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     Debug.Print "VBA Exported : " & prjPath.FileName
 End Sub
 
-Rem Application.UserName‚ğˆê“I‚Éã‘‚«‚·‚é
+Rem Application.UserNameã‚’ä¸€æ™‚çš„ã«ä¸Šæ›¸ãã™ã‚‹
 Rem
-Rem @param OverrideUserName w’è:ˆê“I‚Éã‘‚«‚·‚é–¼‘O
-Rem                         È—ª:Œ³‚Ì–¼‘O‚É•œŒ³
+Rem @param OverrideUserName æŒ‡å®šæ™‚:ä¸€æ™‚çš„ã«ä¸Šæ›¸ãã™ã‚‹åå‰
+Rem                         çœç•¥æ™‚:å…ƒã®åå‰ã«å¾©å…ƒ
 Rem
 Sub UserNameStackPush(Optional OverrideUserName)
     Static lastUserName
@@ -1804,17 +1804,17 @@ Sub UserNameStackPush(Optional OverrideUserName)
         Application.UserName = lastUserName
     Else
         If OverrideUserName = "" Then _
-            Err.Raise "ƒ†[ƒU[–¼‚ğ‹ó—“‚É‚·‚é‚Ì‚ÍƒƒOƒCƒ“–¼‚É’u‚«Š·‚¦‚ç‚ê‚é‚½‚ß‹Ö~‚Å‚·"
+            Err.Raise "ãƒ¦ãƒ¼ã‚¶ãƒ¼åã‚’ç©ºæ¬„ã«ã™ã‚‹ã®ã¯ãƒ­ã‚°ã‚¤ãƒ³åã«ç½®ãæ›ãˆã‚‰ã‚Œã‚‹ãŸã‚ç¦æ­¢ã§ã™"
         lastUserName = Application.UserName
         Application.UserName = OverrideUserName
     End If
 End Sub
 
-Rem ƒAƒNƒeƒBƒu‚ÈƒvƒƒWƒFƒNƒg‚Ìƒ\[ƒXƒR[ƒh‚ğw’èƒtƒHƒ‹ƒ_‚ÉƒGƒNƒXƒ|[ƒg
+Rem ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãªãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰ã‚’æŒ‡å®šãƒ•ã‚©ãƒ«ãƒ€ã«ã‚¨ã‚¯ã‚¹ãƒãƒ¼ãƒˆ
 Rem
 Rem
 Private Sub VBComponents_Export(prj As VBProject, output_path As kccPath)
-    If prj Is Nothing Then MsgBox "VBAƒvƒƒWƒFƒNƒg–³‚µ", vbOKOnly, "Export Error": Exit Sub
+    If prj Is Nothing Then MsgBox "VBAãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆç„¡ã—", vbOKOnly, "Export Error": Exit Sub
     output_path.CreateFolder
     
     Dim i As Long
@@ -1827,7 +1827,7 @@ Private Sub VBComponents_Export(prj As VBProject, output_path As kccPath)
           If declDic.Count = 0 And procDic.Count = 0 Then
               Debug.Print "Skip", cmp.Name
           Else
-              Debug.Print "Export", cmp.Name, , "éŒ¾•”", declDic.Count, , "ŠÖ”•”", procDic.Count
+              Debug.Print "Export", cmp.Name, , "å®£è¨€éƒ¨", declDic.Count, , "é–¢æ•°éƒ¨", procDic.Count
               Select Case cmp.Type
                 Case Is = vbext_ct_StdModule
                   cmp.Export output_path.FullPath & "\" & cmp.Name & ".bas" & ".vba"
@@ -1838,11 +1838,11 @@ Private Sub VBComponents_Export(prj As VBProject, output_path As kccPath)
                 Case Is = vbext_ct_MSForm
                   cmp.Export output_path.FullPath & "\" & cmp.Name & ".frm" & ".vba"
                   
-                ' Workbook, Worksheet‚È‚Ç
+                ' Workbook, Worksheetãªã©
                 Case Is = vbext_ct_Document
                   cmp.Export output_path.FullPath & "\" & cmp.Name & ".cls" & ".vba"
                   
-                Case Is = vbext_ct_ActiveXDesigner ' ActiveX ƒfƒUƒCƒi
+                Case Is = vbext_ct_ActiveXDesigner ' ActiveX ãƒ‡ã‚¶ã‚¤ãƒŠ
                   cmp.Export output_path.FullPath & "\" & cmp.Name & ".cls" & ".vba"
               End Select
           End If
@@ -1850,7 +1850,7 @@ Private Sub VBComponents_Export(prj As VBProject, output_path As kccPath)
     End With
 End Sub
 
-Rem  w’è‚µ‚½–¼‘O‚ÌVBComponent‚ª‘¶İ‚µ‚Ä‚¢‚é‚©’²‚×‚Ü‚·B
+Rem  æŒ‡å®šã—ãŸåå‰ã®VBComponentãŒå­˜åœ¨ã—ã¦ã„ã‚‹ã‹èª¿ã¹ã¾ã™ã€‚
 Private Function ExistsVBComponent(VBComponentName As String, Optional pVBProject As Variant)
   Dim VBPro As VBIDE.VBProject
   Dim VBCom As VBIDE.VBComponent
@@ -1870,33 +1870,33 @@ Private Function ExistsVBComponent(VBComponentName As String, Optional pVBProjec
   Set VBPro = Nothing
 End Function
 
-Rem  ƒAƒNƒeƒBƒu ƒ‚ƒWƒ…[ƒ‹‚ÌéŒ¾ƒZƒNƒVƒ‡ƒ“•”•ª‚Ìs”‚ğ•Ô‚µ‚Ü‚·B
+Rem  ã‚¢ã‚¯ãƒ†ã‚£ãƒ– ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®å®£è¨€ã‚»ã‚¯ã‚·ãƒ§ãƒ³éƒ¨åˆ†ã®è¡Œæ•°ã‚’è¿”ã—ã¾ã™ã€‚
 Private Sub CountOfDeclarationLines_Sample()
   Dim Line As Long
 
   Line = Application.VBE.ActiveCodePane.CodeModule.CountOfDeclarationLines
-  MsgBox Prompt:="éŒ¾ƒZƒNƒVƒ‡ƒ“•”•ª‚Ìs”F" & Line, Buttons:=vbInformation, Title:="CodeModule.CountOfDeclarationLines"
+  MsgBox Prompt:="å®£è¨€ã‚»ã‚¯ã‚·ãƒ§ãƒ³éƒ¨åˆ†ã®è¡Œæ•°ï¼š" & Line, Buttons:=vbInformation, Title:="CodeModule.CountOfDeclarationLines"
 End Sub
 
-Rem  ƒAƒNƒeƒBƒu ƒ‚ƒWƒ…[ƒ‹‚Ìs”‚ğ•Ô‚µ‚Ü‚·B
+Rem  ã‚¢ã‚¯ãƒ†ã‚£ãƒ– ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®è¡Œæ•°ã‚’è¿”ã—ã¾ã™ã€‚
 Private Sub CountOfLines_Sample()
   Dim Line As Long
 
   Line = Application.VBE.ActiveCodePane.CodeModule.CountOfLines
-  MsgBox Prompt:="ƒ‚ƒWƒ…[ƒ‹‚Ìs”F" & Line, Buttons:=vbInformation, Title:="CodeModule.CountOfLines"
+  MsgBox Prompt:="ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®è¡Œæ•°ï¼š" & Line, Buttons:=vbInformation, Title:="CodeModule.CountOfLines"
 End Sub
 
-Rem  ƒvƒƒV[ƒWƒƒ[‚Ìs”‚ğ•Ô‚µ‚Ü‚·B
-Rem  y’ˆÓzƒvƒƒV[ƒWƒƒ[‚Ì‘O‚Ìs‚ÉƒRƒƒ“ƒg‚ª‚ ‚éê‡‚ÍAƒRƒƒ“ƒg‚Ìs‚ğŠÜ‚ß‚Ü‚·B
+Rem  ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ãƒ¼ã®è¡Œæ•°ã‚’è¿”ã—ã¾ã™ã€‚
+Rem  ã€æ³¨æ„ã€‘ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ãƒ¼ã®å‰ã®è¡Œã«ã‚³ãƒ¡ãƒ³ãƒˆãŒã‚ã‚‹å ´åˆã¯ã€ã‚³ãƒ¡ãƒ³ãƒˆã®è¡Œã‚’å«ã‚ã¾ã™ã€‚
 Private Sub ProcCountLines_Sample()
   Dim StartLine As Long
 
   StartLine = ThisWorkbook.VBProject.VBComponents("Code_Module").CodeModule.ProcCountLines(ProcName:="ProcCountLines_Sample", ProcKind:=vbext_pk_Proc)
-  MsgBox Prompt:="ƒRƒƒ“ƒg‚Ìs‚ğŠÜ‚ŞƒvƒƒV[ƒWƒƒ[‚Ìs”F" & StartLine, Buttons:=vbInformation, Title:="CodeModule.ProcCountLines"
+  MsgBox Prompt:="ã‚³ãƒ¡ãƒ³ãƒˆã®è¡Œã‚’å«ã‚€ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ãƒ¼ã®è¡Œæ•°ï¼š" & StartLine, Buttons:=vbInformation, Title:="CodeModule.ProcCountLines"
 End Sub
 
-Rem  ƒvƒƒV[ƒWƒƒ[‚ÌŠJns‚ğ•Ô‚µ‚Ü‚·BiƒvƒƒV[ƒWƒƒ[‚Ì‘O‚Ìs‚É‚ ‚éƒRƒƒ“ƒgs‚ğŠÜ‚İ‚Ü‚·Bj
-Rem  y’ˆÓz‘O‚ÌƒvƒƒV[ƒWƒƒ[‚ÌŸ‚Ìs‚ğ•Ô‚µ‚Ü‚·B
+Rem  ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ãƒ¼ã®é–‹å§‹è¡Œã‚’è¿”ã—ã¾ã™ã€‚ï¼ˆãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ãƒ¼ã®å‰ã®è¡Œã«ã‚ã‚‹ã‚³ãƒ¡ãƒ³ãƒˆè¡Œã‚’å«ã¿ã¾ã™ã€‚ï¼‰
+Rem  ã€æ³¨æ„ã€‘å‰ã®ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ãƒ¼ã®æ¬¡ã®è¡Œã‚’è¿”ã—ã¾ã™ã€‚
 Rem   vbext_ProcKind
 Rem     vbext_pk_Get
 Rem     vbext_pk_Let
@@ -1906,19 +1906,19 @@ Private Sub ProcStartLine_Sample()
   Dim StartLine As Long
 
   StartLine = ThisWorkbook.VBProject.VBComponents("Code_Module").CodeModule.ProcStartLine(ProcName:="ProcStartLine_Sample", ProcKind:=vbext_pk_Proc)
-  MsgBox Prompt:="ƒRƒƒ“ƒgs‚ğŠÜ‚ŞƒvƒƒV[ƒWƒƒ[‚ÌŠJnsF" & StartLine, Buttons:=vbInformation, Title:="CodeModule.ProcStartLine"
+  MsgBox Prompt:="ã‚³ãƒ¡ãƒ³ãƒˆè¡Œã‚’å«ã‚€ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ãƒ¼ã®é–‹å§‹è¡Œï¼š" & StartLine, Buttons:=vbInformation, Title:="CodeModule.ProcStartLine"
 End Sub
 
-Rem  ƒvƒƒV[ƒWƒƒ[‚ÌŠJns‚ğ•Ô‚µ‚Ü‚·B
+Rem  ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ãƒ¼ã®é–‹å§‹è¡Œã‚’è¿”ã—ã¾ã™ã€‚
 Private Sub ProcBodyLine_Sample()
   Dim StartLine As Long
 
   StartLine = ThisWorkbook.VBProject.VBComponents("Code_Module").CodeModule.ProcBodyLine(ProcName:="ProcBodyLine_Sample", ProcKind:=vbext_pk_Proc)
-  MsgBox Prompt:="ƒvƒƒV[ƒWƒƒ[‚ÌŠJnsF" & StartLine, Buttons:=vbInformation, Title:="CodeModule.ProcBodyLine"
+  MsgBox Prompt:="ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ãƒ¼ã®é–‹å§‹è¡Œï¼š" & StartLine, Buttons:=vbInformation, Title:="CodeModule.ProcBodyLine"
 End Sub
 
-Rem  ƒR[ƒhƒ‚ƒWƒ…[ƒ‹‚Ìw’ès‚©‚çw’è‚µ‚½s”‚ÌƒeƒLƒXƒg‚ğæ“¾‚µ‚Ü‚·B
-Rem  y’ˆÓzCodeModule.Lines‚ÍUnicode‚È‚Ì‚ÅA”¼Šp‚Å‚à2ƒoƒCƒg‚Å‚·B
+Rem  ã‚³ãƒ¼ãƒ‰ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®æŒ‡å®šè¡Œã‹ã‚‰æŒ‡å®šã—ãŸè¡Œæ•°ã®ãƒ†ã‚­ã‚¹ãƒˆã‚’å–å¾—ã—ã¾ã™ã€‚
+Rem  ã€æ³¨æ„ã€‘CodeModule.Linesã¯Unicodeãªã®ã§ã€åŠè§’ã§ã‚‚2ãƒã‚¤ãƒˆã§ã™ã€‚
 Private Sub Lines_Sample()
   Dim StartLine As Long, Count As Long
 
@@ -1927,56 +1927,56 @@ Private Sub Lines_Sample()
   MsgBox Prompt:=ThisWorkbook.VBProject.VBComponents("Code_Module").CodeModule.Lines(StartLine, Count), Buttons:=vbInformation, Title:="CodeModule.Lines"
 End Sub
 
-Rem  w’è‚µ‚½s‚ªŠÜ‚Ü‚ê‚éƒvƒƒV[ƒWƒƒ[–¼‚ğæ“¾‚µ‚Ü‚·B
+Rem  æŒ‡å®šã—ãŸè¡ŒãŒå«ã¾ã‚Œã‚‹ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ãƒ¼åã‚’å–å¾—ã—ã¾ã™ã€‚
 Private Sub ProcOfLine_Sample()
   Dim num As Variant
   Dim ProcName As String
 
-  num = Application.InputBox(Prompt:="s”F", Title:="ƒvƒƒV[ƒWƒƒ[–¼‚Ìs”‚Ì“ü—Í", Default:=57, Type:=1)
-  If TypeName(num) <> "Double" Then Exit Sub ' [ƒLƒƒƒ“ƒZƒ‹]ƒ{ƒ^ƒ“
+  num = Application.InputBox(Prompt:="è¡Œæ•°ï¼š", Title:="ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ãƒ¼åã®è¡Œæ•°ã®å…¥åŠ›", Default:=57, Type:=1)
+  If TypeName(num) <> "Double" Then Exit Sub ' [ã‚­ãƒ£ãƒ³ã‚»ãƒ«]ãƒœã‚¿ãƒ³
   ProcName = ThisWorkbook.VBProject.VBComponents("Code_Module").CodeModule.ProcOfLine(Line:=num, ProcKind:=vbext_pk_Proc)
-  MsgBox Prompt:="ƒvƒƒV[ƒWƒƒ[–¼F" & ProcName, Buttons:=vbInformation, Title:="CodeModule.ProcOfLine"
+  MsgBox Prompt:="ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ãƒ¼åï¼š" & ProcName, Buttons:=vbInformation, Title:="CodeModule.ProcOfLine"
 End Sub
 
-Rem  ‘I‘ğ‚µ‚½ƒeƒLƒXƒgƒtƒ@ƒCƒ‹‚ğTempModuleƒ‚ƒWƒ…[ƒ‹‚ÌÅ‰‚ÌƒvƒƒV[ƒWƒƒ[‚Ì‘O‚É‘}“ü‚µ‚Ü‚·B
+Rem  é¸æŠã—ãŸãƒ†ã‚­ã‚¹ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã‚’TempModuleãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®æœ€åˆã®ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ãƒ¼ã®å‰ã«æŒ¿å…¥ã—ã¾ã™ã€‚
 Private Sub AddFromFile_Sample()
   Dim FileName As Variant
 
-  FileName = Application.GetOpenFileName(FileFilter:="ƒeƒLƒXƒgƒtƒ@ƒCƒ‹i*.txtj, *.txt,‚·‚×‚Ä‚Ìƒtƒ@ƒCƒ‹i*.*j,*.*", FilterIndex:=1, Title:="ƒtƒ@ƒCƒ‹‚ÌƒCƒ“ƒ|[ƒg", ButtonText:="ƒCƒ“ƒ|[ƒg", MultiSelect:=False)
-  If TypeName(FileName) = "Boolean" Then Exit Sub ' [ƒLƒƒƒ“ƒZƒ‹]ƒ{ƒ^ƒ“
+  FileName = Application.GetOpenFileName(FileFilter:="ãƒ†ã‚­ã‚¹ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆ*.txtï¼‰, *.txt,ã™ã¹ã¦ã®ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆ*.*ï¼‰,*.*", FilterIndex:=1, Title:="ãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚¤ãƒ³ãƒãƒ¼ãƒˆ", ButtonText:="ã‚¤ãƒ³ãƒãƒ¼ãƒˆ", MultiSelect:=False)
+  If TypeName(FileName) = "Boolean" Then Exit Sub ' [ã‚­ãƒ£ãƒ³ã‚»ãƒ«]ãƒœã‚¿ãƒ³
   ThisWorkbook.VBProject.VBComponents("TempModule").CodeModule.AddFromFile FileName
 End Sub
 
-Rem  ƒeƒLƒXƒg‚ğTempModuleƒ‚ƒWƒ…[ƒ‹‚ÌÅ‰‚ÌƒvƒƒV[ƒWƒƒ[‚Ì‘O‚É‘}“ü‚µ‚Ü‚·B
+Rem  ãƒ†ã‚­ã‚¹ãƒˆã‚’TempModuleãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®æœ€åˆã®ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ãƒ¼ã®å‰ã«æŒ¿å…¥ã—ã¾ã™ã€‚
 Private Sub AddFromString_Sample()
   Dim Str As String
 
   Str = "'" & String(50, "=") & vbCrLf
-  Str = Str & "'AddFromString‚Å‘}“ü‚µ‚Ü‚µ‚½B " & Format(Now, "yyyy/mm/dd hh:mm:ss") & vbCrLf & Str
+  Str = Str & "'AddFromStringã§æŒ¿å…¥ã—ã¾ã—ãŸã€‚ " & Format(Now, "yyyy/mm/dd hh:mm:ss") & vbCrLf & Str
   ThisWorkbook.VBProject.VBComponents("TempModule").CodeModule.AddFromString Str
 End Sub
 
-Rem  ƒeƒLƒXƒg‚ğTempModuleƒ‚ƒWƒ…[ƒ‹‚Ì5s–Ú‚É‘}“ü‚µ‚Ü‚·B
+Rem  ãƒ†ã‚­ã‚¹ãƒˆã‚’TempModuleãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®5è¡Œç›®ã«æŒ¿å…¥ã—ã¾ã™ã€‚
 Private Sub InsertLines_Sample()
   Dim Str As String
 
-  Str = "' 5s–Ú‚ÉInsertLines‚Å‘}“ü‚µ‚Ü‚µ‚½B" & vbCrLf & "' vbCrLf‚ğg—p‚·‚é‚Æ•¡”‚Ìs‚ğ‘}“ü‚Å‚«‚Ü‚·B"
+  Str = "' 5è¡Œç›®ã«InsertLinesã§æŒ¿å…¥ã—ã¾ã—ãŸã€‚" & vbCrLf & "' vbCrLfã‚’ä½¿ç”¨ã™ã‚‹ã¨è¤‡æ•°ã®è¡Œã‚’æŒ¿å…¥ã§ãã¾ã™ã€‚"
   ThisWorkbook.VBProject.VBComponents("TempModule").CodeModule.InsertLines 5, Str
 End Sub
 
-Rem  Œ»İ‚ÌƒJ[ƒ\ƒ‹‚ÌŠJns‚É“ú•t‚ÆŠÔ‚ğ‘}“ü‚µ‚Ü‚·B
+Rem  ç¾åœ¨ã®ã‚«ãƒ¼ã‚½ãƒ«ã®é–‹å§‹è¡Œã«æ—¥ä»˜ã¨æ™‚é–“ã‚’æŒ¿å…¥ã—ã¾ã™ã€‚
 Private Sub Insert_Text()
   Dim StartLine As Long, StartColumn As Long, EndLine As Long, EndColumn As Long
   Dim Text As String
 
-  Text = Format(Now, "' ggge”NmmŒdd“ú hhmm•ªss•b")
+  Text = Format(Now, "' gggeå¹´mmæœˆddæ—¥ hhæ™‚mmåˆ†ssç§’")
   With Application.VBE.ActiveCodePane
     .getSelection StartLine, StartColumn, EndLine, EndColumn
     .CodeModule.InsertLines StartLine, Text
   End With
 End Sub
 
-Rem  TempModuleƒ‚ƒWƒ…[ƒ‹‚Ì5s–Ú‚Æ6s–Ú‚Ì2s‚ğíœ‚µ‚Ü‚·B
+Rem  TempModuleãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®5è¡Œç›®ã¨6è¡Œç›®ã®2è¡Œã‚’å‰Šé™¤ã—ã¾ã™ã€‚
 Private Sub DeleteLines_Sample()
   Dim StartLine As Long, CountLine As Long
 
@@ -1985,31 +1985,31 @@ Private Sub DeleteLines_Sample()
   ThisWorkbook.VBProject.VBComponents("TempModule").CodeModule.DeleteLines StartLine, CountLine
 End Sub
 
-Rem  ŒŸõ‚µ‚½•¶š—ñ‚ª‚ ‚é‚©‚ğ•\¦‚µ‚Ü‚·B
+Rem  æ¤œç´¢ã—ãŸæ–‡å­—åˆ—ãŒã‚ã‚‹ã‹ã‚’è¡¨ç¤ºã—ã¾ã™ã€‚
 Rem  Find(Target As String, StartLine As Long, StartColumn As Long, EndLine As Long, EndColumn As Long, [WholeWord As Boolean = False], [MatchCase As Boolean = False], [PatternSearch As Boolean = False]) As Boolean
-Rem  y’ˆÓzStartColumn‚ÆEndColumn‚ÌŒ…‚Í”¼Šp‚Í1A‘SŠp‚Í2‚ÅŒvZ‚µ‚Ü‚·B
+Rem  ã€æ³¨æ„ã€‘StartColumnã¨EndColumnã®æ¡ã¯åŠè§’ã¯1ã€å…¨è§’ã¯2ã§è¨ˆç®—ã—ã¾ã™ã€‚
 Private Sub Find_Sample()
   Dim ret As Boolean
   Dim FindText As Variant
 
-  FindText = Application.InputBox(Prompt:="•¶š—ñF", Title:="•¶š—ñ‚ÌŒŸõ", Type:=2)
+  FindText = Application.InputBox(Prompt:="æ–‡å­—åˆ—ï¼š", Title:="æ–‡å­—åˆ—ã®æ¤œç´¢", Type:=2)
   If TypeName(FindText) = "Boolean" Then Exit Sub
   If Len(FindText) < 1 Then Exit Sub
   With ThisWorkbook.VBProject.VBComponents("Code_Module").CodeModule
-    ret = .Find(FindText, 1, 1, .CountOfLines, LenB(.Lines(.CountOfLines, 1)), False, False, False) ' y’ˆÓzLen‚Å‚Í‚È‚­LenB‚ğg‚¢‚Ü‚·B
+    ret = .Find(FindText, 1, 1, .CountOfLines, LenB(.Lines(.CountOfLines, 1)), False, False, False) ' ã€æ³¨æ„ã€‘Lenã§ã¯ãªãLenBã‚’ä½¿ã„ã¾ã™ã€‚
   End With
-  MsgBox Prompt:=FindText & "‚ÌŒŸõŒ‹‰Ê = " & ret, Buttons:=vbInformation, Title:="•¶š—ñ‚ÌŒŸõ"
+  MsgBox Prompt:=FindText & "ã®æ¤œç´¢çµæœ = " & ret, Buttons:=vbInformation, Title:="æ–‡å­—åˆ—ã®æ¤œç´¢"
 End Sub
 
-Rem  TempModuleƒ‚ƒWƒ…[ƒ‹‚Ì5s–Ú‚ğ•¶š—ñ‚Å’u‚«Š·‚¦‚Ü‚·B
+Rem  TempModuleãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®5è¡Œç›®ã‚’æ–‡å­—åˆ—ã§ç½®ãæ›ãˆã¾ã™ã€‚
 Private Sub ReplaceLine_Sample()
   Dim Str As String
 
-  Str = "' 5s–Ú‚ğReplaceLine‚Å’u‚«Š·‚¦‚µ‚Ü‚µ‚½B " & Format(Now, "yyyy/mm/dd hh:mm:ss")
+  Str = "' 5è¡Œç›®ã‚’ReplaceLineã§ç½®ãæ›ãˆã—ã¾ã—ãŸã€‚ " & Format(Now, "yyyy/mm/dd hh:mm:ss")
   ThisWorkbook.VBProject.VBComponents("TempModule").CodeModule.ReplaceLine 5, Str
 End Sub
 
-Rem  ƒAƒNƒeƒBƒu ƒRƒ“ƒ|[ƒlƒ“ƒg‚Ì‚·‚×‚Ä‚ÌƒvƒƒV[ƒWƒƒ–¼‚ğ•\¦‚µ‚Ü‚·BiƒNƒ‰ƒX‚ÌGet, Set, Let‚Íœ‚«‚Ü‚·j
+Rem  ã‚¢ã‚¯ãƒ†ã‚£ãƒ– ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®ã™ã¹ã¦ã®ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£åã‚’è¡¨ç¤ºã—ã¾ã™ã€‚ï¼ˆã‚¯ãƒ©ã‚¹ã®Get, Set, Letã¯é™¤ãã¾ã™ï¼‰
 Private Sub Display_ProcName_Sample()
   Dim msg As String
   Dim ProcName As String
@@ -2018,7 +2018,7 @@ Private Sub Display_ProcName_Sample()
   ProcName = vbNullString
   With Application.VBE.ActiveCodePane.CodeModule
     For i = 1 To .CountOfLines
-      If ProcName <> .ProcOfLine(i, ProcKind:=vbext_pk_Proc) Then ' ƒvƒƒV[ƒWƒƒ–¼‚ª•Ï‚í‚Á‚½ê‡‚Í
+      If ProcName <> .ProcOfLine(i, ProcKind:=vbext_pk_Proc) Then ' ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£åãŒå¤‰ã‚ã£ãŸå ´åˆã¯
         ProcName = .ProcOfLine(i, ProcKind:=vbext_pk_Proc)
 Rem         Debug.Print buf
         msg = msg & ProcName & vbCrLf
@@ -2026,42 +2026,42 @@ Rem         Debug.Print buf
     Next i
   End With
 
-  MsgBox Prompt:=msg, Buttons:=vbInformation, Title:="ƒvƒƒV[ƒWƒƒ–¼‚Ìˆê——"
+  MsgBox Prompt:=msg, Buttons:=vbInformation, Title:="ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£åã®ä¸€è¦§"
 End Sub
 
-Rem  ‘I‘ğ”ÍˆÍ‚ÌƒJ[ƒ\ƒ‹ˆÊ’u‚ğæ“¾‚µ‚Ü‚·B
-Rem  y’ˆÓzStartColumn‚ÆEndColumn‚ÌŒ…‚Í”¼Šp‚Í1A‘SŠp‚Í2‚ÅŒvZ‚µ‚Ü‚·B
+Rem  é¸æŠç¯„å›²ã®ã‚«ãƒ¼ã‚½ãƒ«ä½ç½®ã‚’å–å¾—ã—ã¾ã™ã€‚
+Rem  ã€æ³¨æ„ã€‘StartColumnã¨EndColumnã®æ¡ã¯åŠè§’ã¯1ã€å…¨è§’ã¯2ã§è¨ˆç®—ã—ã¾ã™ã€‚
 Private Sub GetSelection_Sample()
   Dim StartLine As Long, StartColumn As Long, EndLine As Long, EndColumn As Long
   Dim msg As String
 
   Application.VBE.ActiveCodePane.getSelection StartLine, StartColumn, EndLine, EndColumn
-  msg = "ŠJnF" & StartLine & "s " & StartColumn & "Œ…" & vbCrLf & vbCrLf
-  msg = msg & "I—¹F" & EndLine & "s" & EndColumn & "Œ…"
-  MsgBox Prompt:=msg, Buttons:=vbInformation, Title:="ƒJ[ƒ\ƒ‹ˆÊ’u"
+  msg = "é–‹å§‹ï¼š" & StartLine & "è¡Œ " & StartColumn & "æ¡" & vbCrLf & vbCrLf
+  msg = msg & "çµ‚äº†ï¼š" & EndLine & "è¡Œ" & EndColumn & "æ¡"
+  MsgBox Prompt:=msg, Buttons:=vbInformation, Title:="ã‚«ãƒ¼ã‚½ãƒ«ä½ç½®"
 End Sub
 
-Rem  ‘I‘ğ”ÍˆÍ‚ğİ’è‚µ‚Ü‚·B
-Rem  y’ˆÓzStartColumn‚ÆEndColumn‚ÌŒ…‚Í”¼Šp‚Í1A‘SŠp‚Í2‚ÅŒvZ‚µ‚Ü‚·B
-Rem  y’ˆÓz¶’[‚ÌŒ…‚Í0‚Å‚Í‚È‚­1‚Å‚·B
+Rem  é¸æŠç¯„å›²ã‚’è¨­å®šã—ã¾ã™ã€‚
+Rem  ã€æ³¨æ„ã€‘StartColumnã¨EndColumnã®æ¡ã¯åŠè§’ã¯1ã€å…¨è§’ã¯2ã§è¨ˆç®—ã—ã¾ã™ã€‚
+Rem  ã€æ³¨æ„ã€‘å·¦ç«¯ã®æ¡ã¯0ã§ã¯ãªã1ã§ã™ã€‚
 Private Sub SetSelection_Sample()
   Dim StartLine As Long, StartColumn As Long, EndLine As Long, EndColumn As Long
 
-  StartLine = 14: StartColumn = 7: EndLine = 22: EndColumn = 8 ' Ÿ StartColumn‚Í‘SŠp‚Í2‚ÅŒvZ‚µ‚Ä‚Ü‚·B
+  StartLine = 14: StartColumn = 7: EndLine = 22: EndColumn = 8 ' â—† StartColumnã¯å…¨è§’ã¯2ã§è¨ˆç®—ã—ã¦ã¾ã™ã€‚
   Application.VBE.ActiveCodePane.SetSelection StartLine, StartColumn, EndLine, EndColumn
 End Sub
 
-Rem  ƒAƒNƒeƒBƒu ƒR[ƒh ƒyƒCƒ“‚Ì‰æ–Ê‚É•\¦‚Å‚«‚és”‚ğ•\¦‚µ‚Ü‚·B
+Rem  ã‚¢ã‚¯ãƒ†ã‚£ãƒ– ã‚³ãƒ¼ãƒ‰ ãƒšã‚¤ãƒ³ã®ç”»é¢ã«è¡¨ç¤ºã§ãã‚‹è¡Œæ•°ã‚’è¡¨ç¤ºã—ã¾ã™ã€‚
 Private Sub CountOfVisibleLines_Sample()
-  MsgBox Prompt:="‰æ–Ê‚É•\¦‚Å‚«‚és”F" & Application.VBE.ActiveCodePane.CountOfVisibleLines, Buttons:=vbInformation, Title:="ActiveCodePane.CountOfVisibleLines"
+  MsgBox Prompt:="ç”»é¢ã«è¡¨ç¤ºã§ãã‚‹è¡Œæ•°ï¼š" & Application.VBE.ActiveCodePane.CountOfVisibleLines, Buttons:=vbInformation, Title:="ActiveCodePane.CountOfVisibleLines"
 End Sub
 
-Rem  ƒAƒNƒeƒBƒu ƒR[ƒh ƒyƒCƒ“‚Ì‰æ–Ê‚ÌÅãs‚ğ•\¦‚µ‚Ü‚·B
+Rem  ã‚¢ã‚¯ãƒ†ã‚£ãƒ– ã‚³ãƒ¼ãƒ‰ ãƒšã‚¤ãƒ³ã®ç”»é¢ã®æœ€ä¸Šè¡Œã‚’è¡¨ç¤ºã—ã¾ã™ã€‚
 Private Sub TopLine_Sample()
-  MsgBox Prompt:="‰æ–Ê‚ÌÅãsF" & Application.VBE.ActiveCodePane.TopLine, Buttons:=vbInformation, Title:="ActiveCodePane.TopLine"
+  MsgBox Prompt:="ç”»é¢ã®æœ€ä¸Šè¡Œï¼š" & Application.VBE.ActiveCodePane.TopLine, Buttons:=vbInformation, Title:="ActiveCodePane.TopLine"
 End Sub
 
-Rem ‘S‚Ä‚ÌƒR[ƒhƒEƒCƒ“ƒhƒE‚ğ•Â‚¶‚é
+Rem å…¨ã¦ã®ã‚³ãƒ¼ãƒ‰ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚’é–‰ã˜ã‚‹
 Public Sub CloseCodePanes()
     Dim C As CodePane
     For Each C In Application.VBE.CodePanes
@@ -2069,27 +2069,27 @@ Public Sub CloseCodePanes()
     Next
 End Sub
 
-Rem Œ»İ‚ÌƒJ[ƒ\ƒ‹‚É‚ ‚éŠÖ”‚ÌƒeƒXƒg‚ğÀs‚·‚é
+Rem ç¾åœ¨ã®ã‚«ãƒ¼ã‚½ãƒ«ã«ã‚ã‚‹é–¢æ•°ã®ãƒ†ã‚¹ãƒˆã‚’å®Ÿè¡Œã™ã‚‹
 Public Sub TestExecute()
     Run GetCursolFunctionName()
-    MsgBox "–¢Š®¬"
+    MsgBox "æœªå®Œæˆ"
 End Sub
 
-Rem Œ»İ‚ÌƒJ[ƒ\ƒ‹‚É‚ ‚éŠÖ”‚ÌƒeƒXƒg‚ÖƒWƒƒƒ“ƒv‚·‚é
+Rem ç¾åœ¨ã®ã‚«ãƒ¼ã‚½ãƒ«ã«ã‚ã‚‹é–¢æ•°ã®ãƒ†ã‚¹ãƒˆã¸ã‚¸ãƒ£ãƒ³ãƒ—ã™ã‚‹
 Public Sub TestJump()
     ProcJump GetCursolFunctionName()
-    MsgBox "–¢Š®¬"
+    MsgBox "æœªå®Œæˆ"
 End Sub
 
-Rem Œ»İ‚ÌƒJ[ƒ\ƒ‹‚É‚ ‚éŠÖ”–¼‚ğ•Ô‚·
+Rem ç¾åœ¨ã®ã‚«ãƒ¼ã‚½ãƒ«ã«ã‚ã‚‹é–¢æ•°åã‚’è¿”ã™
 Private Function GetCursolFunctionName()
     
 End Function
 
-Rem w’è‚µ‚½ŠÖ”–¼‚ÌêŠ‚ÉƒWƒƒƒ“ƒv‚·‚é
+Rem æŒ‡å®šã—ãŸé–¢æ•°åã®å ´æ‰€ã«ã‚¸ãƒ£ãƒ³ãƒ—ã™ã‚‹
 Private Sub ProcJump(func As String)
     
-    Rem ƒ‚ƒWƒ…[ƒ‹‚ğŠJ‚­
-    Rem ƒJ[ƒ\ƒ‹ˆÊ’u‚ğ•Ï‚¦‚é
+    Rem ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‚’é–‹ã
+    Rem ã‚«ãƒ¼ã‚½ãƒ«ä½ç½®ã‚’å¤‰ãˆã‚‹
 End Sub
 

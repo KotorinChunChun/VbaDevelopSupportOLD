@@ -11,7 +11,7 @@ Rem ----------------------------------------------------------------------------
 Rem
 Rem  @module        kccPath
 Rem
-Rem  @description   ƒpƒXî•ñŠÇ—ƒNƒ‰ƒX
+Rem  @description   ãƒ‘ã‚¹æƒ…å ±ç®¡ç†ã‚¯ãƒ©ã‚¹
 Rem
 Rem  @update        2020/08/06
 Rem
@@ -49,7 +49,7 @@ Public Property Get fso() As FileSystemObject
     Set fso = xxFso
 End Property
 
-Rem ƒIƒuƒWƒFƒNƒg‚Ìì¬
+Rem ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä½œæˆ
 Public Function Init(obj, Optional is_file As Boolean = True) As kccPath
     Set Init = Me
     Select Case TypeName(obj)
@@ -77,11 +77,11 @@ Public Function Clone() As kccPath
     Set Clone = VBA.CVar(New kccPath).Init(Me.FullPath, Me.IsFile)
 End Function
 
-Rem VBProject‚©‚ç–¼‘O‚ğæ“¾‚·‚éŠÖ”
+Rem VBProjectã‹ã‚‰åå‰ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 Rem
-Rem  –¢•Û‘¶‚ÌƒuƒbƒN‚Å‚ÍVBProject.FileName‚ªƒGƒ‰[‚É‚È‚éB
-Rem  VBProject‚©‚ç’¼Ú–¼‘O‚ğæ“¾‚·‚éè’i‚Í‘¼‚É‘¶İ‚µ‚È‚¢B
-Rem  –¢•Û‘¶‚ÌƒuƒbƒN‚ÅWorkbook.FullPath‚È‚Ç‚Í[Book1]‚ÆŒ¾‚Á‚½’Pƒ‚È–¼‘O‚µ‚©•Ô‚³‚È‚¢B
+Rem  æœªä¿å­˜ã®ãƒ–ãƒƒã‚¯ã§ã¯VBProject.FileNameãŒã‚¨ãƒ©ãƒ¼ã«ãªã‚‹ã€‚
+Rem  VBProjectã‹ã‚‰ç›´æ¥åå‰ã‚’å–å¾—ã™ã‚‹æ‰‹æ®µã¯ä»–ã«å­˜åœ¨ã—ãªã„ã€‚
+Rem  æœªä¿å­˜ã®ãƒ–ãƒƒã‚¯ã§Workbook.FullPathãªã©ã¯[Book1]ã¨è¨€ã£ãŸå˜ç´”ãªåå‰ã—ã‹è¿”ã•ãªã„ã€‚
 Rem
 Private Property Get VBEProjectFileName(prj As VBProject) As String
 On Error Resume Next
@@ -98,9 +98,9 @@ On Error GoTo 0
     Next
 End Property
 
-Rem ƒuƒbƒN–¼‚©‚çWorkbook‚ğ•Ô‚·B
+Rem ãƒ–ãƒƒã‚¯åã‹ã‚‰Workbookã‚’è¿”ã™ã€‚
 Rem
-Rem  ‚à‚µ‚©‚µ‚½‚ç‚±‚Ì•û–@‚Å‚Íæ“¾‚Å‚«‚È‚¢–—á‚ª‚ ‚é‚©‚à‚µ‚ê‚È‚¢B
+Rem  ã‚‚ã—ã‹ã—ãŸã‚‰ã“ã®æ–¹æ³•ã§ã¯å–å¾—ã§ããªã„äº‹ä¾‹ãŒã‚ã‚‹ã‹ã‚‚ã—ã‚Œãªã„ã€‚
 Rem
 Public Function GetWorkbook(book_str_name) As Excel.Workbook
     Set GetWorkbook = Workbooks(book_str_name)
@@ -113,46 +113,46 @@ Public Function GetWorkbook(book_str_name) As Excel.Workbook
 '    Next
 End Function
 
-Rem ƒtƒ‹ƒpƒX–¼
+Rem ãƒ•ãƒ«ãƒ‘ã‚¹å
 Property Get FullPath() As String: FullPath = Me.FullPath__ & IIf(Me.IsFile, "", "\"): End Function
 Property Let FullPath(Path As String)
     If Path Like "*\" Then Me.IsFile = False
-    'ƒtƒ‹ƒpƒXAUNCA‘Š‘ÎAƒJƒŒƒ“ƒg‚ğ©“®”F¯‚µ‚Äƒtƒ‹ƒpƒX‰»
+    'ãƒ•ãƒ«ãƒ‘ã‚¹ã€UNCã€ç›¸å¯¾ã€ã‚«ãƒ¬ãƒ³ãƒˆã‚’è‡ªå‹•èªè­˜ã—ã¦ãƒ•ãƒ«ãƒ‘ã‚¹åŒ–
     FullPath__ = kccFuncString.ToPathLastYen(Path, False)
 End Property
 
-Rem ƒtƒ@ƒCƒ‹‚Ü‚½‚ÍƒtƒHƒ‹ƒ_–¼
+Rem ãƒ•ã‚¡ã‚¤ãƒ«ã¾ãŸã¯ãƒ•ã‚©ãƒ«ãƒ€å
 Property Get Name() As String
     Name = kccFuncString.GetPath(FullPath, False, True, True)
 End Property
 
-Rem ƒtƒ@ƒCƒ‹–¼
-Rem  ƒtƒHƒ‹ƒ_‚Ì‚Æ‚«‹ó—“
+Rem ãƒ•ã‚¡ã‚¤ãƒ«å
+Rem  ãƒ•ã‚©ãƒ«ãƒ€ã®ã¨ãç©ºæ¬„
 Property Get FileName() As String
     Dim IsFolder As Boolean
     FileName = kccFuncString.GetPath(FullPath, False, True, True, outIsFolder:=IsFolder)
     If IsFolder Then FileName = ""
 End Property
 
-Rem Šg’£q‚ğœ‚­–¼‘O
+Rem æ‹¡å¼µå­ã‚’é™¤ãåå‰
 Property Get BaseName() As String
     BaseName = kccFuncString.GetPath(FullPath, False, True, False)
 End Property
 
-Rem Šg’£q‚Ì–¼‘Oi.extj
+Rem æ‹¡å¼µå­ã®åå‰ï¼ˆ.extï¼‰
 Property Get Extension() As String
     Extension = kccFuncString.GetPath(FullPath, False, False, True)
 End Property
 
-Rem ƒtƒHƒ‹ƒ_–¼
-Rem  ƒtƒ@ƒCƒ‹‚Ì‚Æ‚«‹ó—“
+Rem ãƒ•ã‚©ãƒ«ãƒ€å
+Rem  ãƒ•ã‚¡ã‚¤ãƒ«ã®ã¨ãç©ºæ¬„
 Property Get FolderName() As String
     Dim IsFolder As Boolean
     FolderName = kccFuncString.GetPath(FullPath, False, True, True, outIsFolder:=IsFolder)
     If IsFolder Then Else FolderName = ""
 End Property
 
-Rem Œ»ƒtƒHƒ‹ƒ_ƒtƒ‹ƒpƒX
+Rem ç¾ãƒ•ã‚©ãƒ«ãƒ€ãƒ•ãƒ«ãƒ‘ã‚¹
 Property Get CurrentFolderPath(Optional AddYen As Boolean = False) As String
     If Me.IsFile Then
         CurrentFolderPath = kccFuncString.GetPath(Me.FullPath, True, False, False)
@@ -162,14 +162,14 @@ Property Get CurrentFolderPath(Optional AddYen As Boolean = False) As String
     CurrentFolderPath = kccFuncString.ToPathLastYen(CurrentFolderPath, AddYen)
 End Property
 
-Rem Œ»İ‚ÌƒtƒHƒ‹ƒ_–¼‚Ì•ÏX
+Rem ç¾åœ¨ã®ãƒ•ã‚©ãƒ«ãƒ€åã®å¤‰æ›´
 Property Let CurrentFolderName(FolderName As String)
     Dim cur As Scripting.Folder
     Set cur = Me.CurrentFolder.Folder
     cur.Name = FolderName
 End Property
 
-Rem eƒtƒHƒ‹ƒ_–¼
+Rem è¦ªãƒ•ã‚©ãƒ«ãƒ€å
 Property Get ParentFolderPath(Optional AddYen As Boolean = False) As String
     If Me.IsFile Then
         ParentFolderPath = kccFuncString.GetPath(Me.CurrentFolderPath(AddYen:=False), True, False, False)
@@ -179,23 +179,23 @@ Property Get ParentFolderPath(Optional AddYen As Boolean = False) As String
     ParentFolderPath = kccFuncString.ToPathLastYen(ParentFolderPath, AddYen)
 End Property
 
-Rem eƒtƒHƒ‹ƒ_ƒIƒuƒWƒFƒNƒg
+Rem è¦ªãƒ•ã‚©ãƒ«ãƒ€ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 Property Get CurrentFolder() As kccPath
     Set CurrentFolder = VBA.CVar(New kccPath).Init(Me.CurrentFolderPath, False)
 End Property
 
-Rem eƒtƒHƒ‹ƒ_ƒIƒuƒWƒFƒNƒg
+Rem è¦ªãƒ•ã‚©ãƒ«ãƒ€ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 Property Get ParentFolder() As kccPath
     Set ParentFolder = VBA.CVar(New kccPath).Init(Me.ParentFolderPath, False)
 End Property
 
-Rem ‘¶İ‚µ‚È‚¢‚ÆƒGƒ‰[‚É‚È‚é‚©‚à
-Rem FSOƒtƒ@ƒCƒ‹ƒIƒuƒWƒFƒNƒg
+Rem å­˜åœ¨ã—ãªã„ã¨ã‚¨ãƒ©ãƒ¼ã«ãªã‚‹ã‹ã‚‚
+Rem FSOãƒ•ã‚¡ã‚¤ãƒ«ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 Public Function File() As Scripting.File: Set File = fso.GetFile(FullPath): End Function
-Rem FSOƒtƒHƒ‹ƒ_ƒIƒuƒWƒFƒNƒg
+Rem FSOãƒ•ã‚©ãƒ«ãƒ€ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 Public Function Folder() As Scripting.Folder: Set Folder = fso.GetFolder(Me.CurrentFolderPath): End Function
 
-Rem VBƒvƒƒWƒFƒNƒg
+Rem VBãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆ
 Public Function VBProject() As VBIDE.VBProject
 On Error Resume Next
 '    Dim VBP As VBProject
@@ -214,19 +214,19 @@ On Error Resume Next
     Set VBProject = wb.VBProject
 End Function
 
-Rem Excelƒ[ƒNƒuƒbƒN
+Rem Excelãƒ¯ãƒ¼ã‚¯ãƒ–ãƒƒã‚¯
 Public Function Workbook() As Excel.Workbook
     '[Workbooks("Book1.xlsx")]
     '[Workbooks("Book1")]
     Set Workbook = GetWorkbook(Me.FileName)
 End Function
 
-Rem ‘Š‘ÎƒpƒX‚É‚æ‚èˆÚ“®‚µ‚½ƒtƒHƒ‹ƒ_‚ÌƒpƒX
+Rem ç›¸å¯¾ãƒ‘ã‚¹ã«ã‚ˆã‚Šç§»å‹•ã—ãŸãƒ•ã‚©ãƒ«ãƒ€ã®ãƒ‘ã‚¹
 Public Function MoveFolderPath(relative_path) As String
     MoveFolderPath = kccFuncString.AbsolutePathNameEx(Me.FullPath, relative_path)
 End Function
 
-Rem ‘Š‘ÎƒpƒX‚É‚æ‚èˆÚ“®‚µ‚½ƒtƒHƒ‹ƒ_‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğV‹K¶¬
+Rem ç›¸å¯¾ãƒ‘ã‚¹ã«ã‚ˆã‚Šç§»å‹•ã—ãŸãƒ•ã‚©ãƒ«ãƒ€ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æ–°è¦ç”Ÿæˆ
 Public Function MovePathByFolder(relative_path, Optional KeepFileName As Boolean = False) As kccPath
     Dim bas As String: bas = Me.CurrentFolderPath
     Dim ref As String: ref = relative_path
@@ -234,9 +234,9 @@ Public Function MovePathByFolder(relative_path, Optional KeepFileName As Boolean
     Set MovePathByFolder = VBA.CVar(New kccPath).Init(ppp, False)
 End Function
 
-Rem ‘Š‘ÎƒpƒX‚É‚æ‚èˆÚ“®‚µ‚½ƒtƒ@ƒCƒ‹‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğV‹K¶¬
-Rem   Šù‘¶‚ªƒtƒHƒ‹ƒ_‚Ì‚Æ‚«FuŒ»ƒpƒX\ƒtƒ@ƒCƒ‹–¼v
-Rem   Šù‘¶‚ªƒtƒ@ƒCƒ‹‚Ì‚Æ‚«FuƒJƒŒƒ“ƒgƒtƒHƒ‹ƒ_\ƒtƒ@ƒCƒ‹–¼v
+Rem ç›¸å¯¾ãƒ‘ã‚¹ã«ã‚ˆã‚Šç§»å‹•ã—ãŸãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æ–°è¦ç”Ÿæˆ
+Rem   æ—¢å­˜ãŒãƒ•ã‚©ãƒ«ãƒ€ã®ã¨ãï¼šã€Œç¾ãƒ‘ã‚¹\ãƒ•ã‚¡ã‚¤ãƒ«åã€
+Rem   æ—¢å­˜ãŒãƒ•ã‚¡ã‚¤ãƒ«ã®ã¨ãï¼šã€Œã‚«ãƒ¬ãƒ³ãƒˆãƒ•ã‚©ãƒ«ãƒ€\ãƒ•ã‚¡ã‚¤ãƒ«åã€
 Public Function MovePathByFile(relative_path) As kccPath
     Dim bas As String: bas = Me.CurrentFolderPath
     Dim ref As String: ref = IIf(relative_path Like "*\*", "", ".\") & relative_path
@@ -244,22 +244,22 @@ Public Function MovePathByFile(relative_path) As kccPath
     Set MovePathByFile = VBA.CVar(New kccPath).Init(ppp, True)
 End Function
 
-Rem ƒtƒHƒ‹ƒ_‚ğˆê‹C‚Éì¬
-Rem  ¬Œ÷‚µ‚½ê‡
-Rem  ¬Œ÷:Šù‚É‘¶İ‚µ‚½ê‡
-Rem  ¸”s:ƒtƒ@ƒCƒ‹‚ªŠù‚É‘¶İ‚µ‚½ê‡
-Rem  ¸”s:‚»‚êˆÈŠO‚Ì——R
+Rem ãƒ•ã‚©ãƒ«ãƒ€ã‚’ä¸€æ°—ã«ä½œæˆ
+Rem  æˆåŠŸã—ãŸå ´åˆ
+Rem  æˆåŠŸ:æ—¢ã«å­˜åœ¨ã—ãŸå ´åˆ
+Rem  å¤±æ•—:ãƒ•ã‚¡ã‚¤ãƒ«ãŒæ—¢ã«å­˜åœ¨ã—ãŸå ´åˆ
+Rem  å¤±æ•—:ãã‚Œä»¥å¤–ã®ç†ç”±
 Public Function CreateFolder() As kccPath
     Set CreateFolder = Me
     If Not kccFuncPath.CreateDirectoryEx(Me.CurrentFolderPath) Then
-        Debug.Print "CreateFolder ¸”s : " & Me.CurrentFolderPath
+        Debug.Print "CreateFolder å¤±æ•— : " & Me.CurrentFolderPath
     End If
 End Function
 
 Public Function DeleteFolder()
 '    On Error Resume Next
     If fso.FolderExists(Me.CurrentFolderPath) Then
-        '1•b‹ó‚¯‚Ä3‰ñƒŠƒgƒ‰ƒC
+        '1ç§’ç©ºã‘ã¦3å›ãƒªãƒˆãƒ©ã‚¤
         Dim n As Long: n = 3
         Do
             On Error Resume Next
@@ -268,14 +268,14 @@ Public Function DeleteFolder()
             On Error GoTo 0
             Application.Wait [Now() + "00:00:01"]
             n = n - 1
-            If n = 0 Then Err.Raise 9999, "DeleteFolder", "íœ‚Å‚«‚Ü‚¹‚ñ"
+            If n = 0 Then Err.Raise 9999, "DeleteFolder", "å‰Šé™¤ã§ãã¾ã›ã‚“"
         Loop
         DoEvents
     End If
 End Function
 
-Rem ƒtƒHƒ‹ƒ_‚Ìƒtƒ@ƒCƒ‹‚ğ‚Ü‚Æ‚ß‚ÄƒRƒs[‚·‚é
-Rem ‘¬“x‚Í–³‹B
+Rem ãƒ•ã‚©ãƒ«ãƒ€ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã¾ã¨ã‚ã¦ã‚³ãƒ”ãƒ¼ã™ã‚‹
+Rem é€Ÿåº¦ã¯ç„¡è¦–ã€‚
 Public Function CopyFiles(dest As kccPath, _
         Optional withFilterString As String = "*", _
         Optional withoutFilterString As String = "")
@@ -293,18 +293,18 @@ Public Function CopyFiles(dest As kccPath, _
     Next
 End Function
 
-Rem ƒtƒHƒ‹ƒ_‚ª‘¶İ‚·‚é‚©”Û‚©
+Rem ãƒ•ã‚©ãƒ«ãƒ€ãŒå­˜åœ¨ã™ã‚‹ã‹å¦ã‹
 Public Function FolderExists() As Boolean
     FolderExists = fso.FolderExists(Me.FullPath)
 End Function
 
-Rem ƒpƒX•¶š—ñ‚ğ’Pƒ‚É’uŠ·
+Rem ãƒ‘ã‚¹æ–‡å­—åˆ—ã‚’å˜ç´”ã«ç½®æ›
 Public Function ReplacePath(src, dest) As kccPath
     Set ReplacePath = Me.Clone
     ReplacePath.FullPath = Replace(ReplacePath.FullPath, src, dest)
 End Function
 
-Rem ƒpƒX•¶š—ñ‚ğƒ}ƒWƒbƒNƒiƒ“ƒo[‚É‚æ‚è’uŠ·
+Rem ãƒ‘ã‚¹æ–‡å­—åˆ—ã‚’ãƒã‚¸ãƒƒã‚¯ãƒŠãƒ³ãƒãƒ¼ã«ã‚ˆã‚Šç½®æ›
 Public Function ReplacePathAuto(Optional DateTime, Optional FileName) As kccPath
     Dim obj As kccPath: Set obj = Me.Clone
     If VBA.IsMissing(DateTime) Then

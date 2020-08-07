@@ -11,7 +11,7 @@ Rem ----------------------------------------------------------------------------
 Rem
 Rem  @module        kccFuncString
 Rem
-Rem  @description   •¶š—ñ•ÏŠ·ŠÖ”
+Rem  @description   æ–‡å­—åˆ—å¤‰æ›é–¢æ•°
 Rem
 Rem  @update        2020/08/06
 Rem
@@ -21,13 +21,13 @@ Rem  @license       MIT (http://www.opensource.org/licenses/mit-license.php)
 Rem
 Rem --------------------------------------------------------------------------------
 
-Rem RightŠÖ”Šg’£  ÅŒã‚ÉoŒ»‚·‚é‹æØ‚è•¶š—ñ‚ğØ‚ê–Ú‚Æ‚µ‚Ä‰E‘¤‚Ì•¶š‚ğ•Ô‚·
+Rem Righté–¢æ•°æ‹¡å¼µ  æœ€å¾Œã«å‡ºç¾ã™ã‚‹åŒºåˆ‡ã‚Šæ–‡å­—åˆ—ã‚’åˆ‡ã‚Œç›®ã¨ã—ã¦å³å´ã®æ–‡å­—ã‚’è¿”ã™
 Rem
-Rem  @param base_str      æ‚èo‚µŒ³•¶š—ñ
-Rem  @param cut_str       Ø’f•¶š—ñi––”ö‚©‚çŒŸõ‚µ‚ÄŠY“–‚·‚é•¶š—ñ‚Ìè‘O‚Ü‚Å‚ğæ‚èo‚·j
-Rem  @param cut_inc       Ø’f•¶š—ñ‚ğŠÜ‚ß‚Ä•Ô‚·‚©‚Ç‚¤‚©i’Êí‚ÍœŠO‚·‚éj
-Rem  @param shift_len     æ‚èo‚µ•¶š—ñ‚ğ—]•ª‚Éæ‚èo‚·•¶š”iƒvƒ‰ƒXjAí‚è—‚Æ‚·•¶š”iƒ}ƒCƒiƒXj
-Rem  @param should_fill   ‘¶İ‚µ‚È‚¢ê‡‚Í“ü—Í•¶š—ñ‚Å–„‚ß‚é‚©iŠù’èTruej
+Rem  @param base_str      å–ã‚Šå‡ºã—å…ƒæ–‡å­—åˆ—
+Rem  @param cut_str       åˆ‡æ–­æ–‡å­—åˆ—ï¼ˆæœ«å°¾ã‹ã‚‰æ¤œç´¢ã—ã¦è©²å½“ã™ã‚‹æ–‡å­—åˆ—ã®æ‰‹å‰ã¾ã§ã‚’å–ã‚Šå‡ºã™ï¼‰
+Rem  @param cut_inc       åˆ‡æ–­æ–‡å­—åˆ—ã‚’å«ã‚ã¦è¿”ã™ã‹ã©ã†ã‹ï¼ˆé€šå¸¸ã¯é™¤å¤–ã™ã‚‹ï¼‰
+Rem  @param shift_len     å–ã‚Šå‡ºã—æ–‡å­—åˆ—ã‚’ä½™åˆ†ã«å–ã‚Šå‡ºã™æ–‡å­—æ•°ï¼ˆãƒ—ãƒ©ã‚¹ï¼‰ã€å‰Šã‚Šè½ã¨ã™æ–‡å­—æ•°ï¼ˆãƒã‚¤ãƒŠã‚¹ï¼‰
+Rem  @param should_fill   å­˜åœ¨ã—ãªã„å ´åˆã¯å…¥åŠ›æ–‡å­—åˆ—ã§åŸ‹ã‚ã‚‹ã‹ï¼ˆæ—¢å®šTrueï¼‰
 Rem
 Rem  @return As String
 Rem
@@ -50,10 +50,10 @@ Public Function RightStrRev(base_str, cut_str, _
     End If
 End Function
 
-Rem ’ÊíƒgƒŠƒ€‚É‰Á‚¦‚ÄA•¶š—ñ’†‚Ì˜A‘±ƒXƒy[ƒX‚ğƒVƒ“ƒOƒ‹ƒXƒy[ƒX‚É•ÏŠ·‚·‚éB
-Rem ExcelŠÖ”‚ÌTRIMŒİŠ·
+Rem é€šå¸¸ãƒˆãƒªãƒ ã«åŠ ãˆã¦ã€æ–‡å­—åˆ—ä¸­ã®é€£ç¶šã‚¹ãƒšãƒ¼ã‚¹ã‚’ã‚·ãƒ³ã‚°ãƒ«ã‚¹ãƒšãƒ¼ã‚¹ã«å¤‰æ›ã™ã‚‹ã€‚
+Rem Excelé–¢æ•°ã®TRIMäº’æ›
 Rem
-Rem  @param base_str       “ü—Í•¶š—ñ
+Rem  @param base_str       å…¥åŠ›æ–‡å­—åˆ—
 Rem
 Rem  @return As String
 Rem
@@ -67,17 +67,17 @@ Public Function Trim2to1(ByVal base_str) As String
     Loop
 End Function
 
-Rem  @description ‚ ‚ç‚ä‚é‰‚ßŠ‡ŒÊ‚©‚ç•Â‚¶Š‡ŒÊ‚ğ•Ô‚·ŠÖ”
+Rem  @description ã‚ã‚‰ã‚†ã‚‹åˆã‚æ‹¬å¼§ã‹ã‚‰é–‰ã˜æ‹¬å¼§ã‚’è¿”ã™é–¢æ•°
 Rem
-Rem  @param open_brackets       ‰‚ßŠ‡ŒÊi‹@íˆË‘¶•¶š‘Î‰j
+Rem  @param open_brackets       åˆã‚æ‹¬å¼§ï¼ˆæ©Ÿç¨®ä¾å­˜æ–‡å­—å¯¾å¿œï¼‰
 Rem
-Rem  @return As String          •Â‚¶Š‡ŒÊ
+Rem  @return As String          é–‰ã˜æ‹¬å¼§
 Rem
 Function OpenBracketsToClose(open_brackets) As String
     Dim stb As String: stb = open_brackets
     Dim etb As String: etb = ""
     Select Case stb
-        Case "[", "{", "<", "m", "o", "ƒ"
+        Case "[", "{", "<", "ï¼»", "ï½›", "ï¼œ"
             etb = ChrW(AscW(stb) + 2)
         Case ChrW(171)
             etb = ChrW(AscW(stb) + 16)
@@ -87,17 +87,17 @@ Function OpenBracketsToClose(open_brackets) As String
     OpenBracketsToClose = etb
 End Function
 
-Rem •¶š—ñ‚ÉŠÜ‚Ü‚ê‚éŠ‡ŒÊ‚ğƒlƒXƒg‚É‰‚¶‚Ä•Ï‰»‚³‚¹‚éŠÖ”
+Rem æ–‡å­—åˆ—ã«å«ã¾ã‚Œã‚‹æ‹¬å¼§ã‚’ãƒã‚¹ãƒˆã«å¿œã˜ã¦å¤‰åŒ–ã•ã›ã‚‹é–¢æ•°
 Rem
-Rem  @param base_str            “ü—Í•¶š—ñ
-Rem  @param open_Bracket        ’uŠ·‘ÎÛ‚Ì‰‚ßŠ‡ŒÊ (Šù’è’l:ŠÛŠ‡ŒÊ)
-Rem  @param replaced_brackets   ’uŠ·Œã‚Ì‰‚ßŠ‡ŒÊ‚Ì”z—ñ (Šù’è’l:[{(<‚Ì4’iŠK)
+Rem  @param base_str            å…¥åŠ›æ–‡å­—åˆ—
+Rem  @param open_Bracket        ç½®æ›å¯¾è±¡ã®åˆã‚æ‹¬å¼§ (æ—¢å®šå€¤:ä¸¸æ‹¬å¼§)
+Rem  @param replaced_brackets   ç½®æ›å¾Œã®åˆã‚æ‹¬å¼§ã®é…åˆ— (æ—¢å®šå€¤:[{(<ã®4æ®µéš)
 Rem
-Rem  @return As String          Š‡ŒÊ‚ğ’uŠ·Ï‚İ‚Ì•¶š—ñ
+Rem  @return As String          æ‹¬å¼§ã‚’ç½®æ›æ¸ˆã¿ã®æ–‡å­—åˆ—
 Rem
 Rem  @note
-Rem      Š‡ŒÊ‚ÌƒlƒXƒg‚Í•¶š—ñ‚Ìæ“ª‚©‚ç‡Ÿ•ÏŠ·‚·‚éƒƒWƒbƒN
-Rem      ‰‚ß`•Â‚¶‚ª•sŠ®‘S‚Å‚àˆêØŠÖ’m‚µ‚È‚¢‚Ì‚Å’ˆÓ‚·‚é‚±‚Æ
+Rem      æ‹¬å¼§ã®ãƒã‚¹ãƒˆã¯æ–‡å­—åˆ—ã®å…ˆé ­ã‹ã‚‰é †æ¬¡å¤‰æ›ã™ã‚‹ãƒ­ã‚¸ãƒƒã‚¯
+Rem      åˆã‚ï½é–‰ã˜ãŒä¸å®Œå…¨ã§ã‚‚ä¸€åˆ‡é–¢çŸ¥ã—ãªã„ã®ã§æ³¨æ„ã™ã‚‹ã“ã¨
 Rem
 Rem  @example
 Rem       IN : "Array(aaa, Array( hoge, fuga, piyo, Array(xxx), chun), bbb)"
@@ -128,11 +128,11 @@ Function ReplaceBracketsNest( _
     ReplaceBracketsNest = base_str
 End Function
 
-Rem ‹æØ‚è•¶š—ñ‚Ì‚¤‚¿‚©‚Á‚±‚ÉˆÍ‚í‚ê‚½”ÍˆÍ‚¾‚¯‚Ì•ªŠ„Œ‹‰Ê‚ğ•Ô‚·
+Rem åŒºåˆ‡ã‚Šæ–‡å­—åˆ—ã®ã†ã¡ã‹ã£ã“ã«å›²ã‚ã‚ŒãŸç¯„å›²ã ã‘ã®åˆ†å‰²çµæœã‚’è¿”ã™
 Rem
-Rem  @param base_str        “ü—Í•¶š—ñ
-Rem  @param start_brackets  ŠJn‚©‚Á‚±‚Ìí—ŞiI—¹ƒJƒbƒR‚Í©“®”»’fj
-Rem  @param remove_brackets ƒJƒbƒR‚ğ...True:íœ‚·‚é(Šù’è) False:c‚·
+Rem  @param base_str        å…¥åŠ›æ–‡å­—åˆ—
+Rem  @param start_brackets  é–‹å§‹ã‹ã£ã“ã®ç¨®é¡ï¼ˆçµ‚äº†ã‚«ãƒƒã‚³ã¯è‡ªå‹•åˆ¤æ–­ï¼‰
+Rem  @param remove_brackets ã‚«ãƒƒã‚³ã‚’...True:å‰Šé™¤ã™ã‚‹(æ—¢å®š) False:æ®‹ã™
 Rem
 Rem  @return As Variant/Variant(0 To #)
 Rem
@@ -152,7 +152,7 @@ Rem          String "[abc,def],ghi[,jkl,mno],pqr" >> String(0 to 4) {"abc","def"
 Rem          String "abc,def,ghi,jkl,mno[,pqr]"   >> String(0 to 1) {"","pqr"}
 Rem
 Rem  @note
-Rem     “ü‚êq‚É‚Í”ñ‘Î‰
+Rem     å…¥ã‚Œå­ã«ã¯éå¯¾å¿œ
 Rem
 Public Function SplitWithInBrackets(ByVal base_str, _
                                         start_brackets, _
@@ -179,46 +179,46 @@ Public Function SplitWithInBrackets(ByVal base_str, _
     SplitWithInBrackets = Split(vbNullString)
     base_str = Replace(base_str, vbLf, "")
 
-    ' ŒŸõğŒŠ‡ŒÊ“àˆÈŠO‚ğ’Šo
+    ' æ¤œç´¢æ¡ä»¶ï¼æ‹¬å¼§å†…ä»¥å¤–ã‚’æŠ½å‡º
     'reg.Pattern = "^(.*?)\(|\)(.*?)\(|\)(.*?).*$"
     reg.Pattern = "^(.*?)" & openDelim & "|" & closeDelim & "(.*?)" & openDelim & "|" & closeDelim & "(.*?).*$"
     'reg.Pattern = "\[[^\[\]]*(?=\])"
-    ' •¶š—ñ‚ÌÅŒã‚Ü‚ÅŒŸõ‚·‚é
+    ' æ–‡å­—åˆ—ã®æœ€å¾Œã¾ã§æ¤œç´¢ã™ã‚‹
     reg.Global = True
 
-    ' ŒŸõˆê’v•¶š‚ğƒJƒ“ƒ}‚É’u‚«Š·‚¦‚é
+    ' æ¤œç´¢ä¸€è‡´æ–‡å­—ã‚’ã‚«ãƒ³ãƒã«ç½®ãæ›ãˆã‚‹
     retVal = reg.Replace(base_str, CashDelimiter)
 
     If IsEmpty(retVal) Or retVal = "" Then Exit Function
     If reg.Execute(base_str).Count = 0 Then Exit Function
 
-    ' æ“ª‚ÆÅŒã‚ÌƒJƒ“ƒ}•¶š‚ğœ‹‚·‚é
+    ' å…ˆé ­ã¨æœ€å¾Œã®ã‚«ãƒ³ãƒæ–‡å­—ã‚’é™¤å»ã™ã‚‹
     retVal = Mid(retVal, 2, Len(retVal) - 2)
 
-    ' Š‡ŒÊ“à‚Ì•¶š—ñ‚ğŠ‡ŒÊ‚Ì”‚¾‚¯”z—ñ‚Æ‚µ‚Äæ“¾
+    ' æ‹¬å¼§å†…ã®æ–‡å­—åˆ—ã‚’æ‹¬å¼§ã®æ•°ã ã‘é…åˆ—ã¨ã—ã¦å–å¾—
     SplitWithInBrackets = Split(retVal, CashDelimiter)
 
 End Function
 
 
 
-Rem ƒtƒHƒ‹ƒ_‚Ìâ‘ÎƒpƒX‚Æƒtƒ@ƒCƒ‹‚Ì‘Š‘ÎƒpƒX‚ğ‡¬‚µ‚ÄA–Ú“I‚Ìƒtƒ@ƒCƒ‹‚Ìâ‘ÎƒpƒX‚ğæ“¾‚·‚éŠÖ”
+Rem ãƒ•ã‚©ãƒ«ãƒ€ã®çµ¶å¯¾ãƒ‘ã‚¹ã¨ãƒ•ã‚¡ã‚¤ãƒ«ã®ç›¸å¯¾ãƒ‘ã‚¹ã‚’åˆæˆã—ã¦ã€ç›®çš„ã®ãƒ•ã‚¡ã‚¤ãƒ«ã®çµ¶å¯¾ãƒ‘ã‚¹ã‚’å–å¾—ã™ã‚‹é–¢æ•°
 Rem
 Rem  @name     AbsolutePathNameEx
 Rem  @oldname  BuildPathEx
 Rem
-Rem  @param base_path      Šî€ƒpƒX
-Rem  @param ref_path       Šî€ƒpƒX‚©‚ç‚ÌˆÚ“®‚ğ¦‚·‘Š‘ÎƒpƒXi‚Ü‚½‚Íã‘‚«‚·‚éâ‘ÎƒpƒXj
+Rem  @param base_path      åŸºæº–ãƒ‘ã‚¹
+Rem  @param ref_path       åŸºæº–ãƒ‘ã‚¹ã‹ã‚‰ã®ç§»å‹•ã‚’ç¤ºã™ç›¸å¯¾ãƒ‘ã‚¹ï¼ˆã¾ãŸã¯ä¸Šæ›¸ãã™ã‚‹çµ¶å¯¾ãƒ‘ã‚¹ï¼‰
 Rem
-Rem  @return   As String   ˜AŒ‹Œã‚Ìâ‘ÎƒpƒX
+Rem  @return   As String   é€£çµå¾Œã®çµ¶å¯¾ãƒ‘ã‚¹
 Rem
 Rem  @note
-Rem          fso.GetAbsolutePathName(fso.BuildPath(base_path, ref_path))‚Ì–â‘è‚ğ‰ğÁ‚µ‚½ŠÖ”
-Rem          * UNC‚É..\‚µ‚½APC’¼‰º‚É‚ÍˆÚ“®‚Å‚«‚È‚¢
-Rem          * UNC‰ğÍ‚ª’´’á‘¬
-Rem          * ƒtƒHƒ‹ƒ_––”ö‚É\‚ª–³‚¢
+Rem          fso.GetAbsolutePathName(fso.BuildPath(base_path, ref_path))ã®å•é¡Œã‚’è§£æ¶ˆã—ãŸé–¢æ•°
+Rem          * UNCã«..\ã—ãŸæ™‚ã€PCç›´ä¸‹ã«ã¯ç§»å‹•ã§ããªã„
+Rem          * UNCè§£æãŒè¶…ä½é€Ÿ
+Rem          * ãƒ•ã‚©ãƒ«ãƒ€æœ«å°¾ã«\ãŒç„¡ã„
 Rem          *
-Rem         ¦UNCƒpƒXƒlƒbƒgƒ[ƒNƒRƒ“ƒsƒ…[ƒ^ã‚Ìƒtƒ@ƒCƒ‹‚ğQÆ‚·‚éƒpƒX‚Å\\‚©‚çn‚Ü‚éƒAƒŒ
+Rem         â€»UNCãƒ‘ã‚¹ï¼ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ã‚³ãƒ³ãƒ”ãƒ¥ãƒ¼ã‚¿ä¸Šã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‚ç…§ã™ã‚‹ãƒ‘ã‚¹ã§\\ã‹ã‚‰å§‹ã¾ã‚‹ã‚¢ãƒ¬
 Rem
 Rem  @example
 Rem     base_path = ""
@@ -277,8 +277,8 @@ Public Function AbsolutePathNameEx(ByVal base_path As String, ByVal ref_path As 
             Case ".."
                 If retVal = "" Then retVal = base_path
                 If InStrRev(retVal, "\") = 0 Then
-                    'Err.Raise 8888, "AbsolutePathNameEx", "“’B‚Å‚«‚È‚¢ƒpƒX‚ğw’è‚µ‚Ä‚¢‚Ü‚·B"
-                    AbsolutePathNameEx = "“’B•s”\"
+                    'Err.Raise 8888, "AbsolutePathNameEx", "åˆ°é”ã§ããªã„ãƒ‘ã‚¹ã‚’æŒ‡å®šã—ã¦ã„ã¾ã™ã€‚"
+                    AbsolutePathNameEx = "åˆ°é”ä¸èƒ½"
                     Exit Function
                 End If
                 retVal = Left(retVal, InStrRev(retVal, "\") - 1)
@@ -287,7 +287,7 @@ Public Function AbsolutePathNameEx(ByVal base_path As String, ByVal ref_path As 
                 retVal = retVal & IIf(retVal = "", "", "\") & rpArr(i)
                 rpArr(i) = ""
         End Select
-        '‘Š‘ÎƒpƒX•”•ª‚ª‹ó—“A.\A..\‚ÅI‚í‚Á‚½A––”ö‚Ì\‚ª•s‘«‚·‚é‚Ì‚Å•âŠ®‚ª•K—v
+        'ç›¸å¯¾ãƒ‘ã‚¹éƒ¨åˆ†ãŒç©ºæ¬„ã€.\ã€..\ã§çµ‚ã‚ã£ãŸæ™‚ã€æœ«å°¾ã®\ãŒä¸è¶³ã™ã‚‹ã®ã§è£œå®ŒãŒå¿…è¦
         If i = UBound(rpArr) Then
             If ref_path <> "" Then
                 If Right(ref_path, 1) = "\" Then
@@ -296,18 +296,18 @@ Public Function AbsolutePathNameEx(ByVal base_path As String, ByVal ref_path As 
             End If
         End If
     Next
-    '˜A‘±\‚ÌÁ‹‚Æƒlƒbƒgƒ[ƒNƒpƒX‘Îô
+    'é€£ç¶š\ã®æ¶ˆå»ã¨ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ãƒ‘ã‚¹å¯¾ç­–
     retVal = Replace(retVal, "file:\\", "file://")
     retVal = Replace(retVal, "\\", "\")
     retVal = IIf(Left(retVal, 1) = "\", "\", "") & retVal
     AbsolutePathNameEx = retVal
 End Function
 
-Rem  ƒpƒX–¼‚©‚çƒtƒ@ƒCƒ‹–¼‚ğœ‚¢‚Ä¤ƒpƒX‚ğæ“¾‚µ‚Ü‚·¡iÅŒã‚Éu\v‚Í‚Â‚«‚Ü‚¹‚ñBƒRƒƒ“u:v‚ª‚È‚­‚©‚Â‰~‹L†u\v‚ª‚È‚¢ê‡‚Íƒtƒ@ƒCƒ‹‚Æ‚µ‚Ü‚·j
+Rem  ãƒ‘ã‚¹åã‹ã‚‰ãƒ•ã‚¡ã‚¤ãƒ«åã‚’é™¤ã„ã¦ï½¤ãƒ‘ã‚¹ã‚’å–å¾—ã—ã¾ã™ï½¡ï¼ˆæœ€å¾Œã«ã€Œ\ã€ã¯ã¤ãã¾ã›ã‚“ã€‚ã‚³ãƒ­ãƒ³ã€Œ:ã€ãŒãªãã‹ã¤å††è¨˜å·ã€Œ\ã€ãŒãªã„å ´åˆã¯ãƒ•ã‚¡ã‚¤ãƒ«ã¨ã—ã¾ã™ï¼‰
 'Function GetPathName(PathName As String) As String
-'  Dim l As Long ' •¶š”
-'  Dim yen As Long ' \ ƒtƒHƒ‹ƒ_‚Ì‹æØ‚è‹L†‚ÌˆÊ’u
-'  Dim colon As Long ' : ƒhƒ‰ƒCƒu‚Ì‹L†‚ÌˆÊ’u
+'  Dim l As Long ' æ–‡å­—æ•°
+'  Dim yen As Long ' \ ãƒ•ã‚©ãƒ«ãƒ€ã®åŒºåˆ‡ã‚Šè¨˜å·ã®ä½ç½®
+'  Dim colon As Long ' : ãƒ‰ãƒ©ã‚¤ãƒ–ã®è¨˜å·ã®ä½ç½®
 '
 '  yen = InStrRev(PathName, Application.PathSeparator, compare:=vbBinaryCompare)
 '  colon = InStrRev(PathName, ":", compare:=vbBinaryCompare)
@@ -320,27 +320,27 @@ Rem  ƒpƒX–¼‚©‚çƒtƒ@ƒCƒ‹–¼‚ğœ‚¢‚Ä¤ƒpƒX‚ğæ“¾‚µ‚Ü‚·¡iÅŒã‚Éu\v‚Í‚Â‚«‚Ü‚¹‚ñBƒR
 '  If yen > 0 Then
 '    GetPathName = Left$(PathName, yen - 1)
 '  ElseIf colon > 0 Then
-'    GetPathName = PathName ' ƒhƒ‰ƒCƒu
+'    GetPathName = PathName ' ãƒ‰ãƒ©ã‚¤ãƒ–
 '  Else
-'    GetPathName = vbNullString ' ‰~‹L†u\v‚ª‚È‚¢ê‡‚Íƒtƒ@ƒCƒ‹‚Æ‚µ‚Ü‚·
+'    GetPathName = vbNullString ' å††è¨˜å·ã€Œ\ã€ãŒãªã„å ´åˆã¯ãƒ•ã‚¡ã‚¤ãƒ«ã¨ã—ã¾ã™
 '  End If
 'End Function
 
-Rem ƒtƒ@ƒCƒ‹ƒpƒX‚ğ“WŠJ‚µ‚ÄAƒfƒBƒŒƒNƒgƒŠAƒtƒ@ƒCƒ‹–¼AŠg’£q@‚ğ‚Æ‚è‚¾‚·
+Rem ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ã‚’å±•é–‹ã—ã¦ã€ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã€ãƒ•ã‚¡ã‚¤ãƒ«åã€æ‹¡å¼µå­ã€€ã‚’ã¨ã‚Šã ã™
 Rem
-Rem  @param FullPath        ƒtƒ‹ƒpƒXƒf[ƒ^
-Rem  @param AddPath         –ß‚è’l‚ÉƒtƒHƒ‹ƒ_ƒpƒX‚ğŠÜ‚ß‚é
-Rem  @param AddName         –ß‚è’l‚Éƒx[ƒXƒtƒ@ƒCƒ‹–¼‚ğŠÜ‚ß‚é
-Rem  @param AddExtension    –ß‚è’l‚ÉŠg’£q‚ğŠÜ‚ß‚é
-Rem  @param outPath         Àˆø”‚ÉƒtƒHƒ‹ƒ_ƒpƒX‚ğ•Ô‚·(C:\hoge\)
-Rem  @param outName         Àˆø”‚Éƒtƒ@ƒCƒ‹–¼‚Ü‚½‚ÍƒtƒHƒ‹ƒ_–¼‚ğ•Ô‚·("fuga")
-Rem  @param outExtension    Àˆø”‚ÉŠg’£q‚ğ•Ô‚·(".ext")
-Rem  @param outIsFolder     Àˆø”‚ÉoutName‚ªƒtƒHƒ‹ƒ_‚ÌTrue‚ğ•Ô‚·
+Rem  @param FullPath        ãƒ•ãƒ«ãƒ‘ã‚¹ãƒ‡ãƒ¼ã‚¿
+Rem  @param AddPath         æˆ»ã‚Šå€¤ã«ãƒ•ã‚©ãƒ«ãƒ€ãƒ‘ã‚¹ã‚’å«ã‚ã‚‹
+Rem  @param AddName         æˆ»ã‚Šå€¤ã«ãƒ™ãƒ¼ã‚¹ãƒ•ã‚¡ã‚¤ãƒ«åã‚’å«ã‚ã‚‹
+Rem  @param AddExtension    æˆ»ã‚Šå€¤ã«æ‹¡å¼µå­ã‚’å«ã‚ã‚‹
+Rem  @param outPath         å®Ÿå¼•æ•°ã«ãƒ•ã‚©ãƒ«ãƒ€ãƒ‘ã‚¹ã‚’è¿”ã™(C:\hoge\)
+Rem  @param outName         å®Ÿå¼•æ•°ã«ãƒ•ã‚¡ã‚¤ãƒ«åã¾ãŸã¯ãƒ•ã‚©ãƒ«ãƒ€åã‚’è¿”ã™("fuga")
+Rem  @param outExtension    å®Ÿå¼•æ•°ã«æ‹¡å¼µå­ã‚’è¿”ã™(".ext")
+Rem  @param outIsFolder     å®Ÿå¼•æ•°ã«outNameãŒãƒ•ã‚©ãƒ«ãƒ€ã®æ™‚Trueã‚’è¿”ã™
 Rem
-Rem  @return    As String   Œ‹‡‚µ‚½ƒpƒXƒf[ƒ^
+Rem  @return    As String   çµåˆã—ãŸãƒ‘ã‚¹ãƒ‡ãƒ¼ã‚¿
 Rem
 Rem  @note
-Rem     –ß‚è’l‚âoutName‚É‚Í\‚ª–³‚¢‚Ì‚Å’ˆÓ‚·‚é‚±‚Æ
+Rem     æˆ»ã‚Šå€¤ã‚„outNameã«ã¯\ãŒç„¡ã„ã®ã§æ³¨æ„ã™ã‚‹ã“ã¨
 Rem
 Rem  @example
 Rem     | FullPath          | AddX3 | return            | outPath | outName | outExt | IsFolder |
@@ -370,13 +370,13 @@ Public Function GetPath( _
     If TypeName(FullPath) <> "String" Then Exit Function
     If Len(FullPath) = 0 Then Exit Function
     
-'    FullPath = RenewalPath(FullPath)   '‚±‚ê‚·‚é‚Æƒtƒ@ƒCƒ‹ƒtƒHƒ‹ƒ_”»’è‚ªƒoƒO‚é
+'    FullPath = RenewalPath(FullPath)   'ã“ã‚Œã™ã‚‹ã¨ãƒ•ã‚¡ã‚¤ãƒ«ãƒ•ã‚©ãƒ«ãƒ€åˆ¤å®šãŒãƒã‚°ã‚‹
     If FullPath = "" Then Exit Function
     
-    'ÅŒã‚ª\‚È‚çƒtƒHƒ‹ƒ_ˆµ‚¢B
-    'ˆá‚Á‚Ä‚àfso‚ÅÀ•¨‚©‚ç”»’è‚·‚éB
-    'Àİ‚µ‚È‚¢ƒtƒHƒ‹ƒ_‚Ìê‡AŠg’£q‚Ì—L–³‚Å”»’è‚ğ‚·‚éB
-    'FullPath‚Ì––”ö‚É‚Í\‚ğ•t‚¯‚È‚¢ó‘Ô‚ÅŒã‚Ìˆ—‚Éˆø‚«Œp‚®
+    'æœ€å¾ŒãŒ\ãªã‚‰ãƒ•ã‚©ãƒ«ãƒ€æ‰±ã„ã€‚
+    'é•ã£ã¦ã‚‚fsoã§å®Ÿç‰©ã‹ã‚‰åˆ¤å®šã™ã‚‹ã€‚
+    'å®Ÿåœ¨ã—ãªã„ãƒ•ã‚©ãƒ«ãƒ€ã®å ´åˆã€æ‹¡å¼µå­ã®æœ‰ç„¡ã§åˆ¤å®šã‚’ã™ã‚‹ã€‚
+    'FullPathã®æœ«å°¾ã«ã¯\ã‚’ä»˜ã‘ãªã„çŠ¶æ…‹ã§å¾Œã®å‡¦ç†ã«å¼•ãç¶™ã
     outIsFolder = (FullPath Like "*\")
     If outIsFolder Then
         FullPath = Left$(FullPath, Len(FullPath) - 1)
@@ -384,13 +384,13 @@ Public Function GetPath( _
         outIsFolder = fso.FolderExists(FullPath)
     End If
     
-    'ƒpƒX•”‚Æƒtƒ@ƒCƒ‹•”‚Ì’Šo
+    'ãƒ‘ã‚¹éƒ¨ã¨ãƒ•ã‚¡ã‚¤ãƒ«éƒ¨ã®æŠ½å‡º
     Dim NameAndExt As String
     outPath = Strings.Left(FullPath, Strings.InStrRev(FullPath, "\"))
     NameAndExt = Strings.Right(FullPath, Strings.Len(FullPath) - Strings.InStrRev(FullPath, "\"))
     If outIsFolder Then outName = NameAndExt: GoTo ExitProc
     
-    'ƒtƒ@ƒCƒ‹•”‚ÆŠg’£q‚Ì’Šo
+    'ãƒ•ã‚¡ã‚¤ãƒ«éƒ¨ã¨æ‹¡å¼µå­ã®æŠ½å‡º
     If InStr(NameAndExt, ".") = 0 Then outName = NameAndExt: GoTo ExitProc
     outName = Strings.Left(NameAndExt, Strings.InStrRev(NameAndExt, ".") - 1)
     outExtension = Strings.Right(NameAndExt, Strings.Len(NameAndExt) - Strings.InStrRev(NameAndExt, ".") + 1)
@@ -402,21 +402,21 @@ ExitProc:
     If AddExtension Then GetPath = GetPath & outExtension
 End Function
 
-Rem ƒpƒX‚ğ‹K’è‚Ì‘®‚É‘‚«Š·‚¦‚éBiƒlƒbƒgƒ[ƒNƒhƒ‰ƒCƒu‘Î‰j
+Rem ãƒ‘ã‚¹ã‚’è¦å®šã®æ›¸å¼ã«æ›¸ãæ›ãˆã‚‹ã€‚ï¼ˆãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ãƒ‰ãƒ©ã‚¤ãƒ–å¯¾å¿œï¼‰
 Public Function RenewalPath(ByVal Path As String, Optional AddYen As Boolean = False) As String
-    'ƒhƒbƒg‚Ì—L–³‚Åƒtƒ@ƒCƒ‹ or ƒtƒHƒ‹ƒ_”»’è@•sŠ®‘SB
+    'ãƒ‰ãƒƒãƒˆã®æœ‰ç„¡ã§ãƒ•ã‚¡ã‚¤ãƒ« or ãƒ•ã‚©ãƒ«ãƒ€åˆ¤å®šã€€ä¸å®Œå…¨ã€‚
     If Strings.InStr(Path, ".") = 0 Then Path = Path & IIf(AddYen, "\", "")
     RenewalPath = Strings.Left(Path, 2) & Strings.Replace(Strings.Replace(Path, "/", "\"), "\\", "\", 3)
     RenewalPath = ToPathLastYen(RenewalPath, AddYen)
 End Function
 
-Rem eƒfƒBƒŒƒNƒgƒŠ‚ğ•Ô‚·B
-Rem \ƒ}[ƒN‚Í•t—^‚µ‚È‚¢
+Rem è¦ªãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’è¿”ã™ã€‚
+Rem \ãƒãƒ¼ã‚¯ã¯ä»˜ä¸ã—ãªã„
 Public Function ToPathParentFolder(ByVal Path As String, Optional AddYen As Boolean = False) As String
     ToPathParentFolder = ToPathLastYen(GetPath(RenewalPath(Path), True, False, False), AddYen)
 End Function
 
-Rem ƒpƒX‚ÌÅŒã‚É\‚ğ•t‚¯‚é^Á‚·
+Rem ãƒ‘ã‚¹ã®æœ€å¾Œã«\ã‚’ä»˜ã‘ã‚‹ï¼æ¶ˆã™
 Public Function ToPathLastYen(Path, AddYen As Boolean) As String
     ToPathLastYen = Path
     If AddYen Then

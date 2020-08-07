@@ -11,7 +11,7 @@ Rem ----------------------------------------------------------------------------
 Rem
 Rem  @module        VbProcParamInfo
 Rem
-Rem  @description   VBプログラムのプロシージャのパラメータ情報
+Rem  @description   VB繝励Ο繧ｰ繝ｩ繝縺ｮ繝励Ο繧ｷ繝ｼ繧ｸ繝｣縺ｮ繝代Λ繝｡繝ｼ繧ｿ諠�蝣ｱ
 Rem
 Rem  @update        2020/08/01
 Rem

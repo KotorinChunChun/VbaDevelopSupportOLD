@@ -11,7 +11,7 @@ Rem ----------------------------------------------------------------------------
 Rem
 Rem  @module        kccFuncPath
 Rem
-Rem  @description   ƒtƒ@ƒCƒ‹EƒtƒHƒ‹ƒ_EƒpƒX‰ğÍŠÖ”
+Rem  @description   ãƒ•ã‚¡ã‚¤ãƒ«ãƒ»ãƒ•ã‚©ãƒ«ãƒ€ãƒ»ãƒ‘ã‚¹è§£æé–¢æ•°
 Rem
 Rem  @update        2020/08/06
 Rem
@@ -26,16 +26,16 @@ Rem    Microsoft VBScript Regular Expressions 5.5
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @refModules
-Rem    •s—v
+Rem    ä¸è¦
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @history
-Rem    2019/06/24 ƒ‚ƒWƒ…[ƒ‹®—Š®—¹
-Rem    2019/09/28 FuncFileList‚ÆFuncPath‚ğ“‡‚µFuncFileFolderPath‚Æ‚µ‚ÄÄ’è‹`
-Rem    2019/11/12 SpecialFolders’Ç‰Á
-Rem    2019/12/05 CreateAllFolder‚ğXV
-Rem    2020/02/22 ŒŸõŠÖ”‚É”Ä—pƒtƒBƒ‹ƒ^ˆø”‚ğ’Ç‰Á
-Rem    2020/05/10 “‡ ModIOStreamAoutlook_path_hyperlink_unc
+Rem    2019/06/24 ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«æ•´ç†å®Œäº†
+Rem    2019/09/28 FuncFileListã¨FuncPathã‚’çµ±åˆã—FuncFileFolderPathã¨ã—ã¦å†å®šç¾©
+Rem    2019/11/12 SpecialFoldersè¿½åŠ 
+Rem    2019/12/05 CreateAllFolderã‚’æ›´æ–°
+Rem    2020/02/22 æ¤œç´¢é–¢æ•°ã«æ±ç”¨ãƒ•ã‚£ãƒ«ã‚¿å¼•æ•°ã‚’è¿½åŠ 
+Rem    2020/05/10 çµ±åˆ ModIOStreamã€outlook_path_hyperlink_unc
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @functions
@@ -47,63 +47,63 @@ Rem ----------------------------------------------------------------------------
 
 Rem --------------------------------------------------------------------------------
 Rem
-Rem Unicode‘Î‰”Åƒtƒ@ƒCƒ‹ƒŠƒXƒgì¬ŠÖ”
+Rem Unicodeå¯¾å¿œç‰ˆãƒ•ã‚¡ã‚¤ãƒ«ãƒªã‚¹ãƒˆä½œæˆé–¢æ•°
 Rem
 Rem --------------------------------------------------------------------------------
 Rem
 Rem  @history
 Rem
-Rem 2019/04/24 : ‰‰ñƒŠƒŠ[ƒX
-Rem 2019/04/26 : 4/25ƒuƒƒOƒRƒƒ“ƒg‚Ìw“E‚ğŒ³‚ÉC³
-Rem 2019/04/27 : 64bit‘Î‰BAPI‚ğEx‚É•ÏXBƒGƒNƒXƒvƒ[ƒ‰‡ƒ\[ƒg‚É‘Î‰‚Í‚Å‚«‚Ä‚¢‚È‚¢B
+Rem 2019/04/24 : åˆå›ãƒªãƒªãƒ¼ã‚¹
+Rem 2019/04/26 : 4/25ãƒ–ãƒ­ã‚°ã‚³ãƒ¡ãƒ³ãƒˆã®æŒ‡æ‘˜ã‚’å…ƒã«ä¿®æ­£
+Rem 2019/04/27 : 64bitå¯¾å¿œã€‚APIã‚’Exã«å¤‰æ›´ã€‚ã‚¨ã‚¯ã‚¹ãƒ—ãƒ­ãƒ¼ãƒ©é †ã‚½ãƒ¼ãƒˆã«å¯¾å¿œã¯ã§ãã¦ã„ãªã„ã€‚
 Rem
 Rem --------------------------------------------------------------------------------
 Rem
-Rem ¡g‚¢•û
+Rem â– ä½¿ã„æ–¹
 Rem
-Rem ’á‘¬‚ÈFileSystemObject‚ğg‚í‚¸‚ÉAWindowsAPI‚Ì‚İ‚ğg—p‚µ‚Äƒtƒ@ƒCƒ‹ƒŠƒXƒg‚ğ
-Rem ì¬‚·‚é‚½‚ß‚ÌŠÖ”‚Å‚·B
-Rem „‚ª•K—v‚Æ‚·‚é“Æ“Á‚È‹@”\‚ğ“‹Ú‚µ‚Ä‚¢‚Ü‚·B
+Rem ä½é€ŸãªFileSystemObjectã‚’ä½¿ã‚ãšã«ã€WindowsAPIã®ã¿ã‚’ä½¿ç”¨ã—ã¦ãƒ•ã‚¡ã‚¤ãƒ«ãƒªã‚¹ãƒˆã‚’
+Rem ä½œæˆã™ã‚‹ãŸã‚ã®é–¢æ•°ã§ã™ã€‚
+Rem ç§ãŒå¿…è¦ã¨ã™ã‚‹ç‹¬ç‰¹ãªæ©Ÿèƒ½ã‚’æ­è¼‰ã—ã¦ã„ã¾ã™ã€‚
 Rem
-Rem ˆÈ‰ºA’ˆÓ–€‚Å‚·B
+Rem ä»¥ä¸‹ã€æ³¨æ„äº‹é …ã§ã™ã€‚
 Rem
-Rem 1.parentFolder‚Í––”ö‚É\‚ğ•t‚¯‚½ƒtƒHƒ‹ƒ_ƒpƒX‚ğw’è‚µ‚Ä‚­‚¾‚³‚¢B
-Rem     parentFolder :     -   :  •K{  : ŒŸõ‘ÎÛƒtƒHƒ‹ƒ_‚Ì––”ö‚ª\‚ÅI‚í‚éƒpƒX
+Rem 1.parentFolderã¯æœ«å°¾ã«\ã‚’ä»˜ã‘ãŸãƒ•ã‚©ãƒ«ãƒ€ãƒ‘ã‚¹ã‚’æŒ‡å®šã—ã¦ãã ã•ã„ã€‚
+Rem     parentFolder :     -   :  å¿…é ˆ  : æ¤œç´¢å¯¾è±¡ãƒ•ã‚©ãƒ«ãƒ€ã®æœ«å°¾ãŒ\ã§çµ‚ã‚ã‚‹ãƒ‘ã‚¹
 Rem
-Rem     ––”ö‚É\‚ª–³‚¢‚ÆÀsƒGƒ‰[‚ğ”­¶‚³‚¹‚Ü‚·B
+Rem     æœ«å°¾ã«\ãŒç„¡ã„ã¨å®Ÿè¡Œæ™‚ã‚¨ãƒ©ãƒ¼ã‚’ç™ºç”Ÿã•ã›ã¾ã™ã€‚
 Rem
-Rem 2.AddFile‚ÆAddFolder‚ğÈ—ª‚·‚é‚ÆA‰½‚àæ“¾‚³‚ê‚Ü‚¹‚ñB
-Rem     AddFile      :  False  : È—ª‰Â : ƒtƒ@ƒCƒ‹‚ğ‘ÎÛ‚ÉŠÜ‚ß‚é‚©
-Rem     AddFolder    :  False  : È—ª‰Â : ƒtƒHƒ‹ƒ_‚ğ‘ÎÛ‚ÉŠÜ‚ß‚é‚©
+Rem 2.AddFileã¨AddFolderã‚’çœç•¥ã™ã‚‹ã¨ã€ä½•ã‚‚å–å¾—ã•ã‚Œã¾ã›ã‚“ã€‚
+Rem     AddFile      :  False  : çœç•¥å¯ : ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å¯¾è±¡ã«å«ã‚ã‚‹ã‹
+Rem     AddFolder    :  False  : çœç•¥å¯ : ãƒ•ã‚©ãƒ«ãƒ€ã‚’å¯¾è±¡ã«å«ã‚ã‚‹ã‹
 Rem
-Rem     ­‚È‚­‚Æ‚àŒŸõ‚µ‚½‚¢‚Ç‚¿‚ç‚©‚ğTrue‚É‚µ‚Ä‚­‚¾‚³‚¢B
+Rem     å°‘ãªãã¨ã‚‚æ¤œç´¢ã—ãŸã„ã©ã¡ã‚‰ã‹ã‚’Trueã«ã—ã¦ãã ã•ã„ã€‚
 Rem
-Rem 3.SubMin‚ÆSubMax‚ğÈ—ª‚·‚é‚ÆA’¼‰º‚Ìƒ‚ƒm‚µ‚©æ“¾‚µ‚Ü‚¹‚ñB
-Rem     SubMin       :      0  : È—ª‰Â : ‰½ŠK‘wˆÈ~‚ğ’Tõ‚·‚é‚©i0`nA-1‚Ì‚Í–³§ŒÀj
-Rem     SubMax       :      0  : È—ª‰Â : ‰½ŠK‘wˆÈ‘O‚ğ’Tõ‚·‚é‚©i0`nA-1‚Ì‚Í–³§ŒÀj
+Rem 3.SubMinã¨SubMaxã‚’çœç•¥ã™ã‚‹ã¨ã€ç›´ä¸‹ã®ãƒ¢ãƒã—ã‹å–å¾—ã—ã¾ã›ã‚“ã€‚
+Rem     SubMin       :      0  : çœç•¥å¯ : ä½•éšå±¤ä»¥é™ã‚’æ¢ç´¢ã™ã‚‹ã‹ï¼ˆ0ï½nã€-1ã®æ™‚ã¯ç„¡åˆ¶é™ï¼‰
+Rem     SubMax       :      0  : çœç•¥å¯ : ä½•éšå±¤ä»¥å‰ã‚’æ¢ç´¢ã™ã‚‹ã‹ï¼ˆ0ï½nã€-1ã®æ™‚ã¯ç„¡åˆ¶é™ï¼‰
 Rem
-Rem     parentFolder‚Åw’è‚µ‚½ƒpƒX’¼‰º‚ğ‘æ0ŠK‘w‚Æ‚µ‚ÄƒJƒEƒ“ƒg‚µ‚Ü‚·B
-Rem     ‚æ‚Á‚ÄASubMin‚ÌÈ—ªA0A-1‚Í‘S‚Ä“¯‹`‚Å‚·B
+Rem     parentFolderã§æŒ‡å®šã—ãŸãƒ‘ã‚¹ç›´ä¸‹ã‚’ç¬¬0éšå±¤ã¨ã—ã¦ã‚«ã‚¦ãƒ³ãƒˆã—ã¾ã™ã€‚
+Rem     ã‚ˆã£ã¦ã€SubMinã®çœç•¥ã€0ã€-1ã¯å…¨ã¦åŒç¾©ã§ã™ã€‚
 Rem
-Rem   ”z‰º‚Ì‘S‚Ä‚Ìƒtƒ@ƒCƒ‹‚ğæ“¾‚µ‚½‚¢ê‡‚ÍA-1,-1‚É‚È‚è‚Ü‚·B
-Rem     ‚ ‚é‚¢‚ÍA0,9999‚Æ‚µ‚Ä‚àÀ¿“I‚É“¯‚¶Œ‹‰Ê‚ª“¾‚ç‚ê‚Ü‚·B
+Rem   é…ä¸‹ã®å…¨ã¦ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å–å¾—ã—ãŸã„å ´åˆã¯ã€-1,-1ã«ãªã‚Šã¾ã™ã€‚
+Rem     ã‚ã‚‹ã„ã¯ã€0,9999ã¨ã—ã¦ã‚‚å®Ÿè³ªçš„ã«åŒã˜çµæœãŒå¾—ã‚‰ã‚Œã¾ã™ã€‚
 Rem
-Rem   ¦Šù’è’l‚ğ”z‰º‘S‚Ä‚Ìƒtƒ@ƒCƒ‹‚Æ‚·‚é‚ÆA”œ‘å‚ÈŠÔ‚ª‚©‚©‚é‹°‚ê‚ª‚ ‚é‚½‚ß‚Å‚·B
+Rem   â€»æ—¢å®šå€¤ã‚’é…ä¸‹å…¨ã¦ã®ãƒ•ã‚¡ã‚¤ãƒ«ã¨ã™ã‚‹ã¨ã€è«å¤§ãªæ™‚é–“ãŒã‹ã‹ã‚‹æã‚ŒãŒã‚ã‚‹ãŸã‚ã§ã™ã€‚
 Rem
-Rem 4.–ß‚è’l‚ÍparentFolder‚©‚çŒ©‚½y‘Š‘ÎƒpƒXz‚É‚È‚è‚Ü‚·B
-Rem     â‘ÎƒpƒX‚ğ•Ô‚·‚æ‚¤‚É‚·‚é‚ÆA‘S‚Ä‚Ìƒ‚ƒm‚É“¯ˆê‚Ì•¶š—ñ‚ª•t—^‚³‚ê‚é‚½‚ßA
-Rem     [‚¢ŠK‘w‚ÅŒŸõ‚ğŠJn‚µ‚½‚Éƒƒ‚ƒŠ‚ğ–³‘Ê‚ÉÁ”ï‚·‚é‚Ì‚ğ–h‚®‚½‚ß‚Å‚·B
-Rem     ‚µ‚½‚ª‚Á‚ÄAæ‚èo‚µ‚½ƒAƒCƒeƒ€‚ÍparentFolder‚Æ˜AŒ‹‚µ‚Ä‚©‚çg—p‚µ‚Ü‚·B
+Rem 4.æˆ»ã‚Šå€¤ã¯parentFolderã‹ã‚‰è¦‹ãŸã€ç›¸å¯¾ãƒ‘ã‚¹ã€‘ã«ãªã‚Šã¾ã™ã€‚
+Rem     çµ¶å¯¾ãƒ‘ã‚¹ã‚’è¿”ã™ã‚ˆã†ã«ã™ã‚‹ã¨ã€å…¨ã¦ã®ãƒ¢ãƒã«åŒä¸€ã®æ–‡å­—åˆ—ãŒä»˜ä¸ã•ã‚Œã‚‹ãŸã‚ã€
+Rem     æ·±ã„éšå±¤ã§æ¤œç´¢ã‚’é–‹å§‹ã—ãŸæ™‚ã«ãƒ¡ãƒ¢ãƒªã‚’ç„¡é§„ã«æ¶ˆè²»ã™ã‚‹ã®ã‚’é˜²ããŸã‚ã§ã™ã€‚
+Rem     ã—ãŸãŒã£ã¦ã€å–ã‚Šå‡ºã—ãŸã‚¢ã‚¤ãƒ†ãƒ ã¯parentFolderã¨é€£çµã—ã¦ã‹ã‚‰ä½¿ç”¨ã—ã¾ã™ã€‚
 Rem
-Rem     ‚Ü‚½AƒtƒHƒ‹ƒ_‚Ì––”ö‚É‚Í•K‚¸\‚ğ•t—^‚µ‚½ó‘Ô‚Å•Ô‚µ‚Ü‚·B
-Rem     ¦ƒpƒX•¶š—ñ‚©‚çƒtƒ@ƒCƒ‹‚ÆƒtƒHƒ‹ƒ_‚ğ¯•Ê‚Å‚«‚é‚æ‚¤‚É‚·‚é‚½‚ß‚Å‚·B
+Rem     ã¾ãŸã€ãƒ•ã‚©ãƒ«ãƒ€ã®æœ«å°¾ã«ã¯å¿…ãš\ã‚’ä»˜ä¸ã—ãŸçŠ¶æ…‹ã§è¿”ã—ã¾ã™ã€‚
+Rem     â€»ãƒ‘ã‚¹æ–‡å­—åˆ—ã‹ã‚‰ãƒ•ã‚¡ã‚¤ãƒ«ã¨ãƒ•ã‚©ãƒ«ãƒ€ã‚’è­˜åˆ¥ã§ãã‚‹ã‚ˆã†ã«ã™ã‚‹ãŸã‚ã§ã™ã€‚
 Rem
-Rem 5.•À‚Ñ‡‚Íƒtƒ@ƒCƒ‹¨ƒtƒHƒ‹ƒ_‚Å‚·B
+Rem 5.ä¸¦ã³é †ã¯ãƒ•ã‚¡ã‚¤ãƒ«â†’ãƒ•ã‚©ãƒ«ãƒ€ã§ã™ã€‚
 Rem
-Rem     ¦‚½‚Ô‚ñƒGƒNƒXƒvƒ[ƒ‰‚Å•\¦‚³‚ê‚é‡˜‚Æ‚ÍˆÙ‚È‚è‚Ü‚·B
-Rem     ¦¡ŒãAd—l‚ª•Ï‚í‚é‹°‚ê‚ª‚ ‚è‚Ü‚·B
+Rem     â€»ãŸã¶ã‚“ã‚¨ã‚¯ã‚¹ãƒ—ãƒ­ãƒ¼ãƒ©ã§è¡¨ç¤ºã•ã‚Œã‚‹é †åºã¨ã¯ç•°ãªã‚Šã¾ã™ã€‚
+Rem     â€»ä»Šå¾Œã€ä»•æ§˜ãŒå¤‰ã‚ã‚‹æã‚ŒãŒã‚ã‚Šã¾ã™ã€‚
 Rem
-Rem     —á
+Rem     ä¾‹
 Rem       A001.txt
 Rem       A002.txt
 Rem       A01\
@@ -135,44 +135,44 @@ Rem
 Rem      Dim colPaths As Collection
 Rem
 Rem      Set colPaths = GetFileFolderList(SEARCH_PATH)
-Rem      Debug.Print "‰½‚àæ“¾‚¹‚¸", colPaths.Count
+Rem      Debug.Print "ä½•ã‚‚å–å¾—ã›ãš", colPaths.Count
 Rem
 Rem      Set colPaths = GetFileFolderList(SEARCH_PATH, True)
-Rem      Debug.Print "w’èƒpƒX‚Ìƒtƒ@ƒCƒ‹‚Ì‚İæ“¾", colPaths.Count
+Rem      Debug.Print "æŒ‡å®šãƒ‘ã‚¹ã®ãƒ•ã‚¡ã‚¤ãƒ«ã®ã¿å–å¾—", colPaths.Count
 Rem
 Rem      Set colPaths = GetFileFolderList(SEARCH_PATH, True, True)
-Rem      Debug.Print "w’èƒpƒX‚Ìƒtƒ@ƒCƒ‹‚ÆƒtƒHƒ‹ƒ_‚ğæ“¾", colPaths.Count
+Rem      Debug.Print "æŒ‡å®šãƒ‘ã‚¹ã®ãƒ•ã‚¡ã‚¤ãƒ«ã¨ãƒ•ã‚©ãƒ«ãƒ€ã‚’å–å¾—", colPaths.Count
 Rem
 Rem      Set colPaths = GetFileFolderList(SEARCH_PATH, True, True, 2, 2)
-Rem      Debug.Print "‘æ“ñŠK‘w‚Ìƒtƒ@ƒCƒ‹‚ÆƒtƒHƒ‹ƒ_‚ğæ“¾", colPaths.Count
+Rem      Debug.Print "ç¬¬äºŒéšå±¤ã®ãƒ•ã‚¡ã‚¤ãƒ«ã¨ãƒ•ã‚©ãƒ«ãƒ€ã‚’å–å¾—", colPaths.Count
 Rem
 Rem      Set colPaths = GetFileFolderList(SEARCH_PATH, True, True, 3, -1)
-Rem      Debug.Print "‘æOŠK‘wˆÈ‰º‚Ìƒtƒ@ƒCƒ‹‚ÆƒtƒHƒ‹ƒ_‚ğæ“¾", colPaths.Count
+Rem      Debug.Print "ç¬¬ä¸‰éšå±¤ä»¥ä¸‹ã®ãƒ•ã‚¡ã‚¤ãƒ«ã¨ãƒ•ã‚©ãƒ«ãƒ€ã‚’å–å¾—", colPaths.Count
 Rem
 Rem      Set colPaths = GetFileFolderList(SEARCH_PATH, True, True, -1, -1)
-Rem      Debug.Print "w’èƒpƒXˆÈ‰º‚Ì‘S‚Ä‚Ìƒtƒ@ƒCƒ‹‚ÆƒtƒHƒ‹ƒ_‚ğæ“¾", colPaths.Count
+Rem      Debug.Print "æŒ‡å®šãƒ‘ã‚¹ä»¥ä¸‹ã®å…¨ã¦ã®ãƒ•ã‚¡ã‚¤ãƒ«ã¨ãƒ•ã‚©ãƒ«ãƒ€ã‚’å–å¾—", colPaths.Count
 Rem
 Rem End Sub
 Rem --------------------------------------------------------------------------------
 
 Rem --------------------------------------------------------------------------------
-Rem ¡Outlook‚Åƒ[ƒ‹óMÒ‚ªƒ[ƒJƒ‹ƒpƒX‚ğƒNƒŠƒbƒN‚Å‚«‚é‚æ‚¤‚É‚·‚éƒ}ƒNƒ2
+Rem â– Outlookã§ãƒ¡ãƒ¼ãƒ«å—ä¿¡è€…ãŒãƒ­ãƒ¼ã‚«ãƒ«ãƒ‘ã‚¹ã‚’ã‚¯ãƒªãƒƒã‚¯ã§ãã‚‹ã‚ˆã†ã«ã™ã‚‹ãƒã‚¯ãƒ­2
 Rem
-Rem   ƒpƒX‚ğUNC•\‹L‚É’u‚«Š·‚¦‚é‚±‚Æ‚ÅƒnƒCƒp[ƒŠƒ“ƒN‰»‚³‚ê‚é‚æ‚¤‚É‚·‚éˆÄ
+Rem   ãƒ‘ã‚¹ã‚’UNCè¡¨è¨˜ã«ç½®ãæ›ãˆã‚‹ã“ã¨ã§ãƒã‚¤ãƒ‘ãƒ¼ãƒªãƒ³ã‚¯åŒ–ã•ã‚Œã‚‹ã‚ˆã†ã«ã™ã‚‹æ¡ˆ
 Rem
-Rem   ‚¦‚­‚¹‚é‚¿‚ã‚ñ‚¿‚ã‚ñ
+Rem   ãˆãã›ã‚‹ã¡ã‚…ã‚“ã¡ã‚…ã‚“
 Rem   2019/10/22
 Rem   https://www.excel-chunchun.com/entry/outlook-path-hyperlink-2
 Rem
 Rem --------------------------------------------------------------------------------
 
-Rem Ql‘—¿
+Rem å‚è€ƒè³‡æ–™
 
-Rem ƒlƒbƒgƒ[ƒNƒhƒ‰ƒCƒu‚©‚çUNC‚ğæ“¾‚·‚é—á
+Rem ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ãƒ‰ãƒ©ã‚¤ãƒ–ã‹ã‚‰UNCã‚’å–å¾—ã™ã‚‹ä¾‹
 Rem      http://dobon.net/vb/bbs/log3-14/8196.html
 Rem      http://blog.livedoor.jp/shingo555jp/archives/1819741.html
 
-Rem WNetGetConnection‚É‚Â‚¢‚Ä
+Rem WNetGetConnectionã«ã¤ã„ã¦
 Rem
 Rem      http://www.pinvoke.net/default.aspx/advapi32/WNetGetUniversalName.html
 
@@ -185,20 +185,20 @@ Rem      https://stackoverflow.com/questions/19079162/getting-an-absolute-image-
 Rem      Passing a LPCTSTR parameter to an API call from VBA in a PTRSAFE and UNICODE safe manner
 Rem      https://stackoverflow.com/questions/10402822/passing-a-lpctstr-parameter-to-an-api-call-from-vba-in-a-ptrsafe-and-unicode-saf
 
-Rem API‚ÌA‚ÆW‚Ì’u‚«Š·‚¦‚É‚Â‚¢‚Ä
-Rem      RelaxTools - StringŒ^‚Ì’†g‚Í©“®“I‚ÉS-JIS‚É•ÏŠ·‚³‚ê‚éŒ
+Rem APIã®Aã¨Wã®ç½®ãæ›ãˆã«ã¤ã„ã¦
+Rem      RelaxTools - Stringå‹ã®ä¸­èº«ã¯è‡ªå‹•çš„ã«S-JISã«å¤‰æ›ã•ã‚Œã‚‹ä»¶
 Rem      https://software.opensquare.net/relaxtools/archives/3400/
 
-Rem      Programming Field - Win32API‚ÌŠÖ”‚ğVB‚Åg‚¤‚É‚Íc
+Rem      Programming Field - Win32APIã®é–¢æ•°ã‚’VBã§ä½¿ã†ã«ã¯â€¦
 Rem      https://www.pg-fl.jp/program/tips/vbw32api.htm
 
-Rem      AddinBox - Tips26: MsgBox / Beep‰¹ ‚Æ Unicode•¶š—ñ
+Rem      AddinBox - Tips26: MsgBox / BeepéŸ³ ã¨ Unicodeæ–‡å­—åˆ—
 Rem      http://addinbox.sakura.ne.jp/Excel_Tips26.htm
 
 Option Explicit
 
 Rem WNetGetConnection
-Rem ƒ[ƒJƒ‹ƒfƒoƒCƒX‚ÉŠÖ˜A•t‚¯‚ç‚ê‚½ƒlƒbƒgƒ[ƒNƒŠƒ\[ƒX‚Ì–¼‘O‚ğæ“¾‚µ‚Ü‚·B
+Rem ãƒ­ãƒ¼ã‚«ãƒ«ãƒ‡ãƒã‚¤ã‚¹ã«é–¢é€£ä»˜ã‘ã‚‰ã‚ŒãŸãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ãƒªã‚½ãƒ¼ã‚¹ã®åå‰ã‚’å–å¾—ã—ã¾ã™ã€‚
 #If VBA7 Then
     Private Declare PtrSafe Function WNetGetConnection Lib "mpr.dll" Alias "WNetGetConnectionW" ( _
                                             ByVal lpszLocalName As LongPtr, _
@@ -221,33 +221,33 @@ Rem ) -> DWORD
 Rem http://tokovalue.jp/function/WNetGetConnection.htm
 Rem
 Rem WNetGetConnection
-Rem     ƒ[ƒJƒ‹‘•’u‚É‘Î‰‚·‚éƒlƒbƒgƒ[ƒN‘Œ¹‚Ì–¼‘O‚ğæ“¾‚·‚é¡
+Rem     ãƒ­ãƒ¼ã‚«ãƒ«è£…ç½®ã«å¯¾å¿œã™ã‚‹ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯è³‡æºã®åå‰ã‚’å–å¾—ã™ã‚‹ï½¡
 Rem
-Rem ƒpƒ‰ƒ[ƒ^
+Rem ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 Rem lpLocalName
-Rem      ƒlƒbƒgƒ[ƒN–¼‚ª•K—v‚Èƒ[ƒJƒ‹‘•’u‚Ì–¼‘O‚ğ•\‚· NULL ‚ÅI‚í‚é•¶š—ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğw’è‚·‚éB
+Rem      ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯åãŒå¿…è¦ãªãƒ­ãƒ¼ã‚«ãƒ«è£…ç½®ã®åå‰ã‚’è¡¨ã™ NULL ã§çµ‚ã‚ã‚‹æ–‡å­—åˆ—ã¸ã®ãƒã‚¤ãƒ³ã‚¿ã‚’æŒ‡å®šã™ã‚‹ã€‚
 Rem lpRemoteName
-Rem      Ú‘±‚Ég‚í‚ê‚Ä‚¢‚éƒŠƒ‚[ƒg–¼‚ğ•\‚· NULL ‚ÅI‚í‚é•¶š—ñ‚ğó‚¯æ‚éƒoƒbƒtƒ@‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğw’è‚·‚éB
+Rem      æ¥ç¶šã«ä½¿ã‚ã‚Œã¦ã„ã‚‹ãƒªãƒ¢ãƒ¼ãƒˆåã‚’è¡¨ã™ NULL ã§çµ‚ã‚ã‚‹æ–‡å­—åˆ—ã‚’å—ã‘å–ã‚‹ãƒãƒƒãƒ•ã‚¡ã¸ã®ãƒã‚¤ãƒ³ã‚¿ã‚’æŒ‡å®šã™ã‚‹ã€‚
 Rem lpnLength
-Rem      lpRemoteName ƒpƒ‰ƒ[ƒ^‚ªw‚·ƒoƒbƒtƒ@‚ÌƒTƒCƒYi •¶š”j‚ª“ü‚Á‚½•Ï”‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğw’è‚·‚éB
+Rem      lpRemoteName ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãŒæŒ‡ã™ãƒãƒƒãƒ•ã‚¡ã®ã‚µã‚¤ã‚ºï¼ˆ æ–‡å­—æ•°ï¼‰ãŒå…¥ã£ãŸå¤‰æ•°ã¸ã®ãƒã‚¤ãƒ³ã‚¿ã‚’æŒ‡å®šã™ã‚‹ã€‚
 Rem
-Rem      ƒoƒbƒtƒ@‚ÌƒTƒCƒY‚ª•s\•ª‚ÅŠÖ”‚ª¸”s‚µ‚½ê‡‚Í¤•K—v‚Èƒoƒbƒtƒ@ƒTƒCƒY‚ª‚±‚Ì•Ï”‚ÉŠi”[‚³‚ê‚é¡
+Rem      ãƒãƒƒãƒ•ã‚¡ã®ã‚µã‚¤ã‚ºãŒä¸ååˆ†ã§é–¢æ•°ãŒå¤±æ•—ã—ãŸå ´åˆã¯ï½¤å¿…è¦ãªãƒãƒƒãƒ•ã‚¡ã‚µã‚¤ã‚ºãŒã“ã®å¤‰æ•°ã«æ ¼ç´ã•ã‚Œã‚‹ï½¡
 Rem
-Rem –ß‚è’l
-Rem      ŠÖ”‚ª¬Œ÷‚·‚é‚Æ¤NO_ERROR ‚ª•Ô‚é¡
-Rem      ŠÖ”‚ª¸”s‚·‚é‚Æ¤Ÿ‚Ì‚¢‚¸‚ê‚©‚ÌƒGƒ‰[ƒR[ƒh‚ª•Ô‚é¡
+Rem æˆ»ã‚Šå€¤
+Rem      é–¢æ•°ãŒæˆåŠŸã™ã‚‹ã¨ï½¤NO_ERROR ãŒè¿”ã‚‹ï½¡
+Rem      é–¢æ•°ãŒå¤±æ•—ã™ã‚‹ã¨ï½¤æ¬¡ã®ã„ãšã‚Œã‹ã®ã‚¨ãƒ©ãƒ¼ã‚³ãƒ¼ãƒ‰ãŒè¿”ã‚‹ï½¡
 Rem
-Rem   ’è”                      ˆÓ–¡
-Rem   ERROR_BAD_DEVICE          lpLocalName ƒpƒ‰ƒ[ƒ^‚ªw‚·•¶š—ñ‚ª–³Œø‚Å‚ ‚éB
-Rem   ERROR_NOT_CONNECTED       lpLocalName ƒpƒ‰ƒ[ƒ^‚Åw’è‚µ‚½‘•’u‚ªƒŠƒ_ƒCƒŒƒNƒg‚³‚ê‚Ä‚¢‚È‚¢B
-Rem   ERROR_MORE_DATA           ƒoƒbƒtƒ@‚ÌƒTƒCƒY‚ª•s\•ª‚Å‚ ‚éB
-Rem                             lpnLength ƒpƒ‰ƒ[ƒ^‚ªw‚·•Ï”‚ÉA•K—v‚Èƒoƒbƒtƒ@ƒTƒCƒY‚ªŠi”[‚³‚ê‚Ä‚¢‚é¡
-Rem                             ‚±‚ÌŠÖ”‚Åæ“¾‰Â”\‚ÈƒGƒ“ƒgƒŠ‚ªc‚Á‚Ä‚¢‚é¡
-Rem   ERROR_CONNECTION_UNAVAIL  ‘•’u‚ÍŒ»İÚ‘±‚³‚ê‚Ä‚¢‚È‚¢‚ª¤P‹v“I‚ÈÚ‘±‚Æ‚µ‚Ä‹L‰¯‚³‚ê‚Ä‚¢‚é¡
-Rem   ERROR_NO_NETWORK          ƒlƒbƒgƒ[ƒN‚É‚Â‚È‚ª‚Á‚Ä‚¢‚È‚¢¡
-Rem   ERROR_EXTENDED_ERROR      ƒlƒbƒgƒ[ƒNŒÅ—L‚ÌƒGƒ‰[‚ª”­¶‚µ‚½BƒGƒ‰[‚Ìà–¾‚ğæ“¾‚·‚é‚É‚ÍAWNetGetLastError ŠÖ”‚ğg‚¤¡
-Rem   ERROR_NO_NET_OR_BAD_PATH  w’è‚µ‚½ƒ[ƒJƒ‹–¼‚ğg‚Á‚½Ú‘±‚ğ”F¯‚·‚éƒvƒƒoƒCƒ_‚ª‚È‚¢¡
-Rem                             ‚»‚ÌÚ‘±‚ğg‚¤1‚ÂˆÈã‚ÌƒvƒƒoƒCƒ_‚Ìƒlƒbƒgƒ[ƒN‚É‚Â‚È‚ª‚Á‚Ä‚¢‚È‚¢‰Â”\«‚à‚ ‚é¡
+Rem   å®šæ•°                      æ„å‘³
+Rem   ERROR_BAD_DEVICE          lpLocalName ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãŒæŒ‡ã™æ–‡å­—åˆ—ãŒç„¡åŠ¹ã§ã‚ã‚‹ã€‚
+Rem   ERROR_NOT_CONNECTED       lpLocalName ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã§æŒ‡å®šã—ãŸè£…ç½®ãŒãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã•ã‚Œã¦ã„ãªã„ã€‚
+Rem   ERROR_MORE_DATA           ãƒãƒƒãƒ•ã‚¡ã®ã‚µã‚¤ã‚ºãŒä¸ååˆ†ã§ã‚ã‚‹ã€‚
+Rem                             lpnLength ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãŒæŒ‡ã™å¤‰æ•°ã«ã€å¿…è¦ãªãƒãƒƒãƒ•ã‚¡ã‚µã‚¤ã‚ºãŒæ ¼ç´ã•ã‚Œã¦ã„ã‚‹ï½¡
+Rem                             ã“ã®é–¢æ•°ã§å–å¾—å¯èƒ½ãªã‚¨ãƒ³ãƒˆãƒªãŒæ®‹ã£ã¦ã„ã‚‹ï½¡
+Rem   ERROR_CONNECTION_UNAVAIL  è£…ç½®ã¯ç¾åœ¨æ¥ç¶šã•ã‚Œã¦ã„ãªã„ãŒï½¤æ’ä¹…çš„ãªæ¥ç¶šã¨ã—ã¦è¨˜æ†¶ã•ã‚Œã¦ã„ã‚‹ï½¡
+Rem   ERROR_NO_NETWORK          ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ã«ã¤ãªãŒã£ã¦ã„ãªã„ï½¡
+Rem   ERROR_EXTENDED_ERROR      ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯å›ºæœ‰ã®ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ãŸã€‚ã‚¨ãƒ©ãƒ¼ã®èª¬æ˜ã‚’å–å¾—ã™ã‚‹ã«ã¯ã€WNetGetLastError é–¢æ•°ã‚’ä½¿ã†ï½¡
+Rem   ERROR_NO_NET_OR_BAD_PATH  æŒ‡å®šã—ãŸãƒ­ãƒ¼ã‚«ãƒ«åã‚’ä½¿ã£ãŸæ¥ç¶šã‚’èªè­˜ã™ã‚‹ãƒ—ãƒ­ãƒã‚¤ãƒ€ãŒãªã„ï½¡
+Rem                             ãã®æ¥ç¶šã‚’ä½¿ã†1ã¤ä»¥ä¸Šã®ãƒ—ãƒ­ãƒã‚¤ãƒ€ã®ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ã«ã¤ãªãŒã£ã¦ã„ãªã„å¯èƒ½æ€§ã‚‚ã‚ã‚‹ï½¡
 
 Rem   WNetGetConnection Return Result Constants
 Private Const ERROR_SUCCESS As Long = 0&
@@ -261,14 +261,14 @@ Private Const ERROR_NO_NET_OR_BAD_PATH = 1203&
 
 Private Const INVALID_HANDLE_VALUE = -1
 
-Rem FindFirstFileExŠÖ”‚ğg—p‚·‚é‚©
-Rem True‚É‚µ‚½ê‡‚Å‚àA¸”s‚µ‚½‚ç©“®‚ÅFindFirstFile‚Å‘Î‰‚·‚é
+Rem FindFirstFileExé–¢æ•°ã‚’ä½¿ç”¨ã™ã‚‹ã‹
+Rem Trueã«ã—ãŸå ´åˆã§ã‚‚ã€å¤±æ•—ã—ãŸã‚‰è‡ªå‹•ã§FindFirstFileã§å¯¾å¿œã™ã‚‹
 Private Const USE_FindFirstFileEx = True
 
 Rem --------------------------------------------------------------------------------
-Rem Win32APIŠÖ”QÆ
+Rem Win32APIé–¢æ•°å‚ç…§
 Rem
-Rem æ“ªƒtƒ@ƒCƒ‹ŒŸõ
+Rem å…ˆé ­ãƒ•ã‚¡ã‚¤ãƒ«æ¤œç´¢
 #If VBA7 Then
 Rem http://chokuto.ifdef.jp/urawaza/api/FindFirstFile.html
 Rem https://docs.microsoft.com/ja-jp/windows/desktop/api/fileapi/nf-fileapi-findfirstfilew
@@ -282,7 +282,7 @@ Private Declare Function FindFirstFile Lib "Kernel32" Alias "FindFirstFileW" _
             lpFindFileData As WIN32_FIND_data1) As Long
 #End If
 
-Rem æ“ªƒtƒ@ƒCƒ‹ŒŸõ
+Rem å…ˆé ­ãƒ•ã‚¡ã‚¤ãƒ«æ¤œç´¢
 #If VBA7 Then
 Rem http://tokovalue.jp/function/FindFirstFileEx.htm
 Rem https://docs.microsoft.com/ja-jp/windows/desktop/api/fileapi/nf-fileapi-findfirstfileexw
@@ -303,67 +303,67 @@ Private Declare Function FindFirstFileEx Lib "Kernel32" Alias "FindFirstFileExW"
             ByVal dwAdditionalFlags As Long) As Long
 #End If
 
-Rem FindFirstFileEx‚É‚Â‚¢‚Ä
+Rem FindFirstFileExã«ã¤ã„ã¦
 Rem https://blogs.yahoo.co.jp/nobuyuki_tsukasa/1059830.html
 Rem https://kkamegawa.hatenablog.jp/entry/20100918/p1
-Rem u8.3Œ`®‚Ì’Z‚¢ƒtƒ@ƒCƒ‹–¼‚ğ¶¬‚³‚¹‚È‚¢v‚±‚Æ‚ÅAu81%‚­‚ç‚¢‚É‚‘¬‰»‚³‚ê‚év–—á‚ª‚ ‚Á‚½
+Rem ã€Œ8.3å½¢å¼ã®çŸ­ã„ãƒ•ã‚¡ã‚¤ãƒ«åã‚’ç”Ÿæˆã•ã›ãªã„ã€ã“ã¨ã§ã€ã€Œ81%ãã‚‰ã„ã«é«˜é€ŸåŒ–ã•ã‚Œã‚‹ã€äº‹ä¾‹ãŒã‚ã£ãŸ
 
-Rem   LPCTSTR lpFileName,@@@@@@@// ŒŸõ‚·‚éƒtƒ@ƒCƒ‹–¼
-Rem   FINDEX_INFO_LEVELS fInfoLevelId, // ƒf[ƒ^‚Ìî•ñƒŒƒxƒ‹
-Rem   LPVOID lpFindFileData,@@@@@ // •Ô‚³‚ê‚½î•ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
-Rem   FINDEX_SEARCH_OPS fSearchOp,@@ // Às‚·‚éƒtƒBƒ‹ƒ^ˆ—‚Ìƒ^ƒCƒv
-Rem   LPVOID lpSearchFilter,@@@@@ // ŒŸõğŒ‚Ö‚Ìƒ|ƒCƒ“ƒ^
-Rem   DWORD dwAdditionalFlags@@@@@// •â‘«“I‚ÈŒŸõ§Œäƒtƒ‰ƒO
+Rem   LPCTSTR lpFileName,ã€€ã€€ã€€ã€€ã€€ã€€ã€€// æ¤œç´¢ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«å
+Rem   FINDEX_INFO_LEVELS fInfoLevelId, // ãƒ‡ãƒ¼ã‚¿ã®æƒ…å ±ãƒ¬ãƒ™ãƒ«
+Rem   LPVOID lpFindFileData,ã€€ã€€ã€€ã€€ã€€ // è¿”ã•ã‚ŒãŸæƒ…å ±ã¸ã®ãƒã‚¤ãƒ³ã‚¿
+Rem   FINDEX_SEARCH_OPS fSearchOp,ã€€ã€€ // å®Ÿè¡Œã™ã‚‹ãƒ•ã‚£ãƒ«ã‚¿å‡¦ç†ã®ã‚¿ã‚¤ãƒ—
+Rem   LPVOID lpSearchFilter,ã€€ã€€ã€€ã€€ã€€ // æ¤œç´¢æ¡ä»¶ã¸ã®ãƒã‚¤ãƒ³ã‚¿
+Rem   DWORD dwAdditionalFlagsã€€ã€€ã€€ã€€ã€€// è£œè¶³çš„ãªæ¤œç´¢åˆ¶å¾¡ãƒ•ãƒ©ã‚°
 
 Rem https://docs.microsoft.com/ja-jp/windows/desktop/api/minwinbase/ne-minwinbase-findex_info_levels
 Private Enum FINDEX_INFO_LEVELS
     FindExInfoStandard = 0&
-    Rem FindFirstFile ‚Æ“¯‚¶“®ì¡
+    Rem FindFirstFile ã¨åŒã˜å‹•ä½œï½¡
     
     FindExInfoBasic = 1&
-    Rem WIN32_FIND_DATA‚ÌcAlternateFileName‚É’Z‚¢ƒtƒ@ƒCƒ‹–¼‚ğæ“¾‚µ‚È‚¢B
-    Rem Windows Server 2008AWindows VistaAWindows Server 2003AWindows XP ‚Å‚ÍƒTƒ|[ƒg‚³‚ê‚Ä‚¢‚È‚¢B
-    Rem Windows Server 2008 R2 ‚Æ Windows 7 ‚Å‚Íg—p‰Â”\B
+    Rem WIN32_FIND_DATAã®cAlternateFileNameã«çŸ­ã„ãƒ•ã‚¡ã‚¤ãƒ«åã‚’å–å¾—ã—ãªã„ã€‚
+    Rem Windows Server 2008ã€Windows Vistaã€Windows Server 2003ã€Windows XP ã§ã¯ã‚µãƒãƒ¼ãƒˆã•ã‚Œã¦ã„ãªã„ã€‚
+    Rem Windows Server 2008 R2 ã¨ Windows 7 ã§ã¯ä½¿ç”¨å¯èƒ½ã€‚
     
     FindExInfoMaxInfoLevel = 2&
-    '‚±‚Ì’l‚ÍŒŸØ‚Ég—p‚³‚ê‚Ü‚·B ƒTƒ|[ƒg‚³‚ê‚Ä‚¢‚é’l‚Í‚±‚Ì’l‚æ‚è‚à¬‚³‚¢‚Å‚·B
+    'ã“ã®å€¤ã¯æ¤œè¨¼ã«ä½¿ç”¨ã•ã‚Œã¾ã™ã€‚ ã‚µãƒãƒ¼ãƒˆã•ã‚Œã¦ã„ã‚‹å€¤ã¯ã“ã®å€¤ã‚ˆã‚Šã‚‚å°ã•ã„ã§ã™ã€‚
 End Enum
 
-Rem FINDEX_SEARCH_OPS—ñ‹“‘Ì
-Rem fSearchOp : ƒƒCƒ‹ƒhƒJ[ƒh‚Æ‚ÌÆ‡ˆÈŠO‚ÌƒtƒBƒ‹ƒ^ˆ—ƒ^ƒCƒv‚ğ•\‚·
+Rem FINDEX_SEARCH_OPSåˆ—æŒ™ä½“
+Rem fSearchOp : ãƒ¯ã‚¤ãƒ«ãƒ‰ã‚«ãƒ¼ãƒ‰ã¨ã®ç…§åˆä»¥å¤–ã®ãƒ•ã‚£ãƒ«ã‚¿å‡¦ç†ã‚¿ã‚¤ãƒ—ã‚’è¡¨ã™
 Private Enum FINDEX_SEARCH_OPS
     FindExSearchNameMatch = 0&
-    Rem w’è‚µ‚½ƒtƒ@ƒCƒ‹–¼‚Æˆê’v‚·‚éƒtƒ@ƒCƒ‹‚ğŒŸõ‚µ‚Ü‚·B
-    Rem ‚±‚ÌŒŸõ‘€ì‚ğg—p‚·‚é‚Æ‚«‚Í¤FindFirstFileEx‚ÌlpSearchFilterƒpƒ‰ƒ[ƒ^‚ğNULL‚É‚·‚é•K—v‚ª‚ ‚è‚Ü‚·¡
+    Rem æŒ‡å®šã—ãŸãƒ•ã‚¡ã‚¤ãƒ«åã¨ä¸€è‡´ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ¤œç´¢ã—ã¾ã™ã€‚
+    Rem ã“ã®æ¤œç´¢æ“ä½œã‚’ä½¿ç”¨ã™ã‚‹ã¨ãã¯ï½¤FindFirstFileExã®lpSearchFilterãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’NULLã«ã™ã‚‹å¿…è¦ãŒã‚ã‚Šã¾ã™ï½¡
     
     FindExSearchLimitToDirectories = 1&
-    Rem ƒtƒ@ƒCƒ‹ƒVƒXƒeƒ€‚ªƒfƒBƒŒƒNƒgƒŠƒtƒBƒ‹ƒ^ƒŠƒ“ƒO‚ğƒTƒ|[ƒg‚µ‚Ä‚¢‚éê‡AƒfƒBƒŒƒNƒgƒŠ‚ğŒŸõ‚µ‚Ü‚·B
-    Rem ÀÛ‚É‚ÍƒTƒ|[ƒg‚µ‚Ä‚¢‚éƒtƒ@ƒCƒ‹ƒVƒXƒeƒ€‚Í‘¶İ‚¹‚¸?Œø‰Ê‚ª‚È‚¢‚Æ‚Ì–B
+    Rem ãƒ•ã‚¡ã‚¤ãƒ«ã‚·ã‚¹ãƒ†ãƒ ãŒãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãƒ•ã‚£ãƒ«ã‚¿ãƒªãƒ³ã‚°ã‚’ã‚µãƒãƒ¼ãƒˆã—ã¦ã„ã‚‹å ´åˆã€ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’æ¤œç´¢ã—ã¾ã™ã€‚
+    Rem å®Ÿéš›ã«ã¯ã‚µãƒãƒ¼ãƒˆã—ã¦ã„ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã‚·ã‚¹ãƒ†ãƒ ã¯å­˜åœ¨ã›ãš?åŠ¹æœãŒãªã„ã¨ã®äº‹ã€‚
     Rem https://gist.github.com/kumatti1/33182de4efe99259e275
     Rem http://www.vbalab.net/vbaqa/c-board.cgi?cmd=one;no=58244;id=excel
     
     FindExSearchLimitToDevices = 2&
-    Rem ‚±‚ÌƒtƒBƒ‹ƒ^ƒŠƒ“ƒOƒ^ƒCƒv‚Í—˜—p‚Å‚«‚Ü‚¹‚ñB
+    Rem ã“ã®ãƒ•ã‚£ãƒ«ã‚¿ãƒªãƒ³ã‚°ã‚¿ã‚¤ãƒ—ã¯åˆ©ç”¨ã§ãã¾ã›ã‚“ã€‚
     
     FindExSearchMaxSearchOp = 3&
-    Rem ƒTƒ|[ƒg‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+    Rem ã‚µãƒãƒ¼ãƒˆã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚
 End Enum
 
 Rem dwAdditionalFlags
 Private Const FIND_FIRST_EX_CASE_SENSITIVE = 1&
-Rem ŒŸõ‚Å‚Í‘å•¶š‚Æ¬•¶š‚ª‹æ•Ê‚³‚ê‚Ü‚·B
+Rem æ¤œç´¢ã§ã¯å¤§æ–‡å­—ã¨å°æ–‡å­—ãŒåŒºåˆ¥ã•ã‚Œã¾ã™ã€‚
 
 Private Const FIND_FIRST_EX_LARGE_FETCH = 2&
-Rem ƒfƒBƒŒƒNƒgƒŠ[Æ‰ï‚É‚Í‚æ‚è‘å‚«‚Èƒoƒbƒtƒ@[‚ğg—p‚µ‚Ü‚·B
-Rem ‚±‚ê‚É‚æ‚èAŒŸõ‘€ì‚ÌƒpƒtƒH[ƒ}ƒ“ƒX‚ªŒüã‚·‚é‰Â”\«‚ª‚ ‚è‚Ü‚·B
-Rem Windows Server 2008AWindows VistaAWindows Server 2003A‚¨‚æ‚ÑWindows XPF
-Rem ‚±‚Ì’l‚ÍAWindows Server 2008 R2‚¨‚æ‚ÑWindows 7‚Ü‚Å‚ÍƒTƒ|[ƒg‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+Rem ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãƒ¼ç…§ä¼šã«ã¯ã‚ˆã‚Šå¤§ããªãƒãƒƒãƒ•ã‚¡ãƒ¼ã‚’ä½¿ç”¨ã—ã¾ã™ã€‚
+Rem ã“ã‚Œã«ã‚ˆã‚Šã€æ¤œç´¢æ“ä½œã®ãƒ‘ãƒ•ã‚©ãƒ¼ãƒãƒ³ã‚¹ãŒå‘ä¸Šã™ã‚‹å¯èƒ½æ€§ãŒã‚ã‚Šã¾ã™ã€‚
+Rem Windows Server 2008ã€Windows Vistaã€Windows Server 2003ã€ãŠã‚ˆã³Windows XPï¼š
+Rem ã“ã®å€¤ã¯ã€Windows Server 2008 R2ãŠã‚ˆã³Windows 7ã¾ã§ã¯ã‚µãƒãƒ¼ãƒˆã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚
 
 Private Const FIND_FIRST_EX_ON_DISK_ENTRIES_ONLY = 4&
-Rem Œ‹‰Ê‚ğ•¨—“I‚ÉƒfƒBƒXƒNã‚É‚ ‚éƒtƒ@ƒCƒ‹‚É§ŒÀ‚µ‚Ü‚·B
-Rem ‚±‚Ìƒtƒ‰ƒO‚ÍAƒtƒ@ƒCƒ‹‰¼‘z‰»ƒtƒBƒ‹ƒ^‚ª‘¶İ‚·‚éê‡‚É‚Ì‚İŠÖŒW‚µ‚Ü‚·B
+Rem çµæœã‚’ç‰©ç†çš„ã«ãƒ‡ã‚£ã‚¹ã‚¯ä¸Šã«ã‚ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã«åˆ¶é™ã—ã¾ã™ã€‚
+Rem ã“ã®ãƒ•ãƒ©ã‚°ã¯ã€ãƒ•ã‚¡ã‚¤ãƒ«ä»®æƒ³åŒ–ãƒ•ã‚£ãƒ«ã‚¿ãŒå­˜åœ¨ã™ã‚‹å ´åˆã«ã®ã¿é–¢ä¿‚ã—ã¾ã™ã€‚
 
-Rem Ÿƒtƒ@ƒCƒ‹ŒŸõ
+Rem æ¬¡ãƒ•ã‚¡ã‚¤ãƒ«æ¤œç´¢
 Rem http://chokuto.ifdef.jp/urawaza/api/FindNextFile.html
 #If VBA7 Then
 Private Declare PtrSafe Function FindNextFile Lib "Kernel32" Alias "FindNextFileW" _
@@ -373,7 +373,7 @@ Private Declare Function FindNextFile Lib "Kernel32" Alias "FindNextFileW" _
             (ByVal hFindFile As Long, lpFindFileData As WIN32_FIND_data1) As Long
 #End If
             
-Rem ŒŸõƒnƒ“ƒhƒ‹ŠJ•ú
+Rem æ¤œç´¢ãƒãƒ³ãƒ‰ãƒ«é–‹æ”¾
 Rem http://chokuto.ifdef.jp/urawaza/api/FindClose.html
 #If VBA7 Then
 Private Declare PtrSafe Function FindClose Lib "Kernel32" (ByVal hFindFile As LongPtr) As LongPtr
@@ -383,33 +383,33 @@ Private Declare Function FindClose Lib "Kernel32" (ByVal hFindFile As Long) As L
 
 Rem --------------------------------------------------------------------------------
 
-Rem FILETIME\‘¢‘Ì
+Rem FILETIMEæ§‹é€ ä½“
 Rem http://chokuto.ifdef.jp/urawaza/struct/FILETIME.html
 Private Type FILETIME
      LowDateTime As Long
      HighDateTime As Long
 End Type
 
-Rem WIN32_FIND_DATA\‘¢‘Ì
+Rem WIN32_FIND_DATAæ§‹é€ ä½“
 Rem http://chokuto.ifdef.jp/urawaza/struct/WIN32_FIND_data1.html
 Private Type WIN32_FIND_data1
-    dwFileAttributes                        As Long     ' ƒtƒ@ƒCƒ‹‘®«
-    ftCreationTime                          As FILETIME ' ì¬“ú
-    ftLastAccessTime                        As FILETIME ' ÅIƒAƒNƒZƒX“ú
-    ftLastWriteTime                         As FILETIME ' ÅIXV“ú
-    nFileSizeHigh                           As Long     ' ƒtƒ@ƒCƒ‹ƒTƒCƒYiãˆÊ‚R‚Qƒrƒbƒgj
-    nFileSizeLow                            As Long     ' ƒtƒ@ƒCƒ‹ƒTƒCƒYi‰ºˆÊ‚R‚Qƒrƒbƒgj
-    dwReserved0                             As Long     ' —\–ñÏ‚İBƒŠƒp[ƒXƒ^ƒO
-    dwReserved1                             As Long     ' —\–ñÏ‚İB–¢g—p
-    cFileName(260 * 2 - 1)                  As Byte     ' ƒtƒ@ƒCƒ‹–¼
-    cAlternateFileName(14 * 2 - 1)          As Byte     ' 8.3Œ`®‚Ìƒtƒ@ƒCƒ‹–¼
-Rem      cFileName                               As String * MAX_PATH    ' ‚Æ‚¢‚¤‘‚«•û‚à‚Å‚«‚éB
-Rem      cAlternateFileName                      As String * 14          ' ‚Æ‚¢‚¤‘‚«•û‚à‚Å‚«‚éB
+    dwFileAttributes                        As Long     ' ãƒ•ã‚¡ã‚¤ãƒ«å±æ€§
+    ftCreationTime                          As FILETIME ' ä½œæˆæ—¥
+    ftLastAccessTime                        As FILETIME ' æœ€çµ‚ã‚¢ã‚¯ã‚»ã‚¹æ—¥
+    ftLastWriteTime                         As FILETIME ' æœ€çµ‚æ›´æ–°æ—¥
+    nFileSizeHigh                           As Long     ' ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºï¼ˆä¸Šä½ï¼“ï¼’ãƒ“ãƒƒãƒˆï¼‰
+    nFileSizeLow                            As Long     ' ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºï¼ˆä¸‹ä½ï¼“ï¼’ãƒ“ãƒƒãƒˆï¼‰
+    dwReserved0                             As Long     ' äºˆç´„æ¸ˆã¿ã€‚ãƒªãƒ‘ãƒ¼ã‚¹ã‚¿ã‚°
+    dwReserved1                             As Long     ' äºˆç´„æ¸ˆã¿ã€‚æœªä½¿ç”¨
+    cFileName(260 * 2 - 1)                  As Byte     ' ãƒ•ã‚¡ã‚¤ãƒ«å
+    cAlternateFileName(14 * 2 - 1)          As Byte     ' 8.3å½¢å¼ã®ãƒ•ã‚¡ã‚¤ãƒ«å
+Rem      cFileName                               As String * MAX_PATH    ' ã¨ã„ã†æ›¸ãæ–¹ã‚‚ã§ãã‚‹ã€‚
+Rem      cAlternateFileName                      As String * 14          ' ã¨ã„ã†æ›¸ãæ–¹ã‚‚ã§ãã‚‹ã€‚
 End Type
-Rem ¦Unicode‘Î‰‚Ìˆ×*2‚µ‚Ä‚¢‚é
+Rem â€»Unicodeå¯¾å¿œã®ç‚º*2ã—ã¦ã„ã‚‹
 
-Rem StrCmpLogicalWŠÖ”
-Rem ƒGƒNƒXƒvƒ[ƒ‰‚Ìƒtƒ@ƒCƒ‹‡‚É•À‚Ñ‘Ö‚¦‚é
+Rem StrCmpLogicalWé–¢æ•°
+Rem ã‚¨ã‚¯ã‚¹ãƒ—ãƒ­ãƒ¼ãƒ©ã®ãƒ•ã‚¡ã‚¤ãƒ«é †ã«ä¸¦ã³æ›¿ãˆã‚‹
 Rem https://docs.microsoft.com/en-us/windows/desktop/api/shlwapi/nf-shlwapi-strcmplogicalw
 #If VBA7 Then
 Private Declare PtrSafe Function StrCmpLogicalW Lib "shlwapi" _
@@ -419,7 +419,7 @@ Private Declare Function StrCmpLogicalW Lib "shlwapi" _
                 (ByVal lpStr1 As String, ByVal lpStr2 As String) As Long
 #End If
 
-Rem wsh.SpecialFoldersƒvƒƒpƒeƒB
+Rem wsh.SpecialFoldersãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
 Private Const SpecialFolderKey_AllUsersDesktop = "AllUsersDesktop"
 Private Const SpecialFolderKey_AllUsersStartMenu = "AllUsersStartMenu"
 Private Const SpecialFolderKey_AllUsersPrograms = "AllUsersPrograms"
@@ -436,25 +436,25 @@ Private Const SpecialFolderKey_SendTo = "SendTo"
 Private Const SpecialFolderKey_StartMenu = "StartMenu"
 Private Const SpecialFolderKey_Startup = "Startup"
 Private Const SpecialFolderKey_Templates = "Templates"
-Rem     “ÁêƒtƒHƒ‹ƒ_–¼     à–¾    ˆê”Ê“IWindows10‚Ì‹ï‘Ì“I‚ÈƒtƒHƒ‹ƒ_
-Rem 1   AllUsersDesktop    ‚·‚×‚Ä‚Ìƒ†[ƒU[‚É‹¤’Ê‚ÌƒfƒXƒNƒgƒbƒv        C:\Users\Public\Desktop
-Rem 2   AllUsersStartMenu  ‚·‚×‚Ä‚Ìƒ†[ƒU[‚É‹¤’Ê‚ÌƒvƒƒOƒ‰ƒ€ƒƒjƒ…[  C:\ProgramData\Microsoft\Windows\Start Menu
-Rem 3   AllUsersPrograms   ‚·‚×‚Ä‚Ìƒ†[ƒU[‚É‹¤’Ê‚Ì‘S‚Ä‚ÌƒvƒƒOƒ‰ƒ€    C:\ProgramData\Microsoft\Windows\Start Menu\Programs
-Rem 4   AllUsersStartup    ‚·‚×‚Ä‚Ìƒ†[ƒU[‚É‹¤’Ê‚ÌƒXƒ^[ƒgƒAƒbƒv      C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
-Rem 5   Desktop            ƒfƒXƒNƒgƒbƒv                            C:\Users\[username]\Desktop
-Rem 6   Favorites          ‚¨‹C‚É“ü‚è                              C:\Users\[username]\Favorites
-Rem 7   Fonts              ƒCƒ“ƒXƒg[ƒ‹‚³‚ê‚Ä‚¢‚éƒtƒHƒ“ƒg          C:\Windows\Fonts
-Rem 8   MyDocuments        ƒ}ƒCƒhƒLƒ…ƒƒ“ƒg                        C:\Users\[username]\Documents
-Rem 9   NetHood            ƒlƒbƒgƒ[ƒN‚É•\¦‚³‚ê‚é‹¤—LƒtƒHƒ‹ƒ_‚Ìî•ñ  C:\Users\[username]\AppData\Roaming\Microsoft\Windows\Network Shortcuts
-Rem 10  PrintHood          ƒvƒŠƒ“ƒ^ƒtƒHƒ‹ƒ_                        C:\Users\[username]\AppData\Roaming\Microsoft\Windows\Printer Shortcuts
-Rem 11  Programs           ƒƒOƒCƒ“ƒ†[ƒU[‚ÌƒvƒƒOƒ‰ƒ€ƒƒjƒ…[    C:\Users\[username]\AppData\Roaming\Microsoft\Windows\Start Menu\Programs
-Rem 12  Recent             Å‹ßg‚Á‚½ƒtƒ@ƒCƒ‹                      C:\Users\[username]\AppData\Roaming\Microsoft\Windows\Recent
-Rem 13  SendTo             ‘—‚éƒƒjƒ…[                            C:\Users\[username]\AppData\Roaming\Microsoft\Windows\SendTo
-Rem 14  StartMenu          ƒXƒ^[ƒgƒƒjƒ…[                        C:\Users\[username]\AppData\Roaming\Microsoft\Windows\Start Menu
-Rem 15  Startup            ƒƒOƒCƒ“ƒ†[ƒU[‚ÌƒXƒ^[ƒgƒAƒbƒv        C:\Users\[username]\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
-Rem 16  Templates          V‹Kì¬‚Ìƒeƒ“ƒvƒŒ[ƒg                  C:\Users\[username]\AppData\Roaming\Microsoft\Windows\Templates
+Rem     ç‰¹æ®Šãƒ•ã‚©ãƒ«ãƒ€å     èª¬æ˜    ä¸€èˆ¬çš„Windows10ã®å…·ä½“çš„ãªãƒ•ã‚©ãƒ«ãƒ€
+Rem 1   AllUsersDesktop    ã™ã¹ã¦ã®ãƒ¦ãƒ¼ã‚¶ãƒ¼ã«å…±é€šã®ãƒ‡ã‚¹ã‚¯ãƒˆãƒƒãƒ—        C:\Users\Public\Desktop
+Rem 2   AllUsersStartMenu  ã™ã¹ã¦ã®ãƒ¦ãƒ¼ã‚¶ãƒ¼ã«å…±é€šã®ãƒ—ãƒ­ã‚°ãƒ©ãƒ ãƒ¡ãƒ‹ãƒ¥ãƒ¼  C:\ProgramData\Microsoft\Windows\Start Menu
+Rem 3   AllUsersPrograms   ã™ã¹ã¦ã®ãƒ¦ãƒ¼ã‚¶ãƒ¼ã«å…±é€šã®å…¨ã¦ã®ãƒ—ãƒ­ã‚°ãƒ©ãƒ     C:\ProgramData\Microsoft\Windows\Start Menu\Programs
+Rem 4   AllUsersStartup    ã™ã¹ã¦ã®ãƒ¦ãƒ¼ã‚¶ãƒ¼ã«å…±é€šã®ã‚¹ã‚¿ãƒ¼ãƒˆã‚¢ãƒƒãƒ—      C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
+Rem 5   Desktop            ãƒ‡ã‚¹ã‚¯ãƒˆãƒƒãƒ—                            C:\Users\[username]\Desktop
+Rem 6   Favorites          ãŠæ°—ã«å…¥ã‚Š                              C:\Users\[username]\Favorites
+Rem 7   Fonts              ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã•ã‚Œã¦ã„ã‚‹ãƒ•ã‚©ãƒ³ãƒˆ          C:\Windows\Fonts
+Rem 8   MyDocuments        ãƒã‚¤ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆ                        C:\Users\[username]\Documents
+Rem 9   NetHood            ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ã«è¡¨ç¤ºã•ã‚Œã‚‹å…±æœ‰ãƒ•ã‚©ãƒ«ãƒ€ã®æƒ…å ±  C:\Users\[username]\AppData\Roaming\Microsoft\Windows\Network Shortcuts
+Rem 10  PrintHood          ãƒ—ãƒªãƒ³ã‚¿ãƒ•ã‚©ãƒ«ãƒ€                        C:\Users\[username]\AppData\Roaming\Microsoft\Windows\Printer Shortcuts
+Rem 11  Programs           ãƒ­ã‚°ã‚¤ãƒ³ãƒ¦ãƒ¼ã‚¶ãƒ¼ã®ãƒ—ãƒ­ã‚°ãƒ©ãƒ ãƒ¡ãƒ‹ãƒ¥ãƒ¼    C:\Users\[username]\AppData\Roaming\Microsoft\Windows\Start Menu\Programs
+Rem 12  Recent             æœ€è¿‘ä½¿ã£ãŸãƒ•ã‚¡ã‚¤ãƒ«                      C:\Users\[username]\AppData\Roaming\Microsoft\Windows\Recent
+Rem 13  SendTo             é€ã‚‹ãƒ¡ãƒ‹ãƒ¥ãƒ¼                            C:\Users\[username]\AppData\Roaming\Microsoft\Windows\SendTo
+Rem 14  StartMenu          ã‚¹ã‚¿ãƒ¼ãƒˆãƒ¡ãƒ‹ãƒ¥ãƒ¼                        C:\Users\[username]\AppData\Roaming\Microsoft\Windows\Start Menu
+Rem 15  Startup            ãƒ­ã‚°ã‚¤ãƒ³ãƒ¦ãƒ¼ã‚¶ãƒ¼ã®ã‚¹ã‚¿ãƒ¼ãƒˆã‚¢ãƒƒãƒ—        C:\Users\[username]\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+Rem 16  Templates          æ–°è¦ä½œæˆã®ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆ                  C:\Users\[username]\AppData\Roaming\Microsoft\Windows\Templates
 
-Rem SetCurrentDirectory API g—p€”õ
+Rem SetCurrentDirectory API ä½¿ç”¨æº–å‚™
 Private Declare PtrSafe Function SetCurrentDirectory _
     Lib "Kernel32" Alias "SetCurrentDirectoryA" _
     (ByVal lpPathName As String) As Long
@@ -477,7 +477,7 @@ Rem         ByVal psa As LongPtr) As LongPtr
 #End If
 
 Rem --------------------------------------------------------------------------------
-Rem ‹¤’Ê‘g‚İ‚İ
+Rem å…±é€šçµ„ã¿è¾¼ã¿
 Private Property Get fso() As FileSystemObject
     Static xxFso As Object  'FileSystemObject
     If xxFso Is Nothing Then Set xxFso = CreateObject("Scripting.FileSystemObject")
@@ -485,40 +485,40 @@ Private Property Get fso() As FileSystemObject
 End Property
 Rem --------------------------------------------------------------------------------
 
-Rem w’è‚µ‚½ƒpƒX‚ÌƒtƒHƒ‹ƒ_‚ğˆê‹C‚Éì¬‚·‚é
-Rem ¸”s‚µ‚½‚¾‚¯False‚ğ•Ô‚·BŠù‚É‘¶İ‚µ‚½ê‡‚Í–³‹‚ÅOK
+Rem æŒ‡å®šã—ãŸãƒ‘ã‚¹ã®ãƒ•ã‚©ãƒ«ãƒ€ã‚’ä¸€æ°—ã«ä½œæˆã™ã‚‹
+Rem å¤±æ•—ã—ãŸæ™‚ã ã‘Falseã‚’è¿”ã™ã€‚æ—¢ã«å­˜åœ¨ã—ãŸå ´åˆã¯ç„¡è¦–ã§OK
 Rem
-Rem  @param folder_path ì¬‚µ‚½‚¢ƒtƒHƒ‹ƒ_
+Rem  @param folder_path ä½œæˆã—ãŸã„ãƒ•ã‚©ãƒ«ãƒ€
 Rem
-Rem  @return As Boolen  ¬Œ÷‚µ‚½‚©‚Ç‚¤‚©
-Rem                      ì¬‚É¬Œ÷ : True
-Rem                      Šù‚É‘¶İ   : True
-Rem                      ì¬‚É¸”s : False
+Rem  @return As Boolen  æˆåŠŸã—ãŸã‹ã©ã†ã‹
+Rem                      ä½œæˆã«æˆåŠŸ : True
+Rem                      æ—¢ã«å­˜åœ¨   : True
+Rem                      ä½œæˆã«å¤±æ•— : False
 Rem
 Public Function CreateDirectoryEx(folder_path As String) As Boolean
     Select Case SHCreateDirectoryEx(0&, StrPtr(SupportMaxPath260over(folder_path)), 0&)
-        Case 0:  CreateDirectoryEx = True '¬Œ÷
-        Case 183: CreateDirectoryEx = True 'Šù‚É‘¶İ
-        Case Else: CreateDirectoryEx = False '¸”s
+        Case 0:  CreateDirectoryEx = True 'æˆåŠŸ
+        Case 183: CreateDirectoryEx = True 'æ—¢ã«å­˜åœ¨
+        Case Else: CreateDirectoryEx = False 'å¤±æ•—
     End Select
 End Function
 
 Rem Public Function CreateDirectoryExA(folder_path As String) As Boolean
 Rem     Select Case SHCreateDirectoryExA(0&, folder_path, 0&)
-Rem         Case 0:  CreateDirectoryExA = True '¬Œ÷
-Rem         Case 183: CreateDirectoryExA = True 'Šù‚É‘¶İ
-Rem         Case Else: CreateDirectoryExA = False '¸”s
+Rem         Case 0:  CreateDirectoryExA = True 'æˆåŠŸ
+Rem         Case 183: CreateDirectoryExA = True 'æ—¢ã«å­˜åœ¨
+Rem         Case Else: CreateDirectoryExA = False 'å¤±æ•—
 Rem     End Select
 Rem End Function
 
-Rem Win32API‚ÌW•t‚«ŠÖ”‚É‚¨‚¢‚ÄA260 (MAX_PATH) •¶š‚æ‚è‚à’·‚¢•¶š‚É‘Î‰‚³‚¹‚é‚½‚ß‚Ìˆ—
+Rem Win32APIã®Wä»˜ãé–¢æ•°ã«ãŠã„ã¦ã€260 (MAX_PATH) æ–‡å­—ã‚ˆã‚Šã‚‚é•·ã„æ–‡å­—ã«å¯¾å¿œã•ã›ã‚‹ãŸã‚ã®å‡¦ç†
 Rem
-Rem  @param file_folder_path ƒtƒ@ƒCƒ‹‚©ƒtƒHƒ‹ƒ_‚ÌƒpƒX
+Rem  @param file_folder_path ãƒ•ã‚¡ã‚¤ãƒ«ã‹ãƒ•ã‚©ãƒ«ãƒ€ã®ãƒ‘ã‚¹
 Rem
-Rem  @return As String       •ÏŠ·Œã‚ÌƒpƒX
+Rem  @return As String       å¤‰æ›å¾Œã®ãƒ‘ã‚¹
 Rem
 Rem  @note
-Rem    ƒpƒX‚Ìæ“ª‚É "\\?\"‚â"\\?\UNC" ‚ğ’Ç‰Á‚µ‚Ä‚¨‚­
+Rem    ãƒ‘ã‚¹ã®å…ˆé ­ã« "\\?\"ã‚„"\\?\UNC" ã‚’è¿½åŠ ã—ã¦ãŠã
 Rem
 Rem  @example
 Rem    \\SERVERNAME\    >>  \\?\UNC\SERVERNAME\
@@ -526,33 +526,33 @@ Rem    C:\DRIVE         >>  \\?\C:\DRIVE
 Rem
 Public Function SupportMaxPath260over(ByRef file_folder_path As String) As String
     
-    '‘ÎˆÏ‚İ
+    'å¯¾å‡¦æ¸ˆã¿
     If file_folder_path Like "\\?\*" Then
         SupportMaxPath260over = file_folder_path
         
-    'ƒlƒbƒgƒ[ƒNƒpƒX
+    'ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ãƒ‘ã‚¹
     ElseIf file_folder_path Like "\\*" Then
         SupportMaxPath260over = "\\?\UNC" & Mid$(file_folder_path, 2)
         
-    '•W€ƒhƒ‰ƒCƒuƒpƒX
+    'æ¨™æº–ãƒ‰ãƒ©ã‚¤ãƒ–ãƒ‘ã‚¹
     Else
         SupportMaxPath260over = "\\?\" & file_folder_path
     End If
 End Function
 
 Rem *******************************************************************************
-Rem w’èƒtƒHƒ‹ƒ_ˆÈ‰º‚Ì”CˆÓ‚ÌŠK‘w‚Ìƒtƒ@ƒCƒ‹EƒtƒHƒ‹ƒ_‚ğƒŠƒXƒgƒAƒbƒv‚·‚éŠÖ”
+Rem æŒ‡å®šãƒ•ã‚©ãƒ«ãƒ€ä»¥ä¸‹ã®ä»»æ„ã®éšå±¤ã®ãƒ•ã‚¡ã‚¤ãƒ«ãƒ»ãƒ•ã‚©ãƒ«ãƒ€ã‚’ãƒªã‚¹ãƒˆã‚¢ãƒƒãƒ—ã™ã‚‹é–¢æ•°
 Rem *******************************************************************************
-Rem ƒpƒ‰ƒ[ƒ^           : Šù’è’l  :  ŠT—v  : ˆÓ–¡
-Rem parent_folder_path   :     -   :  •K{  : ŒŸõ‘ÎÛƒtƒHƒ‹ƒ_‚Ì––”ö‚ª\‚ÅI‚í‚éƒpƒX
-Rem add_files            :  False  : È—ª‰Â : ƒtƒ@ƒCƒ‹‚ğ‘ÎÛ‚ÉŠÜ‚ß‚é‚©
-Rem add_folders          :  False  : È—ª‰Â : ƒtƒHƒ‹ƒ_‚ğ‘ÎÛ‚ÉŠÜ‚ß‚é‚©
-Rem search_min_layer     :      0  : È—ª‰Â : ‰½ŠK‘wˆÈ~‚ğ’Tõ‚·‚é‚©i0`nA-1‚Ì‚Í–³§ŒÀj
-Rem search_max_layer     :      0  : È—ª‰Â : ‰½ŠK‘wˆÈ‘O‚ğ’Tõ‚·‚é‚©i0`nA-1‚Ì‚Í–³§ŒÀj
-Rem filter_obj           : Missing : È—ª‰Â : ƒtƒBƒ‹ƒ^(RegExp,LIKE—p•¶š—ñ,EverythingŒŸõd—lj
-Rem recursive_subfolder  :     ""  : Ä‹A—p : “–‰‚Ìƒ‹[ƒgƒtƒHƒ‹ƒ_ˆÈ~‚ÌƒpƒX
-Rem recursive_now_layer  :      0  : Ä‹A—p : Œ»İ‰½ŠK‘w–Ú‚©
-Rem recursive_path_list  : Nothing : Ä‹A—p : ƒpƒXˆê——BÅI“I‚È–ß‚è’l‚É‚àg‚í‚ê‚é
+Rem ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿           : æ—¢å®šå€¤  :  æ¦‚è¦  : æ„å‘³
+Rem parent_folder_path   :     -   :  å¿…é ˆ  : æ¤œç´¢å¯¾è±¡ãƒ•ã‚©ãƒ«ãƒ€ã®æœ«å°¾ãŒ\ã§çµ‚ã‚ã‚‹ãƒ‘ã‚¹
+Rem add_files            :  False  : çœç•¥å¯ : ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å¯¾è±¡ã«å«ã‚ã‚‹ã‹
+Rem add_folders          :  False  : çœç•¥å¯ : ãƒ•ã‚©ãƒ«ãƒ€ã‚’å¯¾è±¡ã«å«ã‚ã‚‹ã‹
+Rem search_min_layer     :      0  : çœç•¥å¯ : ä½•éšå±¤ä»¥é™ã‚’æ¢ç´¢ã™ã‚‹ã‹ï¼ˆ0ï½nã€-1ã®æ™‚ã¯ç„¡åˆ¶é™ï¼‰
+Rem search_max_layer     :      0  : çœç•¥å¯ : ä½•éšå±¤ä»¥å‰ã‚’æ¢ç´¢ã™ã‚‹ã‹ï¼ˆ0ï½nã€-1ã®æ™‚ã¯ç„¡åˆ¶é™ï¼‰
+Rem filter_obj           : Missing : çœç•¥å¯ : ãƒ•ã‚£ãƒ«ã‚¿(RegExp,LIKEç”¨æ–‡å­—åˆ—,Everythingæ¤œç´¢ä»•æ§˜ï¼‰
+Rem recursive_subfolder  :     ""  : å†å¸°ç”¨ : å½“åˆã®ãƒ«ãƒ¼ãƒˆãƒ•ã‚©ãƒ«ãƒ€ä»¥é™ã®ãƒ‘ã‚¹
+Rem recursive_now_layer  :      0  : å†å¸°ç”¨ : ç¾åœ¨ä½•éšå±¤ç›®ã‹
+Rem recursive_path_list  : Nothing : å†å¸°ç”¨ : ãƒ‘ã‚¹ä¸€è¦§ã€‚æœ€çµ‚çš„ãªæˆ»ã‚Šå€¤ã«ã‚‚ä½¿ã‚ã‚Œã‚‹
 Public Function GetFileFolderList(ByVal parent_folder_path As String, _
                                     Optional ByVal add_files = False, _
                                     Optional ByVal add_folders = False, _
@@ -565,13 +565,13 @@ Public Function GetFileFolderList(ByVal parent_folder_path As String, _
                                     ) As Collection
     Const proc_name = "GetFileFolderList"
     
-    Rem ŠÖ”“Ë“ü‚Ì‰Šú‰»ˆ—
+    Rem é–¢æ•°çªå…¥æ™‚ã®åˆæœŸåŒ–å‡¦ç†
     If recursive_path_list Is Nothing Then
         Set recursive_path_list = New Collection
         
         If Len(parent_folder_path) > 0 Then
             If Right(parent_folder_path, 1) <> "\" Then
-                Err.Raise 9999, proc_name, "ƒtƒHƒ‹ƒ_ƒpƒX‚Ì––”ö‚Í\‚ÅI‚í‚é‚æ‚¤‚É‚µ‚Ä‚­‚¾‚³‚¢B"
+                Err.Raise 9999, proc_name, "ãƒ•ã‚©ãƒ«ãƒ€ãƒ‘ã‚¹ã®æœ«å°¾ã¯\ã§çµ‚ã‚ã‚‹ã‚ˆã†ã«ã—ã¦ãã ã•ã„ã€‚"
             End If
         End If
     End If
@@ -583,14 +583,14 @@ Public Function GetFileFolderList(ByVal parent_folder_path As String, _
     Dim UnicodeFolderPath As String
     UnicodeFolderPath = SupportMaxPath260over(parent_folder_path)
     
-    Rem ŒŸõƒnƒ“ƒhƒ‹‚ªŒ©‚Â‚©‚ç‚È‚¢ê‡‚ÍuINVALID_HANDLE_VALUEv‚ğ•Ô‚·
+    Rem æ¤œç´¢ãƒãƒ³ãƒ‰ãƒ«ãŒè¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã¯ã€ŒINVALID_HANDLE_VALUEã€ã‚’è¿”ã™
 #If VBA7 Then
     Dim FileHandle As LongPtr
 #Else
     Dim FileHandle As Long
 #End If
     If USE_FindFirstFileEx Then
-        Rem ¦FindExInfoBasic/FIND_FIRST_EX_LARGE_FETCHw’è‚É‚æ‚è‚‘¬‰»‚ğÀŒ»
+        Rem â€»FindExInfoBasic/FIND_FIRST_EX_LARGE_FETCHæŒ‡å®šã«ã‚ˆã‚Šé«˜é€ŸåŒ–ã‚’å®Ÿç¾
         FileHandle = FindFirstFileEx(StrPtr(UnicodeFolderPath & "*"), FindExInfoBasic, _
                                 findData, FindExSearchNameMatch, 0&, FIND_FIRST_EX_LARGE_FETCH)
     End If
@@ -604,54 +604,54 @@ Public Function GetFileFolderList(ByVal parent_folder_path As String, _
     End If
     
     Do
-        Rem FindFirstFile‚Å‚Íƒtƒ@ƒCƒ‹–¼‚ÌŒã‚ë‚ÉuMax_Pathv‚Åw’è‚µ‚½•¶š”‚Ü‚ÅNull‚ª‹l‚Ü‚Á‚Ä‚¢‚éB
+        Rem FindFirstFileã§ã¯ãƒ•ã‚¡ã‚¤ãƒ«åã®å¾Œã‚ã«ã€ŒMax_Pathã€ã§æŒ‡å®šã—ãŸæ–‡å­—æ•°ã¾ã§NullãŒè©°ã¾ã£ã¦ã„ã‚‹ã€‚
         Dim intStLen As Long
         intStLen = InStr(findData.cFileName, vbNullChar) - 1
         If intStLen > 0 Then
             Dim sFilename As String
             sFilename = Trim$(Left$(findData.cFileName, intStLen))
             
-            Rem ƒJƒŒƒ“ƒgƒtƒHƒ‹ƒ_ˆÈŠO‚©ãˆÊƒtƒHƒ‹ƒ_
+            Rem ã‚«ãƒ¬ãƒ³ãƒˆãƒ•ã‚©ãƒ«ãƒ€ä»¥å¤–ã‹ä¸Šä½ãƒ•ã‚©ãƒ«ãƒ€
             If sFilename = "." Or sFilename = ".." Then
                 
-            Rem ƒtƒHƒ‹ƒ_—\–ñ
+            Rem ãƒ•ã‚©ãƒ«ãƒ€äºˆç´„
             ElseIf findData.dwFileAttributes And vbDirectory Then
                 ResFolder.Add sFilename
                 
-            Rem ƒtƒ@ƒCƒ‹—\–ñ
+            Rem ãƒ•ã‚¡ã‚¤ãƒ«äºˆç´„
             Else
                 If add_files And _
                         (search_min_layer = -1 Or search_min_layer <= recursive_now_layer) And _
                         IsMatchPathFilter(filter_obj, folder_path:=recursive_subfolder, file_name:=sFilename) Then
-                    Rem ¦ƒtƒ@ƒCƒ‹‚Íƒ‹[ƒgƒpƒX‚ğœ‚¢‚½‘Š‘ÎƒpƒX
+                    Rem â€»ãƒ•ã‚¡ã‚¤ãƒ«ã¯ãƒ«ãƒ¼ãƒˆãƒ‘ã‚¹ã‚’é™¤ã„ãŸç›¸å¯¾ãƒ‘ã‚¹
                     ResFile.Add recursive_subfolder & sFilename
                 End If
             End If
         End If
-        Rem Ÿ‚Ìƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚ç‚È‚©‚Á‚½ê‡‚Í0‚ğ•Ô‚·‚½‚ßƒ‹[ƒvI—¹
+        Rem æ¬¡ã®ãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸå ´åˆã¯0ã‚’è¿”ã™ãŸã‚ãƒ«ãƒ¼ãƒ—çµ‚äº†
     Loop Until FindNextFile(FileHandle, findData) = 0
     
-    Rem ŒŸõƒnƒ“ƒhƒ‹‚ğ•Â‚¶‚é
+    Rem æ¤œç´¢ãƒãƒ³ãƒ‰ãƒ«ã‚’é–‰ã˜ã‚‹
     FindClose FileHandle
     
-    Rem ƒtƒ@ƒCƒ‹ƒŠƒXƒg‚ğƒ\[ƒg‚µ‚Ä‚©‚ç’Ç‰Á
+    Rem ãƒ•ã‚¡ã‚¤ãƒ«ãƒªã‚¹ãƒˆã‚’ã‚½ãƒ¼ãƒˆã—ã¦ã‹ã‚‰è¿½åŠ 
 Rem     CollectionSort_StrCmpLogicalW ResFile
     Dim myFile As Variant
     For Each myFile In ResFile
         recursive_path_list.Add myFile
     Next
     
-    Rem ƒtƒHƒ‹ƒ_ƒŠƒXƒg‚ğƒ\[ƒg‚µ‚Ä‚©‚ç’Ç‰Á‚µ‚ÄAÄ‹A’Tõ‚Ö
+    Rem ãƒ•ã‚©ãƒ«ãƒ€ãƒªã‚¹ãƒˆã‚’ã‚½ãƒ¼ãƒˆã—ã¦ã‹ã‚‰è¿½åŠ ã—ã¦ã€å†å¸°æ¢ç´¢ã¸
 Rem     CollectionSort_StrCmpLogicalW ResFolder
     
     Dim myFolder As Variant
     For Each myFolder In ResFolder
-        Rem ƒtƒHƒ‹ƒ_’Ç‰Á
+        Rem ãƒ•ã‚©ãƒ«ãƒ€è¿½åŠ 
         If add_folders Then
-            Rem ¦ƒtƒHƒ‹ƒ_‚Íƒ‹[ƒgƒpƒX‚ğœ‚¢‚½‘Š‘ÎƒpƒX‚Å––”ö‚Í "\"
+            Rem â€»ãƒ•ã‚©ãƒ«ãƒ€ã¯ãƒ«ãƒ¼ãƒˆãƒ‘ã‚¹ã‚’é™¤ã„ãŸç›¸å¯¾ãƒ‘ã‚¹ã§æœ«å°¾ã¯ "\"
             recursive_path_list.Add recursive_subfolder & myFolder & "\"
         End If
-        Rem ƒTƒuƒtƒHƒ‹ƒ_Ä‹A’Tõ
+        Rem ã‚µãƒ–ãƒ•ã‚©ãƒ«ãƒ€å†å¸°æ¢ç´¢
         If recursive_now_layer < search_max_layer Or search_max_layer = -1 Then
             Call GetFileFolderList( _
                 parent_folder_path & myFolder & "\", _
@@ -670,8 +670,8 @@ Rem     CollectionSort_StrCmpLogicalW ResFolder
     
 End Function
 
-Rem ƒtƒ@ƒCƒ‹EƒtƒHƒ‹ƒ_ƒtƒBƒ‹ƒ^ƒŠƒ“ƒO—p‚ÌŒŸØ—pŠÖ”
-Rem ³‹K•\Œ»AEverything®ŒŸõd—lAVBA®LIKE‰‰Zq‚ªg‚¦‚éB
+Rem ãƒ•ã‚¡ã‚¤ãƒ«ãƒ»ãƒ•ã‚©ãƒ«ãƒ€ãƒ•ã‚£ãƒ«ã‚¿ãƒªãƒ³ã‚°ç”¨ã®æ¤œè¨¼ç”¨é–¢æ•°
+Rem æ­£è¦è¡¨ç¾ã€Everythingå¼æ¤œç´¢ä»•æ§˜ã€VBAå¼LIKEæ¼”ç®—å­ãŒä½¿ãˆã‚‹ã€‚
 Public Function IsMatchPathFilter( _
         filter_obj As Variant, _
         Optional FullPath As String, _
@@ -684,27 +684,27 @@ Public Function IsMatchPathFilter( _
     If file_name = "" Then file_name = file_basename & file_extension
     If FullPath = "" Then FullPath = folder_path & file_name
     
-    '³‹K•\Œ»
+    'æ­£è¦è¡¨ç¾
     If TypeName(filter_obj) = "RegExp" Then
         Dim reg As Object 'RegExp
         Set reg = filter_obj
         IsMatchPathFilter = reg.Execute(FullPath)
         
-    '•¶š—ñw’è
+    'æ–‡å­—åˆ—æŒ‡å®š
     ElseIf TypeName(filter_obj) = "String" Then
-        'LIKE‰‰Zq
+        'LIKEæ¼”ç®—å­
         If VBA.Strings.InStr(filter_obj, ":") = 0 Then
             IsMatchPathFilter = (FullPath Like filter_obj)
         
-        'Everything®
+        'Everythingå¼
         Else
-            '–¢Š®¬
+            'æœªå®Œæˆ
             Stop
         End If
     End If
 End Function
 
-Rem 'Colection“ü‚ê‘Ö‚¦
+Rem 'Colectionå…¥ã‚Œæ›¿ãˆ
 Rem Private Sub CollectionSwap(C As Collection, Index1 As Long, Index2 As Long)
 Rem     Dim Item1 As Variant, Item2 As Variant
 Rem     Item1 = C.Item(Index1)
@@ -716,7 +716,7 @@ Rem     C.Add Item2, After:=Index1
 Rem     C.Remove Index1
 Rem End Sub
 Rem
-Rem 'Collection‚ğStrCmpLogicalW‚Åƒ\[ƒg
+Rem 'Collectionã‚’StrCmpLogicalWã§ã‚½ãƒ¼ãƒˆ
 Rem Private Sub CollectionSort_StrCmpLogicalW(C As Collection)
 Rem     Dim i As Long, j As Long
 Rem     For i = 1 To C.Count
@@ -731,7 +731,7 @@ Rem End Sub
 
 
 Rem --------------------------------------------------------------------------------
-Rem   ƒtƒHƒ‹ƒ_‚ÌˆêŠ‡ì¬
+Rem   ãƒ•ã‚©ãƒ«ãƒ€ã®ä¸€æ‹¬ä½œæˆ
 Rem --------------------------------------------------------------------------------
 Public Sub CreateAllFolder(ByVal strPath As String, Optional without_lastfilename As Boolean = False)
 
@@ -758,7 +758,7 @@ End Sub
 
 
 Rem --------------------------------------------------------------------------------
-Rem   ƒ}ƒCƒhƒLƒ…ƒƒ“ƒgƒtƒHƒ‹ƒ_‚ğæ“¾
+Rem   ãƒã‚¤ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆãƒ•ã‚©ãƒ«ãƒ€ã‚’å–å¾—
 Rem --------------------------------------------------------------------------------
 Public Function GetPathMyDocument() As String
     On Error Resume Next
@@ -766,7 +766,7 @@ Public Function GetPathMyDocument() As String
 End Function
 
 Rem --------------------------------------------------------------------------------
-Rem @ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒtƒHƒ‹ƒ_æ“¾
+Rem ã€€ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ã‚©ãƒ«ãƒ€å–å¾—
 Rem --------------------------------------------------------------------------------
 Public Function GetAppDataFolder() As String
 
@@ -793,7 +793,7 @@ Public Function GetAppDataFolder() As String
 End Function
 
 Rem --------------------------------------------------------------------------------
-Rem @ƒeƒ“ƒ|ƒ‰ƒŠƒtƒHƒ‹ƒ_æ“¾
+Rem ã€€ãƒ†ãƒ³ãƒãƒ©ãƒªãƒ•ã‚©ãƒ«ãƒ€å–å¾—
 Rem --------------------------------------------------------------------------------
 Public Function GetTempFolder() As String
 
@@ -818,7 +818,7 @@ Public Function GetTempFolder() As String
     
 End Function
 
-Rem ƒfƒXƒNƒgƒbƒv
+Rem ãƒ‡ã‚¹ã‚¯ãƒˆãƒƒãƒ—
 Public Function GetDesktopPath() As String: GetDesktopPath = CreateObject("Wscript.Shell").SpecialFolders(SpecialFolderKey_Desktop) & "\": End Function
 
 Public Function CreateTempFolder(SpecialFolderKey As String, Optional folder_name_format As String = "yyyymmdd_hhmmss") As String
@@ -830,16 +830,16 @@ Public Function CreateTempFolder(SpecialFolderKey As String, Optional folder_nam
     CreateTempFolder = CreateTempFolder & "\"
 End Function
 
-Rem ƒJƒŒƒ“ƒgƒfƒBƒŒƒNƒgƒŠ‚Ì•ÏX@\@ƒlƒbƒgƒ[ƒNƒpƒX‚ğƒJƒŒƒ“ƒgƒfƒBƒŒƒNƒgƒŠ‚É‚·‚é
-Rem @ChDir@CurDir@ƒpƒX•ÏX@Œ»İ‚ÌƒtƒHƒ‹ƒ_
+Rem ã‚«ãƒ¬ãƒ³ãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã®å¤‰æ›´ã€€â€•ã€€ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ãƒ‘ã‚¹ã‚’ã‚«ãƒ¬ãƒ³ãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã«ã™ã‚‹
+Rem ã€€ChDirã€€CurDirã€€ãƒ‘ã‚¹å¤‰æ›´ã€€ç¾åœ¨ã®ãƒ•ã‚©ãƒ«ãƒ€
 Sub SetCurrentDirectory_WScriptShell(new_path)
     CreateObject("WScript.Shell").CurrentDirectory = new_path
 End Sub
 
-Rem lÌŒÜ“ü@\@”’l‚ğ”CˆÓ‚Ì—LŒøŒ…”‚ÉlÌŒÜ“ü‚·‚é
-Rem   Round ƒ[ƒNƒV[ƒgŠÖ”
+Rem å››æ¨äº”å…¥ã€€â€•ã€€æ•°å€¤ã‚’ä»»æ„ã®æœ‰åŠ¹æ¡æ•°ã«å››æ¨äº”å…¥ã™ã‚‹
+Rem   Round ãƒ¯ãƒ¼ã‚¯ã‚·ãƒ¼ãƒˆé–¢æ•°
 Public Function SignificantFigures(number, l) As Double
-    '”’l‚ğ—LŒø”šLŒ…‚ÉlÌŒÜ“ü‚·‚é
+    'æ•°å€¤ã‚’æœ‰åŠ¹æ•°å­—Læ¡ã«å››æ¨äº”å…¥ã™ã‚‹
     If number = 0 Then
         SignificantFigures = 0
     Else
@@ -847,7 +847,7 @@ Public Function SignificantFigures(number, l) As Double
     End If
 End Function
 
-Rem w’è‚µ‚½ƒtƒ@ƒCƒ‹‚ªƒƒbƒN‚³‚ê‚Ä‚¢‚é‚©ƒ`ƒFƒbƒN‚·‚éB
+Rem æŒ‡å®šã—ãŸãƒ•ã‚¡ã‚¤ãƒ«ãŒãƒ­ãƒƒã‚¯ã•ã‚Œã¦ã„ã‚‹ã‹ãƒã‚§ãƒƒã‚¯ã™ã‚‹ã€‚
 Public Function GetFileLock(FileName As String) As Boolean
     On Error Resume Next
     Open FileName For Append As #1
@@ -855,19 +855,19 @@ Public Function GetFileLock(FileName As String) As Boolean
     GetFileLock = (Err.number > 0)
 End Function
 
-Rem w’è‚µ‚½ƒtƒ@ƒCƒ‹‚ª“Ç‚İæ‚èê—p‚©ƒ`ƒFƒbƒN‚·‚éB
+Rem æŒ‡å®šã—ãŸãƒ•ã‚¡ã‚¤ãƒ«ãŒèª­ã¿å–ã‚Šå°‚ç”¨ã‹ãƒã‚§ãƒƒã‚¯ã™ã‚‹ã€‚
 Public Function GetFileReadonly(FileName As String) As Boolean
-    'Readonly‘®«‚©‚Ì”»’f‚ÍƒRƒŒ
+    'Readonlyå±æ€§ã‹ã®åˆ¤æ–­ã¯ã‚³ãƒ¬
     GetFileReadonly = (GetAttr(FileName) And vbReadOnly)
 End Function
 
-Rem ƒlƒbƒgƒ[ƒNƒhƒ‰ƒCƒu‚ÌUNCƒpƒX‚ğæ“¾
+Rem ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ãƒ‰ãƒ©ã‚¤ãƒ–ã®UNCãƒ‘ã‚¹ã‚’å–å¾—
 Rem
-Rem  @param nDriveLetter     ƒhƒ‰ƒCƒuƒŒƒ^[•¶š—ñi"A:"‚â"Z:"j
+Rem  @param nDriveLetter     ãƒ‰ãƒ©ã‚¤ãƒ–ãƒ¬ã‚¿ãƒ¼æ–‡å­—åˆ—ï¼ˆ"A:"ã‚„"Z:"ï¼‰
 Rem
-Rem  @return As String       •¶š—ñ
+Rem  @return As String       æ–‡å­—åˆ—
 Rem
-Rem  @note ƒT[ƒo[‚ÉƒAƒNƒZƒX‚Å‚«‚é‚©”Û‚©‚Íl—¶‚µ‚È‚¢B
+Rem  @note ã‚µãƒ¼ãƒãƒ¼ã«ã‚¢ã‚¯ã‚»ã‚¹ã§ãã‚‹ã‹å¦ã‹ã¯è€ƒæ…®ã—ãªã„ã€‚
 Rem
 Public Function GetUNCPath(ByVal nDriveLetter As String, Optional ByVal bufLen As Long = 64) As String
     Dim UncPath As String: UncPath = String(bufLen, vbNullChar)
@@ -884,9 +884,9 @@ Public Function GetUNCPath(ByVal nDriveLetter As String, Optional ByVal bufLen A
     End Select
 End Function
 
-Rem Š„“–Ï‚Ìƒhƒ‰ƒCƒuƒŒƒ^[‚ÆUNCƒpƒX‚ÌƒŠƒXƒg‚ğDictionary‚Å•Ô‚·ŠÖ”
+Rem å‰²å½“æ¸ˆã®ãƒ‰ãƒ©ã‚¤ãƒ–ãƒ¬ã‚¿ãƒ¼ã¨UNCãƒ‘ã‚¹ã®ãƒªã‚¹ãƒˆã‚’Dictionaryã§è¿”ã™é–¢æ•°
 Rem
-Rem  @return As Dictionary     dic(ƒhƒ‰ƒCƒuƒŒƒ^[) = UNC
+Rem  @return As Dictionary     dic(ãƒ‰ãƒ©ã‚¤ãƒ–ãƒ¬ã‚¿ãƒ¼) = UNC
 Rem
 Public Function GetNetworkDriveAndUncByAllocated() As Object
     Dim DicDrives '  As Dictionary
@@ -901,12 +901,12 @@ Public Function GetNetworkDriveAndUncByAllocated() As Object
     Set GetNetworkDriveAndUncByAllocated = DicDrives
 End Function
 
-Rem Ú‘±Ï‚Ìƒhƒ‰ƒCƒuƒŒƒ^[‚ÆUNCƒpƒX‚ÌƒŠƒXƒg‚ğDictionary‚Å•Ô‚·ŠÖ”(WSHƒo[ƒWƒ‡ƒ“)
+Rem æ¥ç¶šæ¸ˆã®ãƒ‰ãƒ©ã‚¤ãƒ–ãƒ¬ã‚¿ãƒ¼ã¨UNCãƒ‘ã‚¹ã®ãƒªã‚¹ãƒˆã‚’Dictionaryã§è¿”ã™é–¢æ•°(WSHãƒãƒ¼ã‚¸ãƒ§ãƒ³)
 Rem
-Rem  @return As Dictionary     dic(ƒhƒ‰ƒCƒuƒŒƒ^[) = UNC
+Rem  @return As Dictionary     dic(ãƒ‰ãƒ©ã‚¤ãƒ–ãƒ¬ã‚¿ãƒ¼) = UNC
 Rem
-Rem  @note Ú‘±Ïó‘Ô‚Ìƒhƒ‰ƒCƒu‚µ‚©ŒŸo‚Å‚«‚È‚¢‚½‚ß
-Rem         ‘S‚Ä‚Ìƒhƒ‰ƒCƒu‚ğ—ñ‹“‚·‚é‚±‚Æ‚Í‚Å‚«‚È‚¢B
+Rem  @note æ¥ç¶šæ¸ˆçŠ¶æ…‹ã®ãƒ‰ãƒ©ã‚¤ãƒ–ã—ã‹æ¤œå‡ºã§ããªã„ãŸã‚
+Rem         å…¨ã¦ã®ãƒ‰ãƒ©ã‚¤ãƒ–ã‚’åˆ—æŒ™ã™ã‚‹ã“ã¨ã¯ã§ããªã„ã€‚
 Rem
 Public Function GetNetworkDriveAndUncByConnected() As Object ' As Dictionary
     Dim DicDrives ' As Dictionary
@@ -916,9 +916,9 @@ Public Function GetNetworkDriveAndUncByConnected() As Object ' As Dictionary
     Set Network = CreateObject("WScript.Network")
     
     Rem Network.EnumNetworkDrives
-    Rem   (0):=ƒhƒ‰ƒCƒuƒŒƒ^[1, (1):=UNCƒpƒX1
-    Rem   (2):=ƒhƒ‰ƒCƒuƒŒƒ^[2, (3):=UNCƒpƒX2
-    Rem   (4):=ƒhƒ‰ƒCƒuƒŒƒ^[3, (5):=UNCƒpƒX3
+    Rem   (0):=ãƒ‰ãƒ©ã‚¤ãƒ–ãƒ¬ã‚¿ãƒ¼1, (1):=UNCãƒ‘ã‚¹1
+    Rem   (2):=ãƒ‰ãƒ©ã‚¤ãƒ–ãƒ¬ã‚¿ãƒ¼2, (3):=UNCãƒ‘ã‚¹2
+    Rem   (4):=ãƒ‰ãƒ©ã‚¤ãƒ–ãƒ¬ã‚¿ãƒ¼3, (5):=UNCãƒ‘ã‚¹3
     Dim Drives  ' As IWshCollection
     Set Drives = Network.EnumNetworkDrives
     
@@ -931,12 +931,12 @@ Public Function GetNetworkDriveAndUncByConnected() As Object ' As Dictionary
     Set GetNetworkDriveAndUncByConnected = DicDrives
 End Function
 
-Rem Ú‘±Ï‚Ìƒhƒ‰ƒCƒuƒŒƒ^[‚ÆUNCƒpƒX‚ÌƒŠƒXƒg‚ğDictionary‚Å•Ô‚·ŠÖ”(WMIƒo[ƒWƒ‡ƒ“)
+Rem æ¥ç¶šæ¸ˆã®ãƒ‰ãƒ©ã‚¤ãƒ–ãƒ¬ã‚¿ãƒ¼ã¨UNCãƒ‘ã‚¹ã®ãƒªã‚¹ãƒˆã‚’Dictionaryã§è¿”ã™é–¢æ•°(WMIãƒãƒ¼ã‚¸ãƒ§ãƒ³)
 Rem
-Rem  @return As Dictionary     dic(ƒhƒ‰ƒCƒuƒŒƒ^[) = UNC
+Rem  @return As Dictionary     dic(ãƒ‰ãƒ©ã‚¤ãƒ–ãƒ¬ã‚¿ãƒ¼) = UNC
 Rem
-Rem  @note Ú‘±Ïó‘Ô‚Ìƒhƒ‰ƒCƒu‚µ‚©ŒŸo‚Å‚«‚È‚¢‚½‚ß
-Rem         ‘S‚Ä‚Ìƒhƒ‰ƒCƒu‚ğ—ñ‹“‚·‚é‚±‚Æ‚Í‚Å‚«‚È‚¢B
+Rem  @note æ¥ç¶šæ¸ˆçŠ¶æ…‹ã®ãƒ‰ãƒ©ã‚¤ãƒ–ã—ã‹æ¤œå‡ºã§ããªã„ãŸã‚
+Rem         å…¨ã¦ã®ãƒ‰ãƒ©ã‚¤ãƒ–ã‚’åˆ—æŒ™ã™ã‚‹ã“ã¨ã¯ã§ããªã„ã€‚
 Rem
 Public Function GetNetworkDriveAndUncByConnectedWMI() As Object
     Const WQL = _
@@ -963,68 +963,68 @@ Public Function GetNetworkDriveAndUncByConnectedWMI() As Object
     Set GetNetworkDriveAndUncByConnectedWMI = driveDic
 End Function
 
-Rem ƒRƒ}ƒ“ƒhƒvƒƒ“ƒvƒg‚Åæ“¾‚·‚éQl‘—¿
+Rem ã‚³ãƒãƒ³ãƒ‰ãƒ—ãƒ­ãƒ³ãƒ—ãƒˆã§å–å¾—ã™ã‚‹å‚è€ƒè³‡æ–™
 Rem
 Rem C:\Users\USERNAME>net use
-Rem V‚µ‚¢Ú‘±‚Í‹L‰¯‚³‚ê‚Ü‚·¡
+Rem æ–°ã—ã„æ¥ç¶šã¯è¨˜æ†¶ã•ã‚Œã¾ã™ï½¡
 Rem
-Rem ƒXƒe[ƒ^ƒX  ƒ[ƒJƒ‹–¼ ƒŠƒ‚[ƒg–¼                ƒlƒbƒgƒ[ƒN–¼
+Rem ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹  ãƒ­ãƒ¼ã‚«ãƒ«å ãƒªãƒ¢ãƒ¼ãƒˆå                ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯å
 Rem
 Rem --------------------------------------------------------------------------------
-Rem —˜—p•s‰Â     V:        \\192.168.11.1\Share      Microsoft Windows Network
-Rem —˜—p•s‰Â     W:        \\landisk\disk            Microsoft Windows Network
+Rem åˆ©ç”¨ä¸å¯     V:        \\192.168.11.1\Share      Microsoft Windows Network
+Rem åˆ©ç”¨ä¸å¯     W:        \\landisk\disk            Microsoft Windows Network
 Rem OK           X:        \\servername-nuc\Downloads
 Rem                                                   Microsoft Windows Network
 Rem OK           Y:        \\servername-nuc\Server   Microsoft Windows Network
-Rem —˜—p•s‰Â     Z:        \\crib35nas\Share         Microsoft Windows Network
+Rem åˆ©ç”¨ä¸å¯     Z:        \\crib35nas\Share         Microsoft Windows Network
 Rem
-Rem EÚ‘±Ï‚İˆÈŠO‚à‘S‚Ä—ñ‹“‚³‚ê‚éB
-Rem EƒŠƒ‚[ƒg–¼‚Ì•¶š”‚ª’·‚¢‚Æ‰üs‚³‚ê‚Äo—Í‚³‚ê‚éB
+Rem ãƒ»æ¥ç¶šæ¸ˆã¿ä»¥å¤–ã‚‚å…¨ã¦åˆ—æŒ™ã•ã‚Œã‚‹ã€‚
+Rem ãƒ»ãƒªãƒ¢ãƒ¼ãƒˆåã®æ–‡å­—æ•°ãŒé•·ã„ã¨æ”¹è¡Œã•ã‚Œã¦å‡ºåŠ›ã•ã‚Œã‚‹ã€‚
 
 Rem --------------------------------------------------------------------------------
-Rem ¡kccFuncString
-Rem   •¶š—ñ•ÏŠ·ŠÖ”
+Rem â– kccFuncString
+Rem   æ–‡å­—åˆ—å¤‰æ›é–¢æ•°
 Rem --------------------------------------------------------------------------------
 Rem
-Rem ”²ˆ
+Rem æŠœç²‹
 Rem
 Rem --------------------------------------------------------------------------------
 
-Rem •¶Í’†‚ÌƒpƒX‚Æv‚í‚ê‚é•¶š—ñ‚ğƒnƒCƒp[ƒŠƒ“ƒN‚É‘Î‰‚³‚¹‚éŠÖ”
+Rem æ–‡ç« ä¸­ã®ãƒ‘ã‚¹ã¨æ€ã‚ã‚Œã‚‹æ–‡å­—åˆ—ã‚’ãƒã‚¤ãƒ‘ãƒ¼ãƒªãƒ³ã‚¯ã«å¯¾å¿œã•ã›ã‚‹é–¢æ•°
 Rem
-Rem  @param base_str        •ÏŠ·Œ³•¶š—ñ
-Rem  @param DoNetDriveToUNC ƒlƒbƒgƒ[ƒNƒhƒ‰ƒCƒu‚ğUNC‚É•ÏŠ·‚·‚é‚©”Û‚©
-Rem                          False:=•ÏŠ·‚µ‚È‚¢(Šù’è)
-Rem                          True :=•ÏŠ·‚·‚é
+Rem  @param base_str        å¤‰æ›å…ƒæ–‡å­—åˆ—
+Rem  @param DoNetDriveToUNC ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ãƒ‰ãƒ©ã‚¤ãƒ–ã‚’UNCã«å¤‰æ›ã™ã‚‹ã‹å¦ã‹
+Rem                          False:=å¤‰æ›ã—ãªã„(æ—¢å®š)
+Rem                          True :=å¤‰æ›ã™ã‚‹
 Rem
-Rem  @return  As string     Outlook‚ªƒnƒCƒp[ƒŠƒ“ƒN‰»‰Â”\‚È•¶š—ñ
+Rem  @return  As string     OutlookãŒãƒã‚¤ãƒ‘ãƒ¼ãƒªãƒ³ã‚¯åŒ–å¯èƒ½ãªæ–‡å­—åˆ—
 Rem
 Rem  @example
 Rem     IN :
-Rem          ‰º‹L‚Ìƒtƒ@ƒCƒ‹‚ğŒä——‚­‚¾‚³‚¢
+Rem          ä¸‹è¨˜ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å¾¡è¦§ãã ã•ã„
 Rem          C:\Test\hoge.xls
 Rem          Z:\fuga.xls
-Rem          ˆÈã
+Rem          ä»¥ä¸Š
 Rem
 Rem    OUT :
 Rem       DoNetDriveToUNC:=False
-Rem          ‰º‹L‚Ìƒtƒ@ƒCƒ‹‚ğŒä——‚­‚¾‚³‚¢
+Rem          ä¸‹è¨˜ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å¾¡è¦§ãã ã•ã„
 Rem          <"file://C:\Test\hoge.xls">
 Rem          <"file://Z:\Test\hoge.xls">
-Rem          ˆÈã
+Rem          ä»¥ä¸Š
 Rem
 Rem       DoNetDriveToUNC:=True
 Rem          <"\\server\share\fuga.xls">
 Rem
 Rem  @note
-Rem         (True‚È‚ç)ƒlƒbƒgƒ[ƒNƒhƒ‰ƒCƒu‚ÌƒpƒX‚ÍUNC‚É•ÏX‚·‚é‚±‚Æ‚ÅƒnƒCƒp[ƒŠƒ“ƒN‰»
-Rem         ƒ[ƒJƒ‹ƒhƒ‰ƒCƒu‚ÌƒpƒX‚Í <"file:// "> ‚ÅˆÍ‚¤‚±‚Æ‚ÅƒnƒCƒp[ƒŠƒ“ƒN‰»
-Rem         UNCƒpƒX‚Í <" "> ‚ÅˆÍ‚¤‚±‚Æ‚Å“rØ‚ê–h~
+Rem         (Trueãªã‚‰)ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ãƒ‰ãƒ©ã‚¤ãƒ–ã®ãƒ‘ã‚¹ã¯UNCã«å¤‰æ›´ã™ã‚‹ã“ã¨ã§ãƒã‚¤ãƒ‘ãƒ¼ãƒªãƒ³ã‚¯åŒ–
+Rem         ãƒ­ãƒ¼ã‚«ãƒ«ãƒ‰ãƒ©ã‚¤ãƒ–ã®ãƒ‘ã‚¹ã¯ <"file:// "> ã§å›²ã†ã“ã¨ã§ãƒã‚¤ãƒ‘ãƒ¼ãƒªãƒ³ã‚¯åŒ–
+Rem         UNCãƒ‘ã‚¹ã¯ <" "> ã§å›²ã†ã“ã¨ã§é€”åˆ‡ã‚Œé˜²æ­¢
 Rem
-Rem         ƒpƒX‚Í•K‚¸‰üs‚ÅI‚í‚é‚±‚Æ
-Rem         Outlook‚Å‚Íƒ[ƒ‹‘—M‚Ì©“®Ü•Ô‚µ‚ğØ‚Á‚Ä‚¨‚­‚±‚Æ
-Rem         ƒ[ƒ‹ì¬‰æ–Ê‚Å‚ÍƒŠƒ“ƒNó‘Ô‚É‚Í‚È‚ç‚È‚¢B
-Rem         ©•ª‚©‚ç©•ª‚Ö‘—M‚µ‚ÄƒeƒXƒg‚·‚é‚æ‚¤‚ÉB
+Rem         ãƒ‘ã‚¹ã¯å¿…ãšæ”¹è¡Œã§çµ‚ã‚ã‚‹ã“ã¨
+Rem         Outlookã§ã¯ãƒ¡ãƒ¼ãƒ«é€ä¿¡æ™‚ã®è‡ªå‹•æŠ˜è¿”ã—ã‚’åˆ‡ã£ã¦ãŠãã“ã¨
+Rem         ãƒ¡ãƒ¼ãƒ«ä½œæˆç”»é¢ã§ã¯ãƒªãƒ³ã‚¯çŠ¶æ…‹ã«ã¯ãªã‚‰ãªã„ã€‚
+Rem         è‡ªåˆ†ã‹ã‚‰è‡ªåˆ†ã¸é€ä¿¡ã—ã¦ãƒ†ã‚¹ãƒˆã™ã‚‹ã‚ˆã†ã«ã€‚
 Rem
 Public Function ReplacePathToHyperlink(ByVal base_str, Optional DoNetDriveToUNC As Boolean = False) As String
     Const LocalPrefix = "file://"
@@ -1040,16 +1040,16 @@ Public Function ReplacePathToHyperlink(ByVal base_str, Optional DoNetDriveToUNC 
     Dim dicUncPath  As Object 'Dictionary
     Dim DriveLetter As String
 
-    '‰üs(CRLF)‚ğƒpƒXI—¹‚Æ‚İ‚È‚·
+    'æ”¹è¡Œ(CRLF)ã‚’ãƒ‘ã‚¹çµ‚äº†ã¨ã¿ãªã™
     Dim base_str_arr
     base_str_arr = Split(base_str, vbCrLf)
 
-    'UNCƒpƒX‚Ì•ÏŠ·
+    'UNCãƒ‘ã‚¹ã®å¤‰æ›
     Const UncPathPrefix = "\\"
     For i = LBound(base_str_arr) To UBound(base_str_arr)
         s = base_str_arr(i)
 
-        'UNCƒpƒX‚ğ<"UNCƒpƒX">‚É•ÏŠ·
+        'UNCãƒ‘ã‚¹ã‚’<"UNCãƒ‘ã‚¹">ã«å¤‰æ›
         pathIdx = InStr(lfIdx, s, UncPathPrefix)
         If pathIdx > 0 Then
             pathData = Mid(s, pathIdx, Len(s))
@@ -1058,14 +1058,14 @@ Public Function ReplacePathToHyperlink(ByVal base_str, Optional DoNetDriveToUNC 
         End If
     Next
 
-    'ƒhƒ‰ƒCƒuƒŒƒ^[•t‚«ƒpƒX‚Ì•ÏŠ·
+    'ãƒ‰ãƒ©ã‚¤ãƒ–ãƒ¬ã‚¿ãƒ¼ä»˜ããƒ‘ã‚¹ã®å¤‰æ›
     Dim pathArr(1 To 26)
     For i = 1 To 26: pathArr(i) = Chr(Asc("A") - 1 + i) & ":": Next
 
     For i = LBound(base_str_arr) To UBound(base_str_arr)
         s = base_str_arr(i)
 
-        'ƒpƒX‚Æv‚í‚ê‚é•¶Í‚ğŒŸõ
+        'ãƒ‘ã‚¹ã¨æ€ã‚ã‚Œã‚‹æ–‡ç« ã‚’æ¤œç´¢
         For Each v In pathArr
             pathIdx = InStr(lfIdx, s, LocalPrefix & v)
             DriveLetter = v
@@ -1087,13 +1087,13 @@ Public Function ReplacePathToHyperlink(ByVal base_str, Optional DoNetDriveToUNC 
             UncPath = GetUNCPath(DriveLetter)
             
             If UncPath <> "" And DoNetDriveToUNC Then
-                'ƒlƒbƒgƒ[ƒNƒhƒ‰ƒCƒu‚ÌƒpƒX‚ğ<"\\ServerName\ShareName\ƒpƒX">‚É•ÏŠ·(Šù‘¶‚Ìfile://‚ÍÁ‚·)
+                'ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ãƒ‰ãƒ©ã‚¤ãƒ–ã®ãƒ‘ã‚¹ã‚’<"\\ServerName\ShareName\ãƒ‘ã‚¹">ã«å¤‰æ›(æ—¢å­˜ã®file://ã¯æ¶ˆã™)
                 pathData = Mid(s, pathIdx, Len(s))
                 s = Replace(s, pathData, "<""" & Replace(pathData, DriveLetter, UncPath) & """>")
                 s = Replace(s, LocalPrefix, "")
                 base_str_arr(i) = s
             Else
-                'ƒ[ƒJƒ‹ƒhƒ‰ƒCƒu‚ÌƒpƒX‚ğ<"file://ƒpƒX">‚É•ÏŠ·
+                'ãƒ­ãƒ¼ã‚«ãƒ«ãƒ‰ãƒ©ã‚¤ãƒ–ã®ãƒ‘ã‚¹ã‚’<"file://ãƒ‘ã‚¹">ã«å¤‰æ›
                 pathData = Mid(s, pathIdx, Len(s))
                 s = Replace(s, pathData, "<""" & pathHeader & pathData & """>")
                 base_str_arr(i) = s
@@ -1101,7 +1101,7 @@ Public Function ReplacePathToHyperlink(ByVal base_str, Optional DoNetDriveToUNC 
         End If
     Next
 
-    'Šù‚É•t—^‚³‚ê‚Ä‚¢‚½ê‡‚Ì“ñd•t—^‚ğ‰ğœ
+    'æ—¢ã«ä»˜ä¸ã•ã‚Œã¦ã„ãŸå ´åˆã®äºŒé‡ä»˜ä¸ã‚’è§£é™¤
     For i = LBound(base_str_arr) To UBound(base_str_arr)
         s = base_str_arr(i)
         s = Replace(s, "<""<""", "<""")
@@ -1115,50 +1115,50 @@ Public Function ReplacePathToHyperlink(ByVal base_str, Optional DoNetDriveToUNC 
 End Function
 
 #If DEF_OUTLOOK Then
-Sub ƒ[ƒ‹ì¬‰æ–Ê‚ÌƒpƒX‚ğƒnƒCƒp[ƒŠƒ“ƒN‚É•ÏŠ·()
+Sub ãƒ¡ãƒ¼ãƒ«ä½œæˆç”»é¢ã®ãƒ‘ã‚¹ã‚’ãƒã‚¤ãƒ‘ãƒ¼ãƒªãƒ³ã‚¯ã«å¤‰æ›()
     Dim objItem As Outlook.MailItem
     Set objItem = ActiveInspector.CurrentItem
     objItem.body = ReplacePathToHyperlink(objItem.body)
 End Sub
 #End If
 
-Rem \\‚Å‚àƒnƒCƒp[ƒŠƒ“ƒN‚É‚È‚é‚ªAfile://‚¶‚á‚È‚¢‚ÆƒŠƒ“ƒN‚Í–³Œø‚¾‚Á‚½
+Rem \\ã§ã‚‚ãƒã‚¤ãƒ‘ãƒ¼ãƒªãƒ³ã‚¯ã«ãªã‚‹ãŒã€file://ã˜ã‚ƒãªã„ã¨ãƒªãƒ³ã‚¯ã¯ç„¡åŠ¹ã ã£ãŸ
 
-Rem ‚Â‚¢‚Å‚ÉóMƒ[ƒ‹‚Ì©“®‰üs‚àC•œ‚µ‚½‚¢
+Rem ã¤ã„ã§ã«å—ä¿¡ãƒ¡ãƒ¼ãƒ«ã®è‡ªå‹•æ”¹è¡Œã‚‚ä¿®å¾©ã—ãŸã„
 #If NO_COMPILE Then
 C:\Test\hoge.xls
 #End If
 
 
-Rem Ql‘—¿@‚±‚Ì‚­‚ç‚¢‚ÌƒR[ƒh‚Í’¼Ú‚©‚¢‚½‚Ù‚¤‚ª•ª‚©‚è‚â‚·‚¢
-Rem 'ƒtƒ@ƒCƒ‹‚ğŠJ‚­ƒ_ƒCƒAƒƒO‚ğ•\¦‚µ‚ÄAƒpƒX‚ğ•Ô‚·Bi‹Œ®EXCEL‘Î‰j
+Rem å‚è€ƒè³‡æ–™ã€€ã“ã®ãã‚‰ã„ã®ã‚³ãƒ¼ãƒ‰ã¯ç›´æ¥ã‹ã„ãŸã»ã†ãŒåˆ†ã‹ã‚Šã‚„ã™ã„
+Rem 'ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ããƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’è¡¨ç¤ºã—ã¦ã€ãƒ‘ã‚¹ã‚’è¿”ã™ã€‚ï¼ˆæ—§å¼EXCELå¯¾å¿œï¼‰
 Public Function OpenDialog(Path As String, Filter As String) As String
     OpenDialog = ""
     Dim fileToOpen As Variant
     If Path <> "" Then SetCurrentDirectory Path
     fileToOpen = Application _
-        .GetOpenFileName(Filter)  '"ƒGƒNƒZƒ‹ƒtƒ@ƒCƒ‹(*.xls;*.xlsx), *.xls;*.xlsx"
+        .GetOpenFileName(Filter)  '"ã‚¨ã‚¯ã‚»ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«(*.xls;*.xlsx), *.xls;*.xlsx"
     If fileToOpen <> False Then
         OpenDialog = fileToOpen
     End If
     Path = OpenDialog
 End Function
 
-Rem •Û‘¶ƒ_ƒCƒAƒƒO‚ğ•\¦‚µ‚ÄAƒpƒX‚ğ•Ô‚·Bi‹Œ®EXCEL‘Î‰j
+Rem ä¿å­˜ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’è¡¨ç¤ºã—ã¦ã€ãƒ‘ã‚¹ã‚’è¿”ã™ã€‚ï¼ˆæ—§å¼EXCELå¯¾å¿œï¼‰
 Public Function SaveDialog(Path As String, Filter As String) As String
     SaveDialog = ""
     Dim fileToSave As Variant
     fileToSave = Application _
-        .GetSaveAsFilename(Path, Filter)  '"ƒGƒNƒZƒ‹ƒtƒ@ƒCƒ‹(*.xls;*.xlsx), *.xls;*.xlsx"
+        .GetSaveAsFilename(Path, Filter)  '"ã‚¨ã‚¯ã‚»ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«(*.xls;*.xlsx), *.xls;*.xlsx"
     If fileToSave <> False Then
         SaveDialog = fileToSave
     End If
     Path = SaveDialog
 End Function
 
-Rem ƒtƒHƒ‹ƒ_QÆƒ_ƒCƒAƒƒO‚ğ•\¦‚µ‚ÄAƒpƒX‚ğ•Ô‚·BiExcel 2000ˆÈ~j
+Rem ãƒ•ã‚©ãƒ«ãƒ€å‚ç…§ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’è¡¨ç¤ºã—ã¦ã€ãƒ‘ã‚¹ã‚’è¿”ã™ã€‚ï¼ˆExcel 2000ä»¥é™ï¼‰
 Public Function FolderDialog(Optional DefaultFolder As String, Optional Title As String) As String
-    Title = Title & " - ƒtƒHƒ‹ƒ_‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢"
+    Title = Title & " - ãƒ•ã‚©ãƒ«ãƒ€ã‚’é¸æŠã—ã¦ãã ã•ã„"
     On Error GoTo msoErr
     Dim fso As FileSystemObject
     Set fso = New FileSystemObject
@@ -1175,10 +1175,10 @@ Public Function FolderDialog(Optional DefaultFolder As String, Optional Title As
             Dim Path: Path = Application.FileDialog(msoFileDialogFolderPicker).SelectedItems(1)
             If Right$(Path, 1) <> "\" Then Path = Path + "\"
             FolderDialog = Path
-            '•¡”‘I‘ğ‚Ìê‡
+            'è¤‡æ•°é¸æŠã®å ´åˆ
 Rem             For Each vrtSelectedItem In .SelectedItems
-Rem                 ƒtƒHƒ‹ƒ_QÆDialog = vrtSelectedItem
-Rem                 Path = ƒtƒHƒ‹ƒ_QÆDialog
+Rem                 ãƒ•ã‚©ãƒ«ãƒ€å‚ç…§Dialog = vrtSelectedItem
+Rem                 Path = ãƒ•ã‚©ãƒ«ãƒ€å‚ç…§Dialog
 Rem             Next vrtSelectedItem
         Else
             FolderDialog = ""
@@ -1187,14 +1187,14 @@ Rem             Next vrtSelectedItem
     End With
     Exit Function
 msoErr:
-    '‹Œƒo[ƒWƒ‡ƒ“‚Ì‚½‚ß‚ÉEEE
+    'æ—§ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã®ãŸã‚ã«ãƒ»ãƒ»ãƒ»
     FolderDialog = ShellFolderDialog(DefaultFolder)
 End Function
 
-Rem ‹Œ®‚ÌƒtƒHƒ‹ƒ_QÆƒ_ƒCƒAƒƒO
+Rem æ—§å¼ã®ãƒ•ã‚©ãƒ«ãƒ€å‚ç…§ãƒ€ã‚¤ã‚¢ãƒ­ã‚°
 Public Function ShellFolderDialog(Optional DefaultFolder As String, Optional Title As String) As String
     If DefaultFolder = "" Then DefaultFolder = "C:\"
-    If Title = "" Then Title = "ƒtƒHƒ‹ƒ_‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢"
+    If Title = "" Then Title = "ãƒ•ã‚©ãƒ«ãƒ€ã‚’é¸æŠã—ã¦ãã ã•ã„"
     
     Dim shApp As Object
     Set shApp = CreateObject("Shell.Application") _
@@ -1206,7 +1206,7 @@ Public Function ShellFolderDialog(Optional DefaultFolder As String, Optional Tit
     End If
 End Function
 
-Rem 'ƒAƒvƒŠƒP[ƒVƒ‡ƒ“AƒtƒHƒ‹ƒ_AŠÖ˜A•t‚¯‚ç‚ê‚½ƒtƒ@ƒCƒ‹‚Ì‹N“®
+Rem 'ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã€ãƒ•ã‚©ãƒ«ãƒ€ã€é–¢é€£ä»˜ã‘ã‚‰ã‚ŒãŸãƒ•ã‚¡ã‚¤ãƒ«ã®èµ·å‹•
 Rem Public Sub Exec(Path As String)
 Rem     Path = RenewalPath(Path)
 Rem     If Strings.Right(Path, 1) = "\" Then
@@ -1216,7 +1216,7 @@ Rem         Interaction.Shell Path, vbNormalFocus
 Rem     End If
 Rem End Sub
 Rem
-Rem 'ƒtƒHƒ‹ƒ_ì¬B¬Œ÷‚µ‚½‚çTrue
+Rem 'ãƒ•ã‚©ãƒ«ãƒ€ä½œæˆã€‚æˆåŠŸã—ãŸã‚‰True
 Rem Public Function CreateFolder(Path As String) As Boolean
 Rem     Dim fso As FileSystemObject
 Rem     Set fso = New FileSystemObject
@@ -1229,11 +1229,11 @@ Rem     End If
 Rem     CreateFolder = True
 Rem     Exit Function
 Rem CreateFolderError:
-Rem     'MsgBox "ƒtƒHƒ‹ƒ_ì¬‚É¸”s‚µ‚Ü‚µ‚½B" + vbCrLf + "eƒtƒHƒ‹ƒ_‚ÌƒpƒX‚ªŠÔˆá‚Á‚Ä‚¢‚È‚¢‚©Šm”F‚µ‚Ä‚­‚¾‚³‚¢B"
+Rem     'MsgBox "ãƒ•ã‚©ãƒ«ãƒ€ä½œæˆã«å¤±æ•—ã—ã¾ã—ãŸã€‚" + vbCrLf + "è¦ªãƒ•ã‚©ãƒ«ãƒ€ã®ãƒ‘ã‚¹ãŒé–“é•ã£ã¦ã„ãªã„ã‹ç¢ºèªã—ã¦ãã ã•ã„ã€‚"
 Rem     CreateFolder = False
 Rem End Function
 Rem
-Rem 'ƒtƒHƒ‹ƒ_ˆÚ“®B¬Œ÷‚µ‚½‚çTrue
+Rem 'ãƒ•ã‚©ãƒ«ãƒ€ç§»å‹•ã€‚æˆåŠŸã—ãŸã‚‰True
 Rem Public Function MoveFolder(Path1 As String, Path2 As String) As Boolean
 Rem     Path1 = RenewalPath(Path1)
 Rem     Path2 = RenewalPath(Path2)
@@ -1244,6 +1244,6 @@ Rem     fso.MoveFolder DeleteFolderLastYen(Path1), DeleteFolderLastYen(Path2)
 Rem     MoveFolder = True
 Rem     Exit Function
 Rem MoveFolderError:
-Rem     MsgBox "ƒtƒHƒ‹ƒ_ˆÚ“®‚É¸”s‚µ‚Ü‚µ‚½B" & vbCrLf & "ˆÚ“®Œ³F" & Path1 & vbCrLf & "ˆÚ“®æF" & Path2
+Rem     MsgBox "ãƒ•ã‚©ãƒ«ãƒ€ç§»å‹•ã«å¤±æ•—ã—ã¾ã—ãŸã€‚" & vbCrLf & "ç§»å‹•å…ƒï¼š" & Path1 & vbCrLf & "ç§»å‹•å…ˆï¼š" & Path2
 Rem     MoveFolder = False
 Rem End Function
