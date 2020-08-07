@@ -114,7 +114,7 @@ Public Function GetWorkbook(book_str_name) As Excel.Workbook
 End Function
 
 Rem フルパス名
-Property Get FullPath() As String: FullPath = FullPath__: End Function
+Property Get FullPath() As String: FullPath = Me.FullPath__ & IIf(Me.IsFile, "", "\"): End Function
 Property Let FullPath(Path As String)
     If Path Like "*\" Then Me.IsFile = False
     'フルパス、UNC、相対、カレントを自動認識してフルパス化
@@ -160,6 +160,13 @@ Property Get CurrentFolderPath(Optional AddYen As Boolean = False) As String
         CurrentFolderPath = Me.FullPath
     End If
     CurrentFolderPath = kccFuncString.ToPathLastYen(CurrentFolderPath, AddYen)
+End Property
+
+Rem 現在のフォルダ名の変更
+Property Let CurrentFolderName(FolderName As String)
+    Dim cur As Scripting.Folder
+    Set cur = Me.CurrentFolder.Folder
+    cur.Name = FolderName
 End Property
 
 Rem 親フォルダ名
@@ -220,21 +227,21 @@ Public Function MoveFolderPath(relative_path) As String
 End Function
 
 Rem 相対パスにより移動したフォルダのインスタンスを新規生成
-Public Function MoveFolder(relative_path) As kccPathEx
+Public Function MovePathByFolder(relative_path, Optional KeepFileName As Boolean = False) As kccPathEx
     Dim bas As String: bas = Me.CurrentFolderPath
     Dim ref As String: ref = relative_path
     Dim ppp As String: ppp = kccFuncString.AbsolutePathNameEx(bas, ref)
-    Set MoveFolder = VBA.CVar(New kccPathEx).Init(ppp, False)
+    Set MovePathByFolder = VBA.CVar(New kccPathEx).Init(ppp, False)
 End Function
 
 Rem 相対パスにより移動したファイルのインスタンスを新規生成
 Rem   既存がフォルダのとき：「現パス\ファイル名」
 Rem   既存がファイルのとき：「カレントフォルダ\ファイル名」
-Public Function MoveFile(FileName) As kccPathEx
+Public Function MovePathByFile(relative_path) As kccPathEx
     Dim bas As String: bas = Me.CurrentFolderPath
-    Dim ref As String: ref = IIf(FileName Like "*\*", "", ".\") & FileName
+    Dim ref As String: ref = IIf(relative_path Like "*\*", "", ".\") & relative_path
     Dim ppp As String: ppp = kccFuncString.AbsolutePathNameEx(bas, ref)
-    Set MoveFile = VBA.CVar(New kccPathEx).Init(ppp, True)
+    Set MovePathByFile = VBA.CVar(New kccPathEx).Init(ppp, True)
 End Function
 
 Rem フォルダを一気に作成
@@ -252,7 +259,18 @@ End Function
 Public Function DeleteFolder()
 '    On Error Resume Next
     If fso.FolderExists(Me.CurrentFolderPath) Then
-        fso.DeleteFolder Me.CurrentFolderPath
+        '1秒空けて3回リトライ
+        Dim n As Long: n = 3
+        Do
+            On Error Resume Next
+            fso.DeleteFolder Me.CurrentFolderPath
+            If Err.number = 0 Then Exit Do
+            On Error GoTo 0
+            Application.Wait [Now() + "00:00:01"]
+            n = n - 1
+            If n = 0 Then Err.Raise 9999, "DeleteFolder", "削除できません"
+        Loop
+        DoEvents
     End If
 End Function
 
@@ -262,13 +280,14 @@ Public Function CopyFiles(dest As kccPathEx, _
         Optional withFilterString As String = "*", _
         Optional withoutFilterString As String = "")
     Dim f As File
+    If Me.CurrentFolderPath = "" Then Stop
     For Each f In Me.Folder.Files
         If f.Name Like withFilterString And _
             Not f.Name Like withoutFilterString Then
             If dest.IsFile Then
                 f.Copy dest.ReplacePathAuto(FileName:=f.Name).CreateFolder.FullPath
             Else
-                f.Copy dest.ReplacePathAuto(FileName:=f.Name).MoveFile(f.Name).CreateFolder.FullPath
+                f.Copy dest.ReplacePathAuto(FileName:=f.Name).MovePathByFile(f.Name).CreateFolder.FullPath
             End If
         End If
     Next

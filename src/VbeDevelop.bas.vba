@@ -1711,10 +1711,10 @@ End Sub
 Rem  プロジェクトのソースコードをエクスポートしたりバックアップする処理
 Rem
 Rem  @param ExportObject    出力プロジェクト（Workbook,VBProject)
-Rem  @param ExportBinFolder binフォルダ
-Rem  @param
-Rem  @param
-Rem  @param
+Rem  @param ExportBinFolder エクスポートbinフォルダ
+Rem  @param ExportSrcFolder エクスポートsrcフォルダ
+Rem  @param BackupBinFile   バックアップbinファイル命名規則
+Rem  @param BackupSrcFile   エクスポートsrcファイル命名規則
 Rem
 Public Sub VBComponents_BackupAndExport_Sub( _
             ExportObject As Object, _
@@ -1739,27 +1739,55 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     'プロジェクトをリリースフォルダへ複製
     If ExportBinFolder <> "" Then
         Dim binPath As kccPathEx
-        Set binPath = prjPath.MoveFolder(ExportBinFolder).ReplacePathAuto(DateTime:=NowDateTime)
+        Set binPath = prjPath.MovePathByFolder(ExportBinFolder).ReplacePathAuto(DateTime:=NowDateTime)
         binPath.DeleteFolder
+        DoEvents
         binPath.CreateFolder
         prjPath.CopyFiles binPath
     End If
     
     '既存ソースの削除とエクスポート
+    '既存ソースを一旦別のフォルダに移動して、出力後に比較して、完全一致なら巻き戻す。
     If ExportSrcFolder <> "" Then
         Dim srcPath As kccPathEx
-        Set srcPath = prjPath.MoveFolder(ExportSrcFolder).ReplacePathAuto(DateTime:=NowDateTime)
-        srcPath.DeleteFolder
+        Set srcPath = prjPath.MovePathByFolder(ExportSrcFolder).ReplacePathAuto(DateTime:=NowDateTime)
+        
+        'rename and remove
+        Dim backPath As kccPathEx
+        Set backPath = srcPath.MovePathByFolder("..\src_back\")
+        backPath.DeleteFolder
+        srcPath.Folder.Name = backPath.FolderName
+        
+        'export
         srcPath.CreateFolder
         Call VBComponents_Export(prjPath.VBProject, srcPath)
+        
+        'merge And restore
+        Dim f1 As File, f2 As File
+        For Each f1 In srcPath.Folder.Files
+            If f1.Name Like "*.frx" Then
+                For Each f2 In backPath.Folder.Files
+                    If f1.Name = f2.Name Then
+                        If f1.Size = f2.Size Then
+                            '一致
+                            Debug.Print "restore : " & f1.Name
+                            f2.Copy f1.Path, True
+                        End If
+                    End If
+                Next
+            End If
+        Next
+        
+        backPath.DeleteFolder
+        
     End If
     
     'binとsrcのバックアップ
     If BackupBinFile <> "" Then
-        binPath.CopyFiles prjPath.MoveFile(BackupBinFile).ReplacePathAuto(DateTime:=NowDateTime), withoutFilterString:="*~$*"
+        binPath.CopyFiles prjPath.MovePathByFile(BackupBinFile).ReplacePathAuto(DateTime:=NowDateTime), withoutFilterString:="*~$*"
     End If
     If BackupSrcFile <> "" Then
-        srcPath.CopyFiles prjPath.MoveFile(BackupSrcFile).ReplacePathAuto(DateTime:=NowDateTime)
+        srcPath.CopyFiles prjPath.MovePathByFile(BackupSrcFile).ReplacePathAuto(DateTime:=NowDateTime)
     End If
     
     Debug.Print "VBA Exported : " & prjPath.FileName
