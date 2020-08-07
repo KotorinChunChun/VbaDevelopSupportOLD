@@ -2,14 +2,14 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "kccFuncFileFolderPath"
+Attribute VB_Name = "kccFuncPath"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Rem --------------------------------------------------------------------------------
 Rem
-Rem  @module        kccFuncFileFolderPath
+Rem  @module        kccFuncPath
 Rem
 Rem  @description   ファイル・フォルダ・パス解析関数
 Rem

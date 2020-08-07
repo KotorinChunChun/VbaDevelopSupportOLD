@@ -22,8 +22,8 @@ Rem  @refModules
 Rem    VbProcInfo
 Rem    VbeMenuItemCreator
 Rem    kccFuncString
-Rem    kccFuncFileFolderPath
-Rem    kccPathEx
+Rem    kccFuncPath
+Rem    kccPath
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @history

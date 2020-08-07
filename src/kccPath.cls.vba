@@ -2,14 +2,14 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "kccPathEx"
+Attribute VB_Name = "kccPath"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Rem --------------------------------------------------------------------------------
 Rem
-Rem  @module        kccPathEx
+Rem  @module        kccPath
 Rem
 Rem  @description   パス情報管理クラス
 Rem
@@ -26,7 +26,7 @@ Rem
 Rem --------------------------------------------------------------------------------
 Rem  @refModules
 Rem    kccFuncString
-Rem    kccFuncFileFolderPath
+Rem    kccFuncPath
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @history
@@ -50,7 +50,7 @@ Public Property Get fso() As FileSystemObject
 End Property
 
 Rem オブジェクトの作成
-Public Function Init(obj, Optional is_file As Boolean = True) As kccPathEx
+Public Function Init(obj, Optional is_file As Boolean = True) As kccPath
     Set Init = Me
     Select Case TypeName(obj)
         Case "String":    IsFile = is_file: FullPath = obj
@@ -71,10 +71,10 @@ Public Function Init(obj, Optional is_file As Boolean = True) As kccPathEx
     End Select
 End Function
 
-Property Get Self() As kccPathEx: Set Self = Me: End Property
+Property Get Self() As kccPath: Set Self = Me: End Property
 
-Public Function Clone() As kccPathEx
-    Set Clone = VBA.CVar(New kccPathEx).Init(Me.FullPath, Me.IsFile)
+Public Function Clone() As kccPath
+    Set Clone = VBA.CVar(New kccPath).Init(Me.FullPath, Me.IsFile)
 End Function
 
 Rem VBProjectから名前を取得する関数
@@ -180,13 +180,13 @@ Property Get ParentFolderPath(Optional AddYen As Boolean = False) As String
 End Property
 
 Rem 親フォルダオブジェクト
-Property Get CurrentFolder() As kccPathEx
-    Set CurrentFolder = VBA.CVar(New kccPathEx).Init(Me.CurrentFolderPath, False)
+Property Get CurrentFolder() As kccPath
+    Set CurrentFolder = VBA.CVar(New kccPath).Init(Me.CurrentFolderPath, False)
 End Property
 
 Rem 親フォルダオブジェクト
-Property Get ParentFolder() As kccPathEx
-    Set ParentFolder = VBA.CVar(New kccPathEx).Init(Me.ParentFolderPath, False)
+Property Get ParentFolder() As kccPath
+    Set ParentFolder = VBA.CVar(New kccPath).Init(Me.ParentFolderPath, False)
 End Property
 
 Rem 存在しないとエラーになるかも
@@ -227,21 +227,21 @@ Public Function MoveFolderPath(relative_path) As String
 End Function
 
 Rem 相対パスにより移動したフォルダのインスタンスを新規生成
-Public Function MovePathByFolder(relative_path, Optional KeepFileName As Boolean = False) As kccPathEx
+Public Function MovePathByFolder(relative_path, Optional KeepFileName As Boolean = False) As kccPath
     Dim bas As String: bas = Me.CurrentFolderPath
     Dim ref As String: ref = relative_path
     Dim ppp As String: ppp = kccFuncString.AbsolutePathNameEx(bas, ref)
-    Set MovePathByFolder = VBA.CVar(New kccPathEx).Init(ppp, False)
+    Set MovePathByFolder = VBA.CVar(New kccPath).Init(ppp, False)
 End Function
 
 Rem 相対パスにより移動したファイルのインスタンスを新規生成
 Rem   既存がフォルダのとき：「現パス\ファイル名」
 Rem   既存がファイルのとき：「カレントフォルダ\ファイル名」
-Public Function MovePathByFile(relative_path) As kccPathEx
+Public Function MovePathByFile(relative_path) As kccPath
     Dim bas As String: bas = Me.CurrentFolderPath
     Dim ref As String: ref = IIf(relative_path Like "*\*", "", ".\") & relative_path
     Dim ppp As String: ppp = kccFuncString.AbsolutePathNameEx(bas, ref)
-    Set MovePathByFile = VBA.CVar(New kccPathEx).Init(ppp, True)
+    Set MovePathByFile = VBA.CVar(New kccPath).Init(ppp, True)
 End Function
 
 Rem フォルダを一気に作成
@@ -249,9 +249,9 @@ Rem  成功した場合
 Rem  成功:既に存在した場合
 Rem  失敗:ファイルが既に存在した場合
 Rem  失敗:それ以外の理由
-Public Function CreateFolder() As kccPathEx
+Public Function CreateFolder() As kccPath
     Set CreateFolder = Me
-    If Not kccFuncFileFolderPath.CreateDirectoryEx(Me.CurrentFolderPath) Then
+    If Not kccFuncPath.CreateDirectoryEx(Me.CurrentFolderPath) Then
         Debug.Print "CreateFolder 失敗 : " & Me.CurrentFolderPath
     End If
 End Function
@@ -276,7 +276,7 @@ End Function
 
 Rem フォルダのファイルをまとめてコピーする
 Rem 速度は無視。
-Public Function CopyFiles(dest As kccPathEx, _
+Public Function CopyFiles(dest As kccPath, _
         Optional withFilterString As String = "*", _
         Optional withoutFilterString As String = "")
     Dim f As File
@@ -299,14 +299,14 @@ Public Function FolderExists() As Boolean
 End Function
 
 Rem パス文字列を単純に置換
-Public Function ReplacePath(src, dest) As kccPathEx
+Public Function ReplacePath(src, dest) As kccPath
     Set ReplacePath = Me.Clone
     ReplacePath.FullPath = Replace(ReplacePath.FullPath, src, dest)
 End Function
 
 Rem パス文字列をマジックナンバーにより置換
-Public Function ReplacePathAuto(Optional DateTime, Optional FileName) As kccPathEx
-    Dim obj As kccPathEx: Set obj = Me.Clone
+Public Function ReplacePathAuto(Optional DateTime, Optional FileName) As kccPath
+    Dim obj As kccPath: Set obj = Me.Clone
     If VBA.IsMissing(DateTime) Then
     Else
         Set obj = obj.ReplacePath("[YYYYMMDD]_[HHMMSS]", Format$(DateTime, "yyyymmdd_hhmmss"))

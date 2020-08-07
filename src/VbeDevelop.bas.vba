@@ -125,7 +125,7 @@ On Error Resume Next
 End Sub
 
 Sub Test_VBP()
-    Dim prjPath As kccPathEx: Set prjPath = VBA.CVar(New kccPathEx).Init(Application.VBE.ActiveVBProject)
+    Dim prjPath As kccPath: Set prjPath = VBA.CVar(New kccPath).Init(Application.VBE.ActiveVBProject)
     Dim obj
     Set obj = prjPath.VBProject
     Debug.Print obj.Name
@@ -134,14 +134,14 @@ End Sub
 
 Rem 現在アクティブなプロジェクトのワークブックを閉じる
 Public Sub CloseProject()
-    Dim prjPath As kccPathEx: Set prjPath = VBA.CVar(New kccPathEx).Init(Application.VBE.ActiveVBProject)
+    Dim prjPath As kccPath: Set prjPath = VBA.CVar(New kccPath).Init(Application.VBE.ActiveVBProject)
     If prjPath Is Nothing Then Exit Sub
     prjPath.Workbook.Close
 End Sub
 
 Rem アクティブブックのソースコードのプロシージャ一覧を新規ブックへ出力
 Public Sub VbeProcInfo_Output()
-    Dim prjPath As kccPathEx: Set prjPath = VBA.CVar(New kccPathEx).Init(Application.VBE.ActiveVBProject)
+    Dim prjPath As kccPath: Set prjPath = VBA.CVar(New kccPath).Init(Application.VBE.ActiveVBProject)
     
     'プロシージャ一覧を取得して二次元配列を取得する処理
     Dim data
@@ -1642,19 +1642,19 @@ Private Sub SelectedVBComponent_Name_Sample()
   MsgBox Prompt:="選択してるモジュール名：" & Application.VBE.SelectedVBComponent.Name, Buttons:=vbYesNo + vbQuestion, Title:="SelectedVBComponent.Name"
 End Sub
 
-Sub Test_kccPathEx_ParentFolderPath()
-    Dim p As kccPathEx
+Sub Test_kccPath_ParentFolderPath()
+    Dim p As kccPath
     
     '明示的にis_file:=Falseとすればフォルダ認識
-    Set p = VBA.CVar(New kccPathEx).Init("C:\vba\hoge", False)
+    Set p = VBA.CVar(New kccPath).Init("C:\vba\hoge", False)
     Debug.Print p.CurrentFolderPath, p.ParentFolderPath
     
     'パスの末尾が￥ならフォルダ認識
-    Set p = VBA.CVar(New kccPathEx).Init("C:\vba\hoge\")
+    Set p = VBA.CVar(New kccPath).Init("C:\vba\hoge\")
     Debug.Print p.CurrentFolderPath, p.ParentFolderPath
     
     '未指定は原則ファイル認識
-    Set p = VBA.CVar(New kccPathEx).Init("C:\vba\hoge\a.xlsm")
+    Set p = VBA.CVar(New kccPath).Init("C:\vba\hoge\a.xlsm")
     Debug.Print p.CurrentFolderPath, p.ParentFolderPath
 End Sub
 
@@ -1725,7 +1725,7 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     Const proc_name = "VBComponents_Export"
     
     Dim NowDateTime As Date: NowDateTime = Now()
-    Dim prjPath As kccPathEx: Set prjPath = VBA.CVar(New kccPathEx).Init(ExportObject)
+    Dim prjPath As kccPath: Set prjPath = VBA.CVar(New kccPath).Init(ExportObject)
     
     'プロジェクトの上書き保存
     If MsgBox(Join(Array( _
@@ -1738,7 +1738,7 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     
     'プロジェクトをリリースフォルダへ複製
     If ExportBinFolder <> "" Then
-        Dim binPath As kccPathEx
+        Dim binPath As kccPath
         Set binPath = prjPath.MovePathByFolder(ExportBinFolder).ReplacePathAuto(DateTime:=NowDateTime)
         binPath.DeleteFolder
         DoEvents
@@ -1749,11 +1749,11 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     '既存ソースの削除とエクスポート
     '既存ソースを一旦別のフォルダに移動して、出力後に比較して、完全一致なら巻き戻す。
     If ExportSrcFolder <> "" Then
-        Dim srcPath As kccPathEx
+        Dim srcPath As kccPath
         Set srcPath = prjPath.MovePathByFolder(ExportSrcFolder).ReplacePathAuto(DateTime:=NowDateTime)
         
         'rename and remove
-        Dim backPath As kccPathEx
+        Dim backPath As kccPath
         Set backPath = srcPath.MovePathByFolder("..\src_back\")
         backPath.DeleteFolder
         srcPath.Folder.Name = backPath.FolderName
@@ -1813,7 +1813,7 @@ End Sub
 Rem アクティブなプロジェクトのソースコードを指定フォルダにエクスポート
 Rem
 Rem
-Private Sub VBComponents_Export(prj As VBProject, output_path As kccPathEx)
+Private Sub VBComponents_Export(prj As VBProject, output_path As kccPath)
     If prj Is Nothing Then MsgBox "VBAプロジェクト無し", vbOKOnly, "Export Error": Exit Sub
     output_path.CreateFolder
     
