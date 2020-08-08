@@ -1,4 +1,13 @@
 {
-    "files.encoding": "shiftjis",
-    "files.eol": "\r\n"
+  //文字コード関連
+  "files.encoding": "shiftjis",
+  "files.eol": "\r\n",
+
+  //シンタックスハイライト
+  "files.associations": {
+    "*.frm": "vb",
+    "*.bas": "vb",
+    "*.cls": "vb",
+    "*.vba": "vb"
+  }
 }

@@ -58,10 +58,12 @@ Private Sub VbeMenuUpdate(AddOrDel, moduleName)
         arr = GetInstructions(vbc.CodeModule)
         
         Dim i As Long
-        For i = 0 To UBound(arr)
+        For i = LBound(arr) To UBound(arr)
             Select Case arr(i).ProcName
-                Case "Reset_Addin", "Close_Addin", "Auto_Open", "Auto_Close", "Auto_Sub", "GetInstructions", "VbeMenuItemAdd", "VbeMenuItemDel"
-                    '及び引数有り　は処理しない。
+                Case "Reset_Addin", "Close_Addin"
+                Case "Auto_Open", "Auto_Close", "Auto_Sub"
+                Case "GetInstructions", "VbeMenuItemAdd", "VbeMenuItemDel"
+                    'これらは処理しない。
                 Case Else
                     Menu.AddSubMenu arr(i).ProcName, arr(i).Shortcut
             End Select
