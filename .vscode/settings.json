@@ -11,6 +11,7 @@
   //言語に対するファイルの関連付け
   //・シンタックスハイライト
   //・文字コード判定
+  //要：VSCode VBA
   "files.associations": {
     "*.frm": "vba",
     "*.bas": "vba",

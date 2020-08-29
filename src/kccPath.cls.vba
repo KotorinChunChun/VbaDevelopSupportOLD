@@ -264,22 +264,28 @@ Public Function CreateFolder() As kccPath
 End Function
 
 Rem フォルダを削除
-Public Function DeleteFolder()
-'    On Error Resume Next
-    If fso.FolderExists(Me.CurrentFolderPath) Then
+Rem
+Rem  @return As Boolean 削除結果
+Rem                         True  : 成功(削除に成功 or 元々フォルダが無い)
+Rem                         False : 失敗(フォルダが残っている)
+Rem
+Public Function DeleteFolder() As Boolean
+    Dim cPath As String: cPath = Me.CurrentFolderPath
+    If fso.FolderExists(cPath) Then
         '1秒空けて3回リトライ
         Dim n As Long: n = 3
         Do
             On Error Resume Next
-            fso.DeleteFolder Me.CurrentFolderPath
+            fso.DeleteFolder cPath
             If Err.number = 0 Then Exit Do
             On Error GoTo 0
             Application.Wait [Now() + "00:00:01"]
             n = n - 1
-            If n = 0 Then Err.Raise 9999, "DeleteFolder", "削除できません"
+            If n = 0 Then Exit Do 'Err.Raise 9999, "DeleteFolder", "削除できません"
         Loop
         DoEvents
     End If
+    DeleteFolder = Not fso.FolderExists(cPath)
 End Function
 
 Rem フォルダのファイルをまとめてコピーする
@@ -292,10 +298,11 @@ Public Function CopyFiles(dest As kccPath, _
     For Each f In Me.Folder.Files
         If f.Name Like withFilterString And _
             Not f.Name Like withoutFilterString Then
+            'このCopyでは失敗してもエラーが起こらないらしい
             If dest.IsFile Then
                 f.Copy dest.ReplacePathAuto(FileName:=f.Name).CreateFolder.FullPath
             Else
-                f.Copy dest.ReplacePathAuto(FileName:=f.Name).MovePathByFile(f.Name).CreateFolder.FullPath
+                f.Copy dest.ReplacePathAuto(FileName:=f.Name).MovePathByFile(f.Name).CreateFolder.FullPath, True
             End If
         End If
     Next
