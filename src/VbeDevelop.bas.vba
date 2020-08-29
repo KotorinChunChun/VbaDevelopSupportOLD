@@ -1854,6 +1854,10 @@ Private Sub VBComponents_Export(prj As VBProject, output_path As kccPath)
             
             If oFullPath <> "" Then
                 cmp.Export oFullPath
+                
+                '環境によってfrmの座標に .001 が付与される現象の解消
+                Call RepairFrm(oFullPath)
+                
                 'UTF-8への変換
 '                kccPath.Init(oFullPath, True).ConvertCharCode_SJIS_to_utf8
             End If
@@ -1861,6 +1865,29 @@ ForContinue:
         Next
     End With
 End Sub
+
+'環境によってfrmの座標に .001 が付与される現象の解消
+Private Function RepairFrm(frmFullPath)
+    If Not frmFullPath Like "*.frm.vba" Then Exit Function
+    Dim FileLines: FileLines = Split(fso.OpenTextFile(frmFullPath, ForReading).ReadAll, vbNewLine)
+    
+    Dim IsRepaired As Boolean
+    Dim i As Long
+    For i = 1 To 10
+        If FileLines(i) Like "*.001" Then
+            IsRepaired = True
+            Debug.Print kccFuncString.GetPath(frmFullPath, False, True, True), FileLines(i)
+'            Stop
+        End If
+        FileLines(i) = Replace(FileLines(i), ".001", "")
+    Next
+    If IsRepaired Then
+        Dim ts As TextStream
+        Set ts = fso.OpenTextFile(frmFullPath, ForWriting, True)
+        ts.Write Join(FileLines, vbNewLine)
+        ts.Close
+    End If
+End Function
 
 Rem  指定した名前のVBComponentが存在しているか調べます。
 Private Function ExistsVBComponent(VBComponentName As String, Optional pVBProject As Variant)
