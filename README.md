@@ -9,7 +9,7 @@ VBEに機能を追加して、VBA開発を楽にするためのアドインで�
 
 ※ただしExcel専用
 
-![](https://www.dropbox.com/s/oxelvdekh71wbu1/preview.png?raw=1)
+![](https://github.com/KotorinChunChun/VbaDevelopSupport/blob/master/docs/preview.png?raw=true)
 
 
 
