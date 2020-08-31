@@ -134,4 +134,3 @@ Public Function ToVBProjects(obj) As VBIDE.VBProjects: Set ToVBProjects = obj: E
 'Public Function ToWindow(obj) As VBIDE.Window: Set ToWindow = obj: End Function
 'Public Function ToWindows(obj) As VBIDE.Windows: Set ToWindows = obj: End Function
 #End If
-

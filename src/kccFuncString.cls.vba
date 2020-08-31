@@ -429,4 +429,3 @@ Public Function ToPathLastYen(Path, AddYen As Boolean) As String
         End If
     End If
 End Function
-

@@ -1860,6 +1860,9 @@ Private Sub VBComponents_Export(prj As VBProject, output_path As kccPath)
                 '環境によってfrmの座標に .001 が付与される現象の解消
                 Call RepairFrm(oFullPath)
                 
+                'コードの末尾に不要な改行が入りがちな問題の解消
+                Call CleanSource(oFullPath)
+                
                 'UTF-8への変換
 '                kccPath.Init(oFullPath, True).ConvertCharCode_SJIS_to_utf8
             End If
@@ -1888,6 +1891,26 @@ Private Function RepairFrm(frmFullPath)
         Set ts = fso.OpenTextFile(frmFullPath, ForWriting, True)
         ts.Write Join(FileLines, vbNewLine)
         ts.Close
+    End If
+End Function
+
+Rem テキストファイル末尾の不要な改行を取り除く
+Private Function CleanSource(oFullPath)
+    Dim code As String
+    code = fso.OpenTextFile(oFullPath, ForReading).ReadAll
+    
+    Dim IsChanged As Boolean
+    Do
+        If code Like "*" & vbCrLf & vbCrLf Then
+            code = Left(code, Len(code) - 2)
+            IsChanged = True
+        Else
+            Exit Do
+        End If
+    Loop
+    
+    If IsChanged Then
+        fso.OpenTextFile(oFullPath, ForWriting).Write code
     End If
 End Function
 
@@ -2133,4 +2156,3 @@ Private Sub ProcJump(func As String)
     Rem モジュールを開く
     Rem カーソル位置を変える
 End Sub
-

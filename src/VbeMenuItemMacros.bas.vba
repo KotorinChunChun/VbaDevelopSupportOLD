@@ -102,4 +102,3 @@ Private Function GetInstructions(cmod As CodeModule) As VbeMenuItemInstructions(
     ReDim Preserve ret(UBound(ret) - 1)
     GetInstructions = ret
 End Function
-
