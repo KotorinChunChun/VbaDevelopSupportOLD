@@ -838,12 +838,12 @@ End Sub
 
 Rem 四捨五入　―　数値を任意の有効桁数に四捨五入する
 Rem   Round ワークシート関数
-Public Function SignificantFigures(number, l) As Double
+Public Function SignificantFigures(Number, l) As Double
     '数値を有効数字L桁に四捨五入する
-    If number = 0 Then
+    If Number = 0 Then
         SignificantFigures = 0
     Else
-        SignificantFigures = Application.Round(number, -Int(Application.Log(Abs(number))) - 1 + l)
+        SignificantFigures = Application.Round(Number, -Int(Application.Log(Abs(Number))) - 1 + l)
     End If
 End Function
 
@@ -852,7 +852,7 @@ Public Function GetFileLock(FileName As String) As Boolean
     On Error Resume Next
     Open FileName For Append As #1
     Close #1
-    GetFileLock = (Err.number > 0)
+    GetFileLock = (Err.Number > 0)
 End Function
 
 Rem 指定したファイルが読み取り専用かチェックする。
@@ -924,8 +924,8 @@ Public Function GetNetworkDriveAndUncByConnected() As Object ' As Dictionary
     
     Dim i As Long
     For i = 0 To Drives.Count - 1 Step 2
-        If Drives.item(i) <> "" Then
-            DicDrives.Add Drives.item(i), Drives.item(i + 1)
+        If Drives.Item(i) <> "" Then
+            DicDrives.Add Drives.Item(i), Drives.Item(i + 1)
         End If
     Next
     Set GetNetworkDriveAndUncByConnected = DicDrives
@@ -956,7 +956,7 @@ Public Function GetNetworkDriveAndUncByConnectedWMI() As Object
     Dim drv As Object 'WbemScripting.SWbemObject
     For Each drv In NetworkDrives
         With drv.Properties_
-            driveDic.Add .item("Name").Value, .item("ProviderName").Value
+            driveDic.Add .Item("Name").Value, .Item("ProviderName").Value
         End With
     Next
     
@@ -1202,7 +1202,7 @@ Public Function ShellFolderDialog(Optional DefaultFolder As String, Optional Tit
     If shApp Is Nothing Then
         ShellFolderDialog = ""
     Else
-        ShellFolderDialog = shApp.items.item.Path
+        ShellFolderDialog = shApp.Items.Item.Path
     End If
 End Function
 

@@ -277,7 +277,7 @@ Public Function DeleteFolder() As Boolean
         Do
             On Error Resume Next
             fso.DeleteFolder cPath
-            If Err.number = 0 Then Exit Do
+            If Err.Number = 0 Then Exit Do
             On Error GoTo 0
             Application.Wait [Now() + "00:00:01"]
             n = n - 1
@@ -292,20 +292,41 @@ Rem フォルダのファイルをまとめてコピーする
 Rem 速度は無視。
 Public Function CopyFiles(dest As kccPath, _
         Optional withFilterString As String = "*", _
-        Optional withoutFilterString As String = "")
+        Optional withoutFilterString As String = "") As VbMsgBoxResult
+    CopyFiles = vbOK
+    
     Dim f As File
     If Me.CurrentFolderPath = "" Then Stop
+    Dim fd As String
     For Each f In Me.Folder.Files
         If f.Name Like withFilterString And _
             Not f.Name Like withoutFilterString Then
-            'このCopyでは失敗してもエラーが起こらないらしい
+            'このCopyでは失敗してもエラーが起こらないらしい？
+            'ロックされてるとエラーが出る。
             If dest.IsFile Then
-                f.Copy dest.ReplacePathAuto(FileName:=f.Name).CreateFolder.FullPath
+                fd = dest.ReplacePathAuto(FileName:=f.Name).CreateFolder.FullPath
             Else
-                f.Copy dest.ReplacePathAuto(FileName:=f.Name).MovePathByFile(f.Name).CreateFolder.FullPath, True
+                fd = dest.ReplacePathAuto(FileName:=f.Name).MovePathByFile(f.Name).CreateFolder.FullPath
             End If
+            On Error GoTo CopyFilesError
+                f.Copy fd, True
+            On Error GoTo 0
         End If
     Next
+    
+CopyFilesEnd:
+    Exit Function
+    
+CopyFilesError:
+    Dim res As VbMsgBoxResult
+    Select Case MsgBox( _
+            "[" & fd & "]" & "へファイルをコピーできません。" & vbLf & _
+            "ファイルまたは上位のフォルダがロックされていないか確認してください。", _
+            vbAbortRetryIgnore, "CopyFiles")
+        Case VbMsgBoxResult.vbRetry: Resume
+        Case VbMsgBoxResult.vbIgnore: CopyFiles = vbIgnore: Resume Next
+        Case VbMsgBoxResult.vbAbort: CopyFiles = vbAbort: Resume CopyFilesEnd
+    End Select
 End Function
 
 Rem フォルダが存在するか否か
@@ -373,4 +394,3 @@ Public Sub ConvertCharCode_SJIS_to_utf8()
         .Close
     End With
 End Sub
-

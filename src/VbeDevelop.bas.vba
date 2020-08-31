@@ -58,26 +58,26 @@ Option Explicit
 Option Private Module
 
 Private Declare PtrSafe Function GetKeyboardState _
-                        Lib "user32" (pbKeyState As Byte) As Long
+                        Lib "User32" (pbKeyState As Byte) As Long
 Private Declare PtrSafe Function SetKeyboardState _
-                        Lib "user32" (lppbKeyState As Byte) As Long
+                        Lib "User32" (lppbKeyState As Byte) As Long
 Private Declare PtrSafe Function PostMessage _
-                        Lib "user32" Alias "PostMessageA" ( _
+                        Lib "User32" Alias "PostMessageA" ( _
                         ByVal hWnd As LongPtr, ByVal wMsg As Long, _
                         ByVal wParam As Long, ByVal lParam As LongPtr _
                         ) As Long
 
-Private Declare PtrSafe Function FindWindow Lib "user32" Alias "FindWindowA" ( _
+Private Declare PtrSafe Function FindWindow Lib "User32" Alias "FindWindowA" ( _
     ByVal lpClassName As String, _
     ByVal lpWindowName As String) As LongPtr
     
-Private Declare PtrSafe Function FindWindowEx Lib "user32" Alias "FindWindowExA" ( _
+Private Declare PtrSafe Function FindWindowEx Lib "User32" Alias "FindWindowExA" ( _
     ByVal hwndParent As LongPtr, _
     ByVal hwndChildAfter As LongPtr, _
     ByVal lpClassName As String, _
     ByVal lpWindowName As String) As LongPtr
     
-Private Declare PtrSafe Function GetWindow Lib "user32" ( _
+Private Declare PtrSafe Function GetWindow Lib "User32" ( _
     ByVal hWnd As LongPtr, _
     ByVal wCmd As Long) As LongPtr
 
@@ -708,7 +708,7 @@ Rem ProcNameÇ∆CodeModuleÇéÛÇØéÊÇËÅAÇªÇÃÉvÉçÉVÅ[ÉWÉÉÇÃäTóvÇï∂éöóÒÇ≈ï‘Ç∑ÅB
 Rem --------------------------------------------------------------------------------
 
     Dim StartRow As Long: StartRow = cModule.ProcStartLine(ProcName, 0)
-    Dim lastRow As Long: lastRow = StartRow + cModule.ProcCountLines(ProcName, 0) - 1
+    Dim LastRow As Long: LastRow = StartRow + cModule.ProcCountLines(ProcName, 0) - 1
 
     Dim reg As Object: Set reg = CreateObject("VBScript.RegExp")
     With reg
@@ -719,7 +719,7 @@ Rem ----------------------------------------------------------------------------
     Dim Matches As Variant
 
     Dim i As Long, tmp As String, checker As Boolean
-    For i = StartRow To lastRow
+    For i = StartRow To LastRow
         If checker Then
             tmp = tmp & cModule.Lines(i, 1) & vbLf
             Set Matches = reg.Execute(cModule.Lines(i, 1))
@@ -751,7 +751,7 @@ Rem ProcNameÇ∆CodeModuleÇéÛÇØéÊÇËÅAÇªÇÃÉvÉçÉVÅ[ÉWÉÉÇÃ1çsñ⁄ÇÃì‡óeÇï∂éöóÒÇ≈ï‘Ç∑Å
 Rem --------------------------------------------------------------------------------
 
     Dim StartRow As Long: StartRow = cModule.ProcStartLine(ProcName, 0)
-    Dim lastRow As Long: lastRow = StartRow + cModule.ProcCountLines(ProcName, 0) - 1
+    Dim LastRow As Long: LastRow = StartRow + cModule.ProcCountLines(ProcName, 0) - 1
 
     Dim reg As Object: Set reg = CreateObject("VBScript.RegExp")
     With reg
@@ -762,7 +762,7 @@ Rem ----------------------------------------------------------------------------
     Dim Matches As Variant
 
     Dim tmp As String, i As Long
-    For i = StartRow To lastRow
+    For i = StartRow To LastRow
         tmp = cModule.Lines(i, 1)
         Set Matches = reg.Execute(tmp)
         If Matches.Count > 0 Then SET_PROC_TOP = tmp
@@ -784,7 +784,7 @@ Dim ref As Object, refs As Object
 Dim i As Long
 Set refs = Application.References
 For i = refs.Count To 1 Step -1
-With refs.item(i)
+With refs.Item(i)
 Debug.Print .Name, , .FullPath ' Ç±ÇÃéûÇÕDescriptionÇÕégÇ¶Ç»Ç¢
 End With
 Next
@@ -944,17 +944,17 @@ If Application.Version >= 16 Then
 ElseIf Application.Version = 15 Then
 On Error Resume Next
 .AddFromGuid GUID_OfficeObject, 2, 8
-If Err.number <> 0 Then
+If Err.Number <> 0 Then
 Err.Clear
 .AddFromGuid GUID_OfficeObject, 2, 7
 End If
-If Err.number <> 0 Then
+If Err.Number <> 0 Then
 Err.Clear
 .AddFromGuid GUID_OfficeObject, 2, 6
 End If
 Rem OutlookSocialProvider
 .AddFromGuid "{E301A065-3DF5-4378-A829-57B1EA986631}", 1, 1 'OutlookSocialProvider
-If Err.number <> 0 Then
+If Err.Number <> 0 Then
 Err.Clear
 .AddFromGuid "{E301A065-3DF5-4378-A829-57B1EA986631}", 1, 0 'OutlookSocialProvider
 End If
@@ -1221,23 +1221,23 @@ Private Sub Test_ImdCursolMoveToLast()
 End Sub
 
 Private Sub VBEÉEÉBÉìÉhÉEÇëSÇƒóÒãì()
-    Dim item
-    For Each item In Application.VBE.Windows
-        Debug.Print item.Caption
+    Dim Item
+    For Each Item In Application.VBE.Windows
+        Debug.Print Item.Caption
     Next
 End Sub
 
 Private Sub VBEÉEÉBÉìÉhÉEÇéwíËÇµÇΩå^ÇæÇØóÒãì()
-    Dim item
-    For Each item In GetVbeWindow(vbext_wt_Immediate)
-        Debug.Print item.Caption
+    Dim Item
+    For Each Item In GetVbeWindow(vbext_wt_Immediate)
+        Debug.Print Item.Caption
     Next
 End Sub
 
 Private Sub VBEÉEÉBÉìÉhÉEÇÃÉ|ÉbÉvÉAÉbÉvÇæÇØóÒãì()
-    Dim item
-    For Each item In GetVbeWindow(vbext_wt_Immediate)
-        Debug.Print item.Caption
+    Dim Item
+    For Each Item In GetVbeWindow(vbext_wt_Immediate)
+        Debug.Print Item.Caption
     Next
 End Sub
 
@@ -1467,9 +1467,9 @@ Private Sub Crate_CommandBars_List()
   wb.Worksheets(1).Cells(1, 3) = "NameLocal"
   With Application.VBE.CommandBars
     For i = 1 To .Count
-      wb.Worksheets(1).Cells(i + 1, 1) = .item(i).Type
-      wb.Worksheets(1).Cells(i + 1, 2) = .item(i).Name
-      wb.Worksheets(1).Cells(i + 1, 3) = .item(i).NameLocal
+      wb.Worksheets(1).Cells(i + 1, 1) = .Item(i).Type
+      wb.Worksheets(1).Cells(i + 1, 2) = .Item(i).Name
+      wb.Worksheets(1).Cells(i + 1, 3) = .Item(i).NameLocal
     Next i
   End With
 
@@ -1507,10 +1507,10 @@ Private Sub Addin_Sample()
       Exit Sub
     End If
     For i = 1 To .Count
-      Debug.Print "progID:" & .item(i).progID
-      Debug.Print "Connect:" & .item(i).Connect
-      Debug.Print "Description:" & .item(i).Description
-      Debug.Print "GUID:" & .item(i).GUID
+      Debug.Print "progID:" & .Item(i).progID
+      Debug.Print "Connect:" & .Item(i).Connect
+      Debug.Print "Description:" & .Item(i).Description
+      Debug.Print "GUID:" & .Item(i).GUID
       Debug.Print ""
     Next i
   End With
@@ -1523,14 +1523,14 @@ Private Sub Windows_Sample()
 
   With Application.VBE.Windows
     For i = 1 To .Count
-      Debug.Print "Caption:" & .item(i).Caption
-      Debug.Print "Top:" & .item(i).Top
-      Debug.Print "Left:" & .item(i).Left
-      Debug.Print "Width:" & .item(i).Width
-      Debug.Print "Height:" & .item(i).Height
-      Debug.Print "Visible:" & .item(i).Visible
-      Debug.Print "Type:" & .item(i).Type
-      Debug.Print "WindowState:" & .item(i).WindowState
+      Debug.Print "Caption:" & .Item(i).Caption
+      Debug.Print "Top:" & .Item(i).Top
+      Debug.Print "Left:" & .Item(i).Left
+      Debug.Print "Width:" & .Item(i).Width
+      Debug.Print "Height:" & .Item(i).Height
+      Debug.Print "Visible:" & .Item(i).Visible
+      Debug.Print "Type:" & .Item(i).Type
+      Debug.Print "WindowState:" & .Item(i).WindowState
       Debug.Print ""
     Next i
   End With
@@ -1542,9 +1542,9 @@ Private Sub Immediate_Window_SetFocus_Sample()
 
   With Application.VBE.Windows
     For i = 1 To .Count
-      If .item(i).Type = vbext_wt_Immediate Then
-        .item(i).Visible = True
-        .item(i).SetFocus
+      If .Item(i).Type = vbext_wt_Immediate Then
+        .Item(i).Visible = True
+        .Item(i).SetFocus
         Exit For
       End If
     Next i
@@ -1635,7 +1635,7 @@ Private Sub VBComponents_Remove_Sample()
   ret = MsgBox(Prompt:=DeleteName & " ÉÇÉWÉÖÅ[ÉãÇçÌèúÇµÇ‹Ç∑Ç©ÅH", Buttons:=vbYesNo + vbQuestion, Title:="ämîF")
   If ret <> vbYes Then Exit Sub
   With ThisWorkbook.VBProject.VBComponents
-    .Remove .item(DeleteName)
+    .Remove .Item(DeleteName)
   End With
 End Sub
 Rem  ëIëÇµÇƒÇÈÉÇÉWÉÖÅ[ÉãñºÇï\é¶ÇµÇ‹Ç∑ÅB
@@ -1741,10 +1741,12 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     If ExportBinFolder <> "" Then
         Dim binPath As kccPath
         Set binPath = prjPath.MovePathByFolder(ExportBinFolder).ReplacePathAuto(DateTime:=NowDateTime)
-        binPath.DeleteFolder
-        DoEvents
-        binPath.CreateFolder
-        prjPath.CopyFiles binPath
+        If binPath.FullPath <> prjPath.FullPath Then
+            binPath.DeleteFolder
+            DoEvents
+            binPath.CreateFolder
+            If prjPath.CopyFiles(binPath) = vbAbort Then Exit Sub
+        End If
     End If
     
     'ä˘ë∂É\Å[ÉXÇÃçÌèúÇ∆ÉGÉNÉXÉ|Å[Ég
@@ -1753,7 +1755,7 @@ Public Sub VBComponents_BackupAndExport_Sub( _
         Dim srcPath As kccPath
         Set srcPath = prjPath.MovePathByFolder(ExportSrcFolder).ReplacePathAuto(DateTime:=NowDateTime)
         
-        'rename and remove
+        'src Ç src_backÇ÷â¸ñºÇµÇ¬Ç¬çÌèú
         Dim backPath As kccPath
         Set backPath = srcPath.MovePathByFolder("..\src_back\")
         backPath.DeleteFolder
