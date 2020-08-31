@@ -429,6 +429,65 @@ Dim Test
 Dim Caption
 
 
+'オリジナル一文字変数取得
+'これをソースコードに貼ると欲しい状態に変化するので
+'結果をExcelに貼って、フラッシュフィルで英字部分を取り出して頭にDim を付ければOK。
+'A=1
+'B=1
+'C=1
+'D=1
+'E=1
+'F=1
+'G=1
+'H=1
+'I=1
+'J=1
+'K=1
+'L=1
+'M=1
+'N=1
+'O=1
+'P=1
+'Q=1
+'R=1
+'S=1
+'T=1
+'U=1
+'V=1
+'W=1
+'X=1
+'Y=1
+'Z=1
+
+'オリジナル一文字変数
+Dim a
+Dim b
+Dim C
+Dim d
+Dim E
+Dim f
+Dim g
+Dim H
+Dim i
+Dim j
+Dim k
+Dim l
+Dim M
+Dim n
+Dim o
+Dim p
+Dim Q
+Dim r
+Dim s
+Dim t
+Dim u
+Dim v
+Dim W
+Dim x
+Dim y
+Dim Z
+
+
 'オリジナルメンバ
 Dim st
 Dim data
@@ -438,7 +497,6 @@ Dim data3
 Dim data4
 Dim handle
 Dim N2
-Dim E
 Dim hWnd
 Dim hDc
 Dim BaseRow
