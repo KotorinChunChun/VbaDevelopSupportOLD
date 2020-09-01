@@ -2156,3 +2156,13 @@ Private Sub ProcJump(func As String)
     Rem モジュールを開く
     Rem カーソル位置を変える
 End Sub
+
+Rem ファイル化されていないブック全てを保存せずに閉じる
+Public Sub CloseNofileWorkbook()
+    Dim wb As Workbook
+    For Each wb In Workbooks
+        If wb.Path = "" Then
+            wb.Close False
+        End If
+    Next
+End Sub

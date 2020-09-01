@@ -428,6 +428,11 @@ Dim Selection
 Dim Test
 Dim Caption
 
+'その他オブジェクトメンバ
+dim SaveToFile
+dim SetRequestHeader
+
+
 
 'オリジナル一文字変数取得
 'これをソースコードに貼ると欲しい状態に変化するので

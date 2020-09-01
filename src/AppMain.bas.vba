@@ -60,6 +60,8 @@ Public Sub ソースコードのプロシージャ一覧を出力する():  Call VbeProcInfo_Output:
 Public Sub プロジェクトのフォルダを開く():             Call OpenProjectFolder: End Sub
 Public Sub プロジェクトを閉じる():                    Call CloseProject: End Sub
 
+Public Sub ファイル化されていないブック全てを閉じる(): Call CloseNofileWorkbook: End Sub
+
 Public Sub 全てのコードウインドウを閉じる():           Call CloseCodePanes: End Sub
 Public Sub イミディエイトウィンドウを空にする():       Call ImdClearGAX: End Sub
 Public Sub VBA開発支援アドインを終了する():            Call Close_Addin: End Sub
