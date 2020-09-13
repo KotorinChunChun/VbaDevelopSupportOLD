@@ -850,8 +850,9 @@ End Function
 Rem 指定したファイルがロックされているかチェックする。
 Public Function GetFileLock(FileName As String) As Boolean
     On Error Resume Next
-    Open FileName For Append As #1
-    Close #1
+    Dim fn: fn = FreeFile
+    Open FileName For Append As #fn
+    Close #fn
     GetFileLock = (Err.Number > 0)
 End Function
 

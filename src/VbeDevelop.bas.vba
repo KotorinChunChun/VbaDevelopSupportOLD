@@ -2166,3 +2166,8 @@ Public Sub CloseNofileWorkbook()
         End If
     Next
 End Sub
+
+Rem VBAプロジェクトのパスワードを1234へ変更する
+Public Sub BreakPassword1234Project()
+    MsgBox "未実装"
+End Sub

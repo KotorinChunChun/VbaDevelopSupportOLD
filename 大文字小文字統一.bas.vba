@@ -428,6 +428,10 @@ Dim Selection
 Dim Test
 Dim Caption
 
+'Excel関数
+Dim Min
+Dim Max
+
 'その他オブジェクトメンバ
 dim SaveToFile
 dim SetRequestHeader
@@ -515,5 +519,18 @@ dim OutCol
 Dim dItem
 dim dKey
 
+'暫定確定メンバ（上記に移動する前の一時置き場）
+Dim Page
+dim Cursol
+dim Send
+dim Status
+dim NewName
+dim Parameter
+Dim objHttp
+dim FName
+dim ResponseText
+dim msg
+dim PROC_NAME
 
 '変更保留メンバ（コード変更と大文字小文字変更のコミットを分離するために使用する
+
