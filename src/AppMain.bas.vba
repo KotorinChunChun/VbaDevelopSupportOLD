@@ -53,12 +53,17 @@ Public Sub Close_Addin(): Call ThisWorkbook.Close(False): End Sub
 
 Rem メニューに追加するプロシージャ
 Public Sub ソースをSRCにエクスポートする():            Call VBComponents_Export_SRC: End Sub
-Public Sub ソースをバックアップとエクスポートする():    Call VBComponents_BackupAndExport: End Sub
+Public Sub ソースをバックアップとエクスポートする():   Call VBComponents_BackupAndExport: End Sub
 Public Sub ソースをYYYYMMDにエクスポートする():        Call VBComponents_Export_YYYYMMDD: End Sub
-Public Sub ソースコードのプロシージャ一覧を出力する():  Call VbeProcInfo_Output: End Sub
+Public Sub ソースコードのプロシージャ一覧を出力する(): Call VbeProcInfo_Output: End Sub
+
+Public Sub ソースをSRCからインポートする():            Call VBComponents_Import_SRC: End Sub
+
+Public Sub CustomUIをエクスポートする():               Call CurrentProject_CustomUI_Export: End Sub
+Public Sub CustomUIをインポートする():                 Call CurrentProject_CustomUI_Import: End Sub
 
 Public Sub プロジェクトのフォルダを開く():             Call OpenProjectFolder: End Sub
-Public Sub プロジェクトを閉じる():                    Call CloseProject: End Sub
+Public Sub プロジェクトを閉じる():                     Call CloseProject: End Sub
 Public Sub プロジェクトのパスワードを1234に変更する(): Call BreakPassword1234Project: End Sub
 
 Public Sub ファイル化されていないブック全てを閉じる(): Call CloseNofileWorkbook: End Sub

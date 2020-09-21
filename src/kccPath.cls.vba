@@ -196,11 +196,17 @@ Property Get ParentFolder() As kccPath
     Set ParentFolder = kccPath.Init(Me.ParentFolderPath, False)
 End Property
 
-Rem 存在しないとエラーになるかも
 Rem FSOファイルオブジェクト
-Public Function File() As Scripting.File: Set File = fso.GetFile(FullPath): End Function
+Public Function File() As Scripting.File
+    On Error Resume Next
+    Set File = fso.GetFile(FullPath)
+End Function
+
 Rem FSOフォルダオブジェクト
-Public Function Folder() As Scripting.Folder: Set Folder = fso.GetFolder(Me.CurrentFolderPath): End Function
+Public Function Folder() As Scripting.Folder
+    On Error Resume Next
+    Set Folder = fso.GetFolder(Me.CurrentFolderPath)
+End Function
 
 Rem VBプロジェクト
 Public Function VBProject() As VBIDE.VBProject
@@ -288,31 +294,115 @@ Public Function DeleteFolder() As Boolean
     DeleteFolder = Not fso.FolderExists(cPath)
 End Function
 
-Rem フォルダのファイルをまとめてコピーする
-Rem 速度は無視。
-Public Function CopyFiles(dest As kccPath, _
-        Optional withFilterString As String = "*", _
-        Optional withoutFilterString As String = "") As VbMsgBoxResult
-    CopyFiles = vbOK
+Rem ファイル・フォルダが存在するか
+Public Function Exists() As Boolean
+    If Me.IsFile Then
+        Exists = Not (Me.File Is Nothing)
+    Else
+        Exists = Not (Me.Folder Is Nothing)
+    End If
+End Function
+
+Rem ファイルをコピーする
+Rem
+Rem  @param dest            コピー先ファイル名またはフォルダ
+Rem  @param OverWriteFiles  コピー先ファイルが存在する時上書きするか(既定:True)
+Rem
+Rem  @note
+Rem    dest:=ファイル指定・・・対象ファイル名で書き込み
+Rem    dest:=フォルダ指定・・・対象フォルダに元と同じファイル名で書き込み
+Rem
+Public Function CopyFile(dest As kccPath, _
+                         Optional OverWriteFiles As Boolean = True) As kccResult
+    Const PROC_NAME = "CopyFile"
     
-    Dim f As File
+    'コピー元ファイル不在：無視して終了
+    If Not Me.Exists Then
+        Set CopyFile = kccResult.Init(False, "コピー元ファイルがありません")
+        Exit Function
+    End If
+    
+    'フォルダの場合、フォルダそのものをコピーする？未実装
+    If Me.IsFile Then Else Stop
+    
+    Dim fl As File:   Set fl = Me.File
+    Dim destFile As kccPath: Set destFile = dest
+    If dest.IsFile Then Else Set destFile = destFile.MovePathByFile(".\" & Me.File.Name)
+    
+    Set CopyFile = kccResult.Init(True)
+    
+    If dest.Exists Then
+        If OverWriteFiles Then
+            CopyFile.Add True, dest.FullPath & " 上書きします"
+        Else
+            Set CopyFile = kccResult.Init(False, dest.FullPath & " 既に存在するため失敗しました")
+            Exit Function
+        End If
+    End If
+    
+    On Error GoTo CopyFileError
+    fl.Copy dest.FullPath, OverWriteFiles:=OverWriteFiles
+    On Error GoTo 0
+    
+    CopyFile.Add True, PROC_NAME & " 完了しました。"
+    
+CopyFileEnd:
+    Exit Function
+    
+CopyFileError:
+    CopyFile.IsSuccess = False
+    Select Case MsgBox( _
+            "[" & dest.FullPath & "]" & "へファイルをコピーできません。" & vbLf & _
+            "ファイルまたがロックされていないか確認してください。", _
+            vbAbortRetryIgnore, PROC_NAME)
+        Case VbMsgBoxResult.vbAbort: CopyFile.Add False, dest.FullPath & " 失敗し中止されました", True: Resume CopyFileEnd
+        Case VbMsgBoxResult.vbRetry: CopyFile.Add False, dest.FullPath & " 失敗し再試行しました": Resume
+        Case VbMsgBoxResult.vbIgnore: CopyFile.Add False, dest.FullPath & " 失敗し省略されました": Resume Next
+    End Select
+End Function
+
+Rem フォルダ内のファイル・フォルダをまとめてコピーする
+Rem
+Rem  @param dest                コピー先ファイル名またはフォルダ
+Rem  @param withFilterString    含めるファイルを表すLike比較用文字列(既定:全て)
+Rem  @param withoutFilterString 除外するファイルを表すLike比較用文字列(既定:無し)
+Rem  @param OverWriteFiles      コピー先ファイルが存在する時上書きするか(既定:True)
+Rem
+Rem  @note
+Rem    dest:=ファイル指定・・・対象ファイル名のフォルダを作成
+Rem    dest:=フォルダ指定・・・対象フォルダ名のフォルダを作成
+Rem    速度は低下するが無視している
+Rem
+Public Function CopyFiles(dest As kccPath, _
+                          Optional withFilterString As String = "*", _
+                          Optional withoutFilterString As String = "", _
+                          Optional OverWriteFiles = True) As kccResult
+    Const PROC_NAME = "CopyFiles"
+    
+    If Me.IsFile Then: Set CopyFiles = Me.CopyFile(dest): Exit Function
+    
+    Set CopyFiles = kccResult.Init(True)
+    
     If Me.CurrentFolderPath = "" Then Stop
+    Dim fl As File
     Dim fd As String
-    For Each f In Me.Folder.Files
-        If f.Name Like withFilterString And _
-            Not f.Name Like withoutFilterString Then
+    For Each fl In Me.Folder.Files
+        If fl.Name Like withFilterString And _
+            Not fl.Name Like withoutFilterString Then
             'このCopyでは失敗してもエラーが起こらないらしい？
             'ロックされてるとエラーが出る。
             If dest.IsFile Then
-                fd = dest.ReplacePathAuto(FileName:=f.Name).CreateFolder.FullPath
+                fd = dest.ReplacePathAuto(FileName:=fl.Name).CreateFolder.FullPath
             Else
-                fd = dest.ReplacePathAuto(FileName:=f.Name).MovePathByFile(f.Name).CreateFolder.FullPath
+                fd = dest.ReplacePathAuto(FileName:=fl.Name).MovePathByFile(fl.Name).CreateFolder.FullPath
             End If
             On Error GoTo CopyFilesError
-                f.Copy fd, True
+                fl.Copy fd, True
             On Error GoTo 0
         End If
     Next
+    
+    CopyFiles.Add True, PROC_NAME & " 完了しました。"
     
 CopyFilesEnd:
     Exit Function
@@ -322,10 +412,10 @@ CopyFilesError:
     Select Case MsgBox( _
             "[" & fd & "]" & "へファイルをコピーできません。" & vbLf & _
             "ファイルまたは上位のフォルダがロックされていないか確認してください。", _
-            vbAbortRetryIgnore, "CopyFiles")
-        Case VbMsgBoxResult.vbRetry: Resume
-        Case VbMsgBoxResult.vbIgnore: CopyFiles = vbIgnore: Resume Next
-        Case VbMsgBoxResult.vbAbort: CopyFiles = vbAbort: Resume CopyFilesEnd
+            vbAbortRetryIgnore, PROC_NAME)
+        Case VbMsgBoxResult.vbAbort: CopyFiles.Add False, dest.FullPath & " 失敗し中止されました", True: Resume CopyFilesEnd
+        Case VbMsgBoxResult.vbRetry: CopyFiles.Add False, dest.FullPath & " 失敗し再試行しました": Resume
+        Case VbMsgBoxResult.vbIgnore: CopyFiles.Add False, dest.FullPath & " 失敗し省略されました": Resume Next
     End Select
 End Function
 
@@ -387,7 +477,7 @@ Public Sub ConvertCharCode_SJIS_to_utf8()
             .Type = 1 ' adTypeBinary
             .Open
             destWithBOM.copyTo dest
-            .savetofile fn, 2
+            .SaveToFile fn, 2
             .Close
         End With
         

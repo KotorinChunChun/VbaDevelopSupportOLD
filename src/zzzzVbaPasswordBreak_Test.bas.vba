@@ -52,24 +52,6 @@ Function GetDPB1234() As Variant
     GetDPB1234 = arr
 End Function
 
-Rem vbaProjectを書き換えるテスト
-Sub Test_vbaProjectCrack()
-'    Call vbaProjectCrack(TEST_PATH, TEST_PATH2)
-    Call vbaProjectCrack( _
-            "D:\vba\vbaProject.bin", _
-            "D:\vba\vbaProject2.bin")
-        'なぜか書き出しPutの時点で先頭に12バイト増加してしまう謎の現象が発生中
-End Sub
-
-Rem vbaProjectを書き換えるテスト
-Sub Test_vbaProjectCrack2()
-'    Call vbaProjectCrack(TEST_PATH, TEST_PATH2)
-    Call vbaProjectCrack( _
-            "D:\vba\none.bin", _
-            "D:\vba\none2.bin")
-        'なぜか書き出しPutの時点で先頭に12バイト増加してしまう謎の現象が発生中
-End Sub
-
 Rem DPBを書き換える
 Rem
 Rem @param inVbaProjectPath     DPBをデータに含むファイル
@@ -116,6 +98,17 @@ Public Function vbaProjectCrack(inVbaProjectPath As String, outVbaProjectPath As
 '    Stop
 End Function
 
+Rem vbaProjectを書き換えるテスト
+Sub Test_vbaProjectCrack()
+'    Call vbaProjectCrack(TEST_PATH, TEST_PATH2)
+    Call vbaProjectCrack( _
+            "D:\vba\vbaProject.bin", _
+            "D:\vba\vbaProject2.bin")
+        'なぜか書き出しPutの時点で先頭に12バイト増加してしまう謎の現象が発生中
+        '原因はVariantでPutしたのが原因でした。
+        'Byte()にキャストしてからなら発生しません。
+End Sub
+
 Rem ExcelブックのVBAパスワードを1234へ置換する
 Rem
 Rem inFilePath      入力ファイルフルパス
@@ -157,4 +150,18 @@ Sub Test_BrokenVbaPassword2()
     Call BrokenVbaPassword(fn, fn2)
     
     Set wb = Workbooks.Open(fn2)
+End Sub
+
+'For Eachではコレクションの要素を書き換えられない
+Sub Test_CollectionForeach()
+    Dim C As Collection: Set C = New Collection
+    C.Add "a\"
+    C.Add "b\"
+    Dim i
+    For Each i In C
+        i = "a"
+    Next
+    For Each i In C
+        Debug.Print i
+    Next
 End Sub

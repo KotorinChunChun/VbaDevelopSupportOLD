@@ -7,73 +7,115 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'Attribute VB_Name = "ModuleZipPdf"
 Option Explicit
 
 Private Declare PtrSafe Sub Sleep Lib "Kernel32" (ByVal dwMilliseconds As Long)
 
-
-
-Rem outFolderPath   省略時:元と同じフォルダ
-Rem zipPw           ZIPファイルパスワード未実装
-Function DecompZip(ByVal inFilePath, Optional outFolderPath, Optional zipPw) As String
-    Const proc_name = "DecompZip"
+Rem ZIPファイルを解凍する
+Rem
+Rem  @param inFilePath      解凍したいファイルのフルパス
+Rem  @param outParentPath   解凍先親フォルダ
+Rem                           省略時         : 一時フォルダ
+Rem                           ルート開始パス : 指定パス
+Rem                           相対パス       : 元ファイル基準の相対パス
+Rem                         ※指定パスに元ファイルの拡張子を除いた名前のフォルダを生成します。
+Rem
+Rem  @return As String      解凍されたパスの絶対パス形式
+Rem
+Rem  @note
+Rem    内部処理の流れ
+Rem    1. %temp%\VbaUnZip\FILENAME.zip へ元のファイルをコピー
+Rem    2. %temp%\VbaUnZip\FILENAME\ へ解凍
+Rem    3. 1のファイルを削除
+Rem    4. outFolderPathへ移動 (非省略時)
+Rem       ※ドライブが違うとMove出来ないためCopyからのDeleteとなる
+Rem
+Rem   既にフォルダが存在する場合、フォルダごと削除して置き換わります。
+Rem
+Rem   指定フォルダへ直接解凍することは出来ません。
+Rem   将来的にオプションを追加する可能性はあります。
+Rem   もし実装するとなると解凍したいファイルを個別に削除→移動するロジックに変える必要があります。
+Rem
+Rem   パスワード付きZIPファイルの解凍は断念した。
+Rem
+Function DecompZip(ByVal inFilePath, Optional outParentPath) As String
+    Const PROC_NAME = "DecompZip"
     If Not fso.FileExists(inFilePath) Then
-        Err.Raise 9999, proc_name, "展開したいZIPファイルがありません：" & inFilePath
+        Err.Raise 9999, PROC_NAME, "展開したいZIPファイルがありません：" & inFilePath
         Exit Function
     End If
     
-    If VBA.IsMissing(outFolderPath) Then outFolderPath = ""
-    If outFolderPath = "" Then
-        outFolderPath = fso.GetParentFolderName(inFilePath) & "\" & fso.GetBaseName(inFilePath)
-    End If
-    If fso.FolderExists(outFolderPath) Then
-        If Not DeleteFolder(outFolderPath) Then
-            Err.Raise 9999, proc_name, "出力先フォルダの初期化に失敗：" & outFolderPath
-        End If
-    End If
-    
     '一時フォルダの準備
-    Dim TempBaseName As String
-    TempBaseName = GetTempFolder("VbaUnZip") & fso.GetBaseName(inFilePath)
-    If fso.FolderExists(TempBaseName) Then
-        If Not DeleteFolder(TempBaseName) Then
-            Err.Raise 9999, proc_name, "一時フォルダの初期化に失敗：" & TempBaseName
+    Dim tempFolderPath As String
+    tempFolderPath = GetTempFolder("VbaUnZip") & fso.GetBaseName(inFilePath)
+    If fso.FolderExists(tempFolderPath) Then
+        If Not DeleteFolder(tempFolderPath) Then
+            Err.Raise 9999, PROC_NAME, "解凍一時フォルダの初期化に失敗：" & tempFolderPath
         End If
     End If
-    fso.CreateFolder TempBaseName
+    fso.CreateFolder tempFolderPath
+    
+    '出力フォルダの準備
+    If VBA.IsMissing(outParentPath) Then outParentPath = ""
+    Dim outFolderPath As String
+    '省略時   : 一時フォルダ
+    If outParentPath = "" Then
+        outFolderPath = ""
+    Else
+        'ルート開始パス : 指定パス
+        If kccFuncString.IsRootStart(outParentPath) Then
+            outFolderPath = outParentPath & fso.GetBaseName(inFilePath)
+        '相対パス : 元ファイル基準の相対パス
+        Else
+            Dim curFolderPath As String
+            curFolderPath = fso.GetParentFolderName(inFilePath) & "\"
+            outFolderPath = kccFuncString.AbsolutePathNameEx(curFolderPath, outParentPath) & fso.GetBaseName(inFilePath)
+        End If
+        If fso.FolderExists(outFolderPath) Then
+            If Not DeleteFolder(outFolderPath) Then
+                Err.Raise 9999, PROC_NAME, "出力先フォルダの初期化に失敗：" & outFolderPath
+            End If
+        End If
+    End If
     
     '拡張子のチェックとZIP複製(Namespace展開に拡張子が重要)
-    Dim zipFilePath As String
+    Dim zip_file_path As String
     Dim IsZip As Boolean: IsZip = inFilePath Like "*.zip"
     If IsZip Then
-        zipFilePath = inFilePath
+        zip_file_path = inFilePath
     Else
-        zipFilePath = TempBaseName & ".zip"
-        fso.CopyFile inFilePath, zipFilePath
+        zip_file_path = tempFolderPath & ".zip"
+        fso.CopyFile inFilePath, zip_file_path
     End If
     
     'Namespaceには暗黙の型変換が必要なので、変数ではなく式が必要
     Dim objZip
-    Set objZip = CreateObject("Shell.Application").Namespace("" & zipFilePath).Items
+    Set objZip = CreateObject("Shell.Application").Namespace("" & zip_file_path).Items
     
-    'これだと安定性に欠ける
+    'これだと安定性に欠けるため、パスワードZIP対応は断念
 '    Application.SendKeys zipPw & "{Enter}"
     
-'    DecompZip = CreateObject("Shell.Application").Namespace("" & TempBaseName).CopyHere(objZip, &H4 Or &H10)
-    DecompZip = CopyHere(TempBaseName, objZip)
+'    DecompZip = CreateObject("Shell.Application").Namespace("" & tempFolderPath).CopyHere(objZip, &H4 Or &H10)
+    DecompZip = CopyHere(tempFolderPath, objZip)
 '    sha.Namespace(unzipfld_).CopyHere( sha.Namespace(zippth_).Items, &H4 Or &H10)
     
-    If fso.GetDriveName(TempBaseName) <> fso.GetDriveName(outFolderPath) Then
-        'MoveFolderはドライブ間の移動ができないためCopyFolder
-        'コピー先に\を付けるとフォルダ複製。\が無いと中身複製になる。
-        fso.CreateFolder outFolderPath
-        fso.CopyFolder TempBaseName, outFolderPath
-    Else
-        fso.MoveFolder TempBaseName, outFolderPath
-    End If
+    'キャッシュのZIPファイル削除
+    fso.DeleteFile zip_file_path
     
-    DecompZip = outFolderPath
+    If outFolderPath = "" Then
+        DecompZip = tempFolderPath
+    Else
+        If fso.GetDriveName(tempFolderPath) <> fso.GetDriveName(outFolderPath) Then
+            'MoveFolderはドライブ間の移動ができないためCopyFolder
+            'コピー先に\を付けるとフォルダ複製。\が無いと中身複製になるらしい。
+            fso.CreateFolder outFolderPath
+            fso.CopyFolder tempFolderPath, outFolderPath
+            fso.DeleteFolder tempFolderPath
+        Else
+            fso.MoveFolder tempFolderPath, outFolderPath
+        End If
+        DecompZip = outFolderPath
+    End If
 End Function
 
 Sub Test_DecompZip()
@@ -90,30 +132,53 @@ Sub Test_CompZip()
     Debug.Print CompZip(inFolder)
 End Sub
 
-Function CompZip(sourceFolder, Optional zipFileName) As Boolean
-    Const proc_name = "CompZip"
+Rem ファイル・フォルダをZIP形式で圧縮する
+Rem
+Rem  @param target_paths     圧縮元のファイル・フォルダの絶対パス。又はその配列
+Rem  @param zip_file_path    圧縮後のファイルのパス
+Rem                           省略時         : 元ファイルと同じフォルダで先頭のBaseName
+Rem                           ルート開始パス : 指定フォルダ
+Rem                           相対パス       : 元ファイル基準の相対パス
+Rem                           ※指定パスに元ファイルの拡張子を除いた名前のフォルダを生成します。
+Rem
+Rem  @return As String      圧縮されたファイルの絶対パス
+Rem
+Rem  @note
+Rem
+Rem
+Function CompZip(target_paths, Optional zip_file_path) As String
+    Const PROC_NAME = "CompZip"
     
-    If sourceFolder Like "*\" Then sourceFolder = Left(sourceFolder, Len(sourceFolder) - 1)
-    If Not fso.FolderExists(sourceFolder) Then
-        Err.Raise 9999, proc_name, "ソースフォルダがありません：" & sourceFolder
-        Exit Function
-    End If
+    Dim targetPaths As Collection
+    Set targetPaths = ToCollection(target_paths)
+    Dim i As Long
+    For i = 0 To targetPaths.Count
+        Dim s As String: s = targetPaths.Item(i)
+        If s Like "*\" Then targetPaths(i) = Left(s, Len(s) - 1)
+    Next
+    Dim firstTargetPath As String: firstTargetPath = targetPaths(0)
     
-    If VBA.IsMissing(zipFileName) Then zipFileName = ""
-    If zipFileName = "" Then
-        zipFileName = sourceFolder & ".zip"
+    '省略時   : 元ファイルと同じフォルダで先頭のBaseName
+    If VBA.IsMissing(zip_file_path) Then zip_file_path = ""
+    If zip_file_path = "" Then
+        zip_file_path = firstTargetPath & ".zip"
+    '相対パス or 絶対パス
+    Else
+        Dim ParentFolderPath As String
+        ParentFolderPath = fso.GetParentFolderName(firstTargetPath)
+        zip_file_path = kccFuncString.AbsolutePathNameEx(ParentFolderPath, zip_file_path)
     End If
-    If fso.FileExists(zipFileName) Then fso.DeleteFile zipFileName
-    If fso.FileExists(zipFileName) Then
-        Err.Raise 9999, proc_name, "出力ZIPが初期化できません：" & zipFileName
+    If fso.FileExists(zip_file_path) Then fso.DeleteFile zip_file_path
+    If fso.FileExists(zip_file_path) Then
+        Err.Raise 9999, PROC_NAME, "出力ZIPが初期化できません：" & zip_file_path
         Exit Function
     End If
     
     Dim tempZipName As String
-    If zipFileName Like "*.zip" Then
-        tempZipName = zipFileName
+    If zip_file_path Like "*.zip" Then
+        tempZipName = zip_file_path
     Else
-        tempZipName = zipFileName & ".zip"
+        tempZipName = zip_file_path & ".zip"
     End If
     
     'ZIPファイルの新規作成
@@ -123,19 +188,31 @@ Function CompZip(sourceFolder, Optional zipFileName) As Boolean
     End With
     
     'この書き方だとフォルダがルートに作成されてしまう。
-'    CompZip = zipFolder.CopyHere("" & sourceFolder & "\")
+'    CompZip = zipFolder.CopyHere("" & targetPaths & "\")
     
+    Dim tgt As Variant
     Dim f As Object
-    For Each f In fso.GetFolder(sourceFolder).Files
-        CompZip = CopyHere(tempZipName, f.Path)
+    Dim Result As Boolean
+    For Each tgt In targetPaths
+        If fso.FileExists(tgt) Then
+            Result = CopyHere(tempZipName, tgt)
+        ElseIf fso.FolderExists(tgt) Then
+            For Each f In fso.GetFolder(tgt).Files
+                Result = CopyHere(tempZipName, f.Path)
+            Next
+            For Each f In fso.GetFolder(tgt).SubFolders
+                Result = CopyHere(tempZipName, f.Path)
+            Next
+        Else
+            Dim msg As String
+            msg = PROC_NAME & " ソースがありません：" & tgt
+            'Err.Raise 9999,msg
+            Debug.Print msg
+        End If
     Next
     
-    For Each f In fso.GetFolder(sourceFolder).SubFolders
-        CompZip = CopyHere(tempZipName, f.Path)
-    Next
-    
-    If tempZipName <> zipFileName Then
-        fso.MoveFile tempZipName, zipFileName
+    If tempZipName <> zip_file_path Then
+        fso.MoveFile tempZipName, zip_file_path
     End If
     
 End Function
@@ -182,6 +259,29 @@ Function WaitFileClosed(fn As String, Optional max_wait_second)
     Application.Wait [Now() + "00:00:00.2"]
 End Function
 
+Public Function ToCollection(var) As Collection
+    Dim Item
+    If TypeName(var) = "Collection" Then
+        Set ToCollection = var
+    ElseIf IsArray(var) Then
+        Set ToCollection = New Collection
+        For Each Item In var: ToCollection.Add Item: Next
+    ElseIf IsObject(var) Then
+        Set ToCollection = New Collection
+        On Error Resume Next
+        For Each Item In var
+            If Err Then Debug.Print TypeName(var), Err.Number: Stop 'オブジェクトからの変換未完成
+            ToCollection.Add Item
+        Next
+        On Error GoTo 0
+    Else
+        Set ToCollection = New Collection
+        ToCollection.Add var
+    End If
+End Function
+
+'------------------------------------------------------------------------------------------
+
 'IShellDispatch Folder3のParentFolderを遡ってフルパスを取得する
 'この案はダメだった。物理的にありえないパスを示してしまった。
 '結果
@@ -213,13 +313,13 @@ End Function
 'http://excelfactory.net/excelboard/excelvba/excel.cgi?mode=all&namber=188859&rev=0
 Sub 圧縮(ByVal OldFld As String, ByVal Str As String)
     
-    Dim result As Variant
-    result = Split(Str, "\") 'strを\で分割する
-    result = result(UBound(result)) 'フォルダ名を取り出す
+    Dim Result As Variant
+    Result = Split(Str, "\") 'strを\で分割する
+    Result = Result(UBound(Result)) 'フォルダ名を取り出す
     
     '空のZIPファイル作成
     Dim ts As TextStream
-    Set ts = fso.CreateTextFile(Str & "\" & result & ".zip")
+    Set ts = fso.CreateTextFile(Str & "\" & Result & ".zip")
     
     Dim msg As String
     msg = "PK" & Chr(5) & Chr(6) & String(18, 0)
@@ -229,7 +329,7 @@ Sub 圧縮(ByVal OldFld As String, ByVal Str As String)
     'フォルダオブジェクト取得
     Dim sh As Object, fol As Object
     Set sh = CreateObject("Shell.Application")
-    Set fol = sh.Namespace(Str & "\" & result & ".zip")
+    Set fol = sh.Namespace(Str & "\" & Result & ".zip")
     
     'サンプル：フォルダ内のXLSファイルを圧縮
     Dim FName As String
@@ -266,13 +366,13 @@ End Sub
 
 Sub Main()
 
-    Dim col As Collection
+    Dim Col As Collection
 
-    Set col = New Collection
+    Set Col = New Collection
 
-    col.Add "e:\README.md"
+    Col.Add "e:\README.md"
 
-    CompressArchive col, "E:\aaa.zip"
+    CompressArchive Col, "E:\aaa.zip"
 
 
 End Sub
@@ -280,7 +380,7 @@ End Sub
 '--------------------------------------------------------------
 ' Zip 圧縮処理
 '--------------------------------------------------------------
-Private Sub CompressArchive(col As Collection, strDest As String)
+Private Sub CompressArchive(Col As Collection, strDest As String)
 
     Dim strCommand As String
     Dim strPath  As String
@@ -293,7 +393,7 @@ Private Sub CompressArchive(col As Collection, strDest As String)
     strCommand = strCommand & " -Path"
 
     First = True
-    For Each v In col
+    For Each v In Col
 
         If First Then
             strPath = """" & v & """"

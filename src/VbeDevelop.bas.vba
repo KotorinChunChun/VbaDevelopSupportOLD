@@ -1667,6 +1667,18 @@ Sub Test_AbsolutePathNameEx()
     Debug.Print kccFuncString.AbsolutePathNameEx("C:\vba\hoge\", "hoge.xls")
 End Sub
 
+Rem アクティブなプロジェクトへソースをSRCからインポート
+Rem
+Rem  /src/CodeName.bas.vba
+Rem
+Public Sub VBComponents_Import_SRC()
+'    Call VBComponents_BackupAndInport_Sub( _
+'            Application.VBE.ActiveVBProject, _
+'            ".\..\src", _
+'            "", "")
+    MsgBox "未実装", vbOKOnly, "VBComponents_Import_SRC"
+End Sub
+
 Rem アクティブなプロジェクトのソースコードを配下にエクスポート
 Rem
 Rem  /AddinName.xlam
@@ -1723,7 +1735,7 @@ Public Sub VBComponents_BackupAndExport_Sub( _
             ExportSrcFolder As String, _
             BackupBinFile As String, _
             BackupSrcFile As String)
-    Const proc_name = "VBComponents_Export"
+    Const PROC_NAME = "VBComponents_Export"
     
     Dim NowDateTime As Date: NowDateTime = Now()
     Dim prjPath As kccPath: Set prjPath = kccPath.Init(ExportObject)
@@ -1732,7 +1744,7 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     If MsgBox(Join(Array( _
         prjPath.FileName, _
         "エクスポートを実行します。", _
-        "実行前にプロジェクトを保存します。"), vbLf), vbOKCancel, proc_name) = vbCancel Then Exit Sub
+        "実行前にプロジェクトを保存します。"), vbLf), vbOKCancel, PROC_NAME) = vbCancel Then Exit Sub
     Call UserNameStackPush(" ")
     prjPath.Workbook.Save
     Call UserNameStackPush
@@ -1745,7 +1757,7 @@ Public Sub VBComponents_BackupAndExport_Sub( _
             binPath.DeleteFolder
             DoEvents
             binPath.CreateFolder
-            If prjPath.CopyFiles(binPath) = vbAbort Then Exit Sub
+            If prjPath.CopyFiles(binPath).IsAbort Then Exit Sub
         End If
     End If
     
@@ -1764,6 +1776,7 @@ Public Sub VBComponents_BackupAndExport_Sub( _
         'export
         srcPath.CreateFolder
         Call VBComponents_Export(prjPath.VBProject, srcPath)
+        Call CustomUI_Export(prjPath, srcPath)
         
         'merge And restore
         Dim f1 As File, f2 As File
@@ -1813,7 +1826,73 @@ Sub UserNameStackPush(Optional OverrideUserName)
     End If
 End Sub
 
-Rem アクティブなプロジェクトのソースコードを指定フォルダにエクスポート
+Rem プロジェクトのCustomUIを指定フォルダにエクスポート
+Rem
+Rem  @param prj_path        エクスポートしたいブックのパス
+Rem  @param output_path     エクスポート先のフォルダ
+Rem
+Private Sub CustomUI_Export(prj_path As kccPath, output_path As kccPath)
+    
+    Dim inFilePath As String
+'    inFilePath = Path
+    
+    Dim tempPath As String
+    tempPath = kccFuncZip.DecompZip(prj_path.FullPath)
+    
+    Dim xml1 As kccPath: Set xml1 = kccPath.Init(tempPath & "\" & "customUI\customUI.xml")
+    Dim xml2 As kccPath: Set xml2 = kccPath.Init(tempPath & "\" & "customUI\customUI14.xml")
+    
+    xml1.CopyFiles output_path
+    xml2.CopyFiles output_path
+    
+End Sub
+
+Rem プロジェクトのCustomUIを指定フォルダにエクスポート
+Rem
+Rem  @param prj_path        エクスポートしたいブックのパス
+Rem
+Private Sub CustomUI_ExportAndOpen(prj_path As kccPath)
+    Const PROC_NAME = "CustomUI_ExportAndOpen"
+    
+    Dim tempPath As String
+    tempPath = kccFuncZip.DecompZip(prj_path.FullPath)
+    
+    Dim xml1 As kccPath: Set xml1 = kccPath.Init(tempPath & "\" & "customUI\customUI.xml")
+    Dim xml2 As kccPath: Set xml2 = kccPath.Init(tempPath & "\" & "customUI\customUI14.xml")
+    
+    If xml1.Exists Or xml2.Exists Then
+        Shell "explorer " & tempPath, vbNormalFocus
+        If xml1.Exists Then kccFuncWindowsProcess.ShellEx xml1.FullPath
+        If xml2.Exists Then kccFuncWindowsProcess.ShellEx xml2.FullPath
+    Else
+        MsgBox "CustomUIは含まれていないようです。", vbOKOnly, PROC_NAME
+    End If
+    
+End Sub
+
+Public Sub CurrentProject_CustomUI_Import()
+    MsgBox "未実装", vbOKOnly, "CurrentProject_CustomUI_Import"
+End Sub
+
+Public Sub CurrentProject_CustomUI_Export()
+    Call CustomUI_ExportAndOpen(kccPath.Init(Application.VBE.ActiveVBProject))
+End Sub
+
+Private Sub Test_CustomUIをtempに展開して開いてみるだけ()
+    Const Path = "D:\vba\test_CustomUI_Export.xlam"
+    
+    Dim inFilePath As String
+    inFilePath = Path
+    
+    Dim tempPath As String
+    tempPath = kccFuncZip.DecompZip(inFilePath, "\")
+    
+    Shell "explorer " & tempPath, vbNormalFocus
+    
+    Shell "notepad " & tempPath & "\customUI\customUI14.xml", vbNormalFocus
+End Sub
+
+Rem プロジェクトのソースコードを指定フォルダにエクスポート
 Rem
 Rem
 Private Sub VBComponents_Export(prj As VBProject, output_path As kccPath)

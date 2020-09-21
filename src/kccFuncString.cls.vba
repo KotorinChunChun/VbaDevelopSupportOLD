@@ -301,6 +301,12 @@ Public Function AbsolutePathNameEx(ByVal base_path As String, ByVal ref_path As 
     AbsolutePathNameEx = retVal
 End Function
 
+Rem パス文字列がルート（ドライブ or UNC）から始まっているか
+Function IsRootStart(ByVal p)
+    p = Replace(UCase(p), "/", "\")
+    IsRootStart = ((p Like "[A-Z]:") Or (p Like "[A-Z]:\*") Or (p Like "\\?*"))
+End Function
+
 Rem  パス名からファイル名を除いて､パスを取得します｡（最後に「\」はつきません。コロン「:」がなくかつ円記号「\」がない場合はファイルとします）
 'Function GetPathName(PathName As String) As String
 '  Dim l As Long ' 文字数
