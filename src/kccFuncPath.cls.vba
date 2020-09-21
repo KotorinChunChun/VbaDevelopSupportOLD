@@ -563,7 +563,7 @@ Public Function GetFileFolderList(ByVal parent_folder_path As String, _
                                     Optional ByVal recursive_now_layer As Long = 0, _
                                     Optional ByRef recursive_path_list As Collection = Nothing _
                                     ) As Collection
-    Const proc_name = "GetFileFolderList"
+    Const PROC_NAME = "GetFileFolderList"
     
     Rem 関数突入時の初期化処理
     If recursive_path_list Is Nothing Then
@@ -571,7 +571,7 @@ Public Function GetFileFolderList(ByVal parent_folder_path As String, _
         
         If Len(parent_folder_path) > 0 Then
             If Right(parent_folder_path, 1) <> "\" Then
-                Err.Raise 9999, proc_name, "フォルダパスの末尾は\で終わるようにしてください。"
+                Err.Raise 9999, PROC_NAME, "フォルダパスの末尾は\で終わるようにしてください。"
             End If
         End If
     End If

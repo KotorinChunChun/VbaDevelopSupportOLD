@@ -12,7 +12,7 @@ Public Declare PtrSafe Function SHCreateDirectoryEx Lib "Shell32" ()
 
 
 'VBA標準関数
-Type VBAKeywordUpperLowerCaseUnification
+Type KeywordUpperLowerCaseUnification_VBA_Function
         
     '数学関数 VBA.Mathメンバ
     Abs As Long
@@ -208,29 +208,31 @@ End Type
 
 
 'VBA定義済み1
-Dim Size
-Dim Color
-Dim Destination
-Dim FileFilter
-Dim Image
-Dim Appearance
-Dim Key
-Dim Keys
-Dim Items
-Dim Add
-Dim Control
-Dim Controls
-Dim ListIndex
-Dim Scroll
-Dim Pages
-Dim Number
-Dim Version
-Dim Str
-Dim Val
+Type KeywordUpperLowerCaseUnification_VBA_Property
+    Size        As Long
+    Color       As Long
+    Destination As Long
+    FileFilter  As Long
+    Image       As Long
+    Appearance  As Long
+    Key         As Long
+    Keys        As Long
+    Items       As Long
+    Add         As Long
+    Control     As Long
+    Controls    As Long
+    ListIndex   As Long
+    Scroll      As Long
+    Pages       As Long
+    Number      As Long
+    Version     As Long
+    Str         As Long
+    Val         As Long
+End Type
 
 
-'VBA定義済み2
-Type KeywordUpperLowerCaseUnification
+'VBA定義済みステートメント
+Type KeywordUpperLowerCaseUnification_VBA_Statement
     Goto As Long
     Get As Long
     Set As Long
@@ -242,200 +244,217 @@ End Type
 'Application.Goto
 'GoTo Label
 
+'VBA名前付き引数
+Type KeywordUpperLowerCaseUnification_VBA_NamedParam
+    Delimiter As Long
+End Type
 
 'Excelキーワード
-Dim Activate
-Dim AddComment
-Dim AddCommentThreaded
-Dim AdvancedFilter
-Dim AllocateChanges
-Dim ApplyNames
-Dim ApplyOutlineStyles
-Dim AutoComplete
-Dim AutoFill
-Dim AutoFilter
-Dim AutoFit
-Dim AutoOutline
-Dim BorderAround
-Dim Calculate
-Dim CalculateRowMajorOrder
-Dim CheckSpelling
-Dim Clear
-Dim ClearComments
-Dim ClearContents
-Dim ClearFormats
-Dim ClearHyperlinks
-Dim ClearNotes
-Dim ClearOutline
-Dim ColumnDifferences
-Dim Consolidate
-Dim ConvertToLinkedDataType
-Dim Copy
-Dim CopyFromRecordset
-Dim CopyPicture
-Dim CreateNames
-Dim Cut
-Dim DataTypeToText
-Dim DataSeries
-Dim Delete
-Dim DialogBox
-Dim Dirty
-Dim DiscardChanges
-Dim EditionOptions
-Dim ExportAsFixedFormat
-Dim FillDown
-Dim FillLeft
-Dim FillRight
-Dim FillUp
-Dim Find
-Dim FindNext
-Dim FindPrevious
-Dim FlashFill
-Dim FunctionWizard
-Dim Group
-Dim Insert
-Dim InsertIndent
-Dim Justify
-Dim ListNames
-Dim Merge
-Dim NavigateArrow
-Dim NoteText
-Dim Parse
-Dim PasteSpecial
-Dim PrintOut
-Dim PrintPreview
-Dim RemoveDuplicates
-Dim RemoveSubtotal
-Dim Replace
-Dim RowDifferences
-Dim Run
-Dim SetCellDataTypeFromCell
-Dim SetPhonetic
-Dim Show
-Dim ShowCard
-Dim ShowDependents
-Dim ShowErrors
-Dim ShowPrecedents
-Dim Sort
-Dim SortSpecial
-Dim Speak
-Dim SpecialCells
-Dim SubscribeTo
-Dim Subtotal
-Dim Table
-Dim TextToColumns
-Dim Ungroup
-Dim UnMerge
-Dim Properties
-Dim AddIndent
-Dim Address
-Dim AddressLocal
-Dim AllowEdit
-Dim Application
-Dim Areas
-Dim Borders
-Dim Cells
-Dim Characters
-Dim Column
-Dim Columns
-Dim ColumnWidth
-Dim Comment
-Dim CommentThreaded
-Dim Count
-Dim CountLarge
-Dim Creator
-Dim CurrentArray
-Dim CurrentRegion
-Dim Dependents
-Dim DirectDependents
-Dim DirectPrecedents
-Dim DisplayFormat
-Dim EntireColumn
-Dim EntireRow
-Dim Errors
-Dim Font
-Dim FormatConditions
-Dim Formula
-Dim FormulaArray
-Dim FormulaHidden
-Dim FormulaLocal
-Dim FormulaR1C1
-Dim FormulaR1C1Local
-Dim HasArray
-Dim HasFormula
-Dim HasRichDataType
-Dim Height
-Dim Hidden
-Dim HorizontalAlignment
-Dim Hyperlinks
-Dim ID
-Dim IndentLevel
-Dim Interior
-Dim Item
-Dim Left
-Dim LinkedDataTypeState
-Dim ListHeaderRows
-Dim ListObject
-Dim LocationInTable
-Dim Locked
-Dim MDX
-Dim MergeArea
-Dim MergeCells
-Dim Name
-Dim NumberFormat
-Dim NumberFormatLocal
-Dim Offset
-Dim Orientation
-Dim OutlineLevel
-Dim PageBreak
-Dim Parent
-Dim Phonetic
-Dim Phonetics
-Dim PivotCell
-Dim PivotField
-Dim PivotItem
-Dim PivotTable
-Dim Precedents
-Dim PrefixCharacter
-Dim Previous
-Dim QueryTable
-Dim Range
-Dim ReadingOrder
-Dim Resize
-Dim Row
-Dim RowHeight
-Dim Rows
-Dim ServerActions
-Dim ShowDetail
-Dim ShrinkToFit
-Dim SoundNote
-Dim SparklineGroups
-Dim Style
-Dim Summary
-Dim Text
-Dim Top
-Dim UseStandardHeight
-Dim UseStandardWidth
-Dim Validation
-Dim Value
-Dim Value2
-Dim VerticalAlignment
-Dim Width
-Dim Worksheet
-Dim WrapText
-Dim XPath
-Dim Selection
-Dim Test
-Dim Caption
+Type KeywordUpperLowerCaseUnification_Excel_Method
+    Activate                As Long
+    AddComment              As Long
+    AddCommentThreaded      As Long
+    AdvancedFilter          As Long
+    AllocateChanges         As Long
+    ApplyNames              As Long
+    ApplyOutlineStyles      As Long
+    AutoComplete            As Long
+    AutoFill                As Long
+    AutoFilter              As Long
+    AutoFit                 As Long
+    AutoOutline             As Long
+    BorderAround            As Long
+    Calculate               As Long
+    CalculateRowMajorOrder  As Long
+    CheckSpelling           As Long
+    Clear                   As Long
+    ClearComments           As Long
+    ClearContents           As Long
+    ClearFormats            As Long
+    ClearHyperlinks         As Long
+    ClearNotes              As Long
+    ClearOutline            As Long
+    ColumnDifferences       As Long
+    Consolidate             As Long
+    ConvertToLinkedDataType As Long
+    Copy                    As Long
+    CopyFromRecordset       As Long
+    CopyPicture             As Long
+    CreateNames             As Long
+    Cut                     As Long
+    DataTypeToText          As Long
+    DataSeries              As Long
+    Delete                  As Long
+    DialogBox               As Long
+    Dirty                   As Long
+    DiscardChanges          As Long
+    EditionOptions          As Long
+    ExportAsFixedFormat     As Long
+    FillDown                As Long
+    FillLeft                As Long
+    FillRight               As Long
+    FillUp                  As Long
+    Find                    As Long
+    FindNext                As Long
+    FindPrevious            As Long
+    FlashFill               As Long
+    FunctionWizard          As Long
+    Group                   As Long
+    Insert                  As Long
+    InsertIndent            As Long
+    Justify                 As Long
+    ListNames               As Long
+    Merge                   As Long
+    NavigateArrow           As Long
+    NoteText                As Long
+    Parse                   As Long
+    PasteSpecial            As Long
+    PrintOut                As Long
+    PrintPreview            As Long
+    RemoveDuplicates        As Long
+    RemoveSubtotal          As Long
+    Replace                 As Long
+    RowDifferences          As Long
+    Run                     As Long
+    Select                  As Long
+    SetCellDataTypeFromCell As Long
+    SetPhonetic             As Long
+    Show                    As Long
+    ShowCard                As Long
+    ShowDependents          As Long
+    ShowErrors              As Long
+    ShowPrecedents          As Long
+    Sort                    As Long
+    SortSpecial             As Long
+    Speak                   As Long
+    SpecialCells            As Long
+    SubscribeTo             As Long
+    Subtotal                As Long
+    Table                   As Long
+    TextToColumns           As Long
+    Ungroup                 As Long
+    UnMerge                 As Long
+    Properties              As Long
+    AddIndent               As Long
+    Address                 As Long
+    AddressLocal            As Long
+    AllowEdit               As Long
+    Application             As Long
+    Areas                   As Long
+    Borders                 As Long
+    Cells                   As Long
+    Characters              As Long
+    Column                  As Long
+    Columns                 As Long
+    ColumnWidth             As Long
+    Comment                 As Long
+    CommentThreaded         As Long
+    Count                   As Long
+    CountLarge              As Long
+    Creator                 As Long
+    CurrentArray            As Long
+    CurrentRegion           As Long
+    Dependents              As Long
+    DirectDependents        As Long
+    DirectPrecedents        As Long
+    DisplayFormat           As Long
+    End                     As Long
+    EntireColumn            As Long
+    EntireRow               As Long
+    Errors                  As Long
+    Font                    As Long
+    FormatConditions        As Long
+    Formula                 As Long
+    FormulaArray            As Long
+    FormulaHidden           As Long
+    FormulaLocal            As Long
+    FormulaR1C1             As Long
+    FormulaR1C1Local        As Long
+    HasArray                As Long
+    HasFormula              As Long
+    HasRichDataType         As Long
+    Height                  As Long
+    Hidden                  As Long
+    HorizontalAlignment     As Long
+    Hyperlinks              As Long
+    ID                      As Long
+    IndentLevel             As Long
+    Interior                As Long
+    Item                    As Long
+    Left                    As Long
+    LinkedDataTypeState     As Long
+    ListHeaderRows          As Long
+    ListObject              As Long
+    LocationInTable         As Long
+    Locked                  As Long
+    MDX                     As Long
+    MergeArea               As Long
+    MergeCells              As Long
+    Name                    As Long
+    Next                    As Long
+    NumberFormat            As Long
+    NumberFormatLocal       As Long
+    Offset                  As Long
+    Orientation             As Long
+    OutlineLevel            As Long
+    PageBreak               As Long
+    Parent                  As Long
+    Phonetic                As Long
+    Phonetics               As Long
+    PivotCell               As Long
+    PivotField              As Long
+    PivotItem               As Long
+    PivotTable              As Long
+    Precedents              As Long
+    PrefixCharacter         As Long
+    Previous                As Long
+    QueryTable              As Long
+    Range                   As Long
+    ReadingOrder            As Long
+    Resize                  As Long
+    Row                     As Long
+    RowHeight               As Long
+    Rows                    As Long
+    ServerActions           As Long
+    ShowDetail              As Long
+    ShrinkToFit             As Long
+    SoundNote               As Long
+    SparklineGroups         As Long
+    Style                   As Long
+    Summary                 As Long
+    Text                    As Long
+    Top                     As Long
+    UseStandardHeight       As Long
+    UseStandardWidth        As Long
+    Validation              As Long
+    Value                   As Long
+    Value2                  As Long
+    VerticalAlignment       As Long
+    Width                   As Long
+    Worksheet               As Long
+    WrapText                As Long
+    XPath                   As Long
+End Type
+
+Type KeywordUpperLowerCaseUnification_Excel_Other
+    Selection As Long
+    Test      As Long
+    Caption   As Long
+    Col       As Long
+    Cols      As Long
+End Type
 
 'Excel関数
-Dim Min
-Dim Max
+Type KeywordUpperLowerCaseUnification_Excel_WorksheetFunction
+    Min As Long
+    Max As Long
+End Type
 
-'その他オブジェクトメンバ
-dim SaveToFile
-dim SetRequestHeader
-
+'その他　未分類
+Type KeywordUpperLowerCaseUnification_Other
+    SaveToFile          As Long
+    SetRequestHeader    As Long
+End Type
 
 
 'オリジナル一文字変数取得
@@ -515,22 +534,21 @@ Dim LastCol
 Dim ColDic
 Dim TableName
 Dim URL
-dim OutCol
+Dim OutCol
 Dim dItem
-dim dKey
+Dim dKey
 
 '暫定確定メンバ（上記に移動する前の一時置き場）
 Dim Page
-dim Cursol
-dim Send
-dim Status
-dim NewName
-dim Parameter
+Dim Cursol
+Dim Send
+Dim Status
+Dim NewName
+Dim Parameter
 Dim objHttp
-dim FName
-dim ResponseText
-dim msg
-dim PROC_NAME
+Dim FName
+Dim ResponseText
+Dim msg
+Dim PROC_NAME
 
 '変更保留メンバ（コード変更と大文字小文字変更のコミットを分離するために使用する
-
