@@ -11,10 +11,11 @@ VBEに機能を追加して、VBA開発を楽にするためのアドインで�
 
 ※ただしExcel専用
 
-![image](https://user-images.githubusercontent.com/55196383/93777891-43a26e80-fc60-11ea-98cd-ebb5683b698a.png)
+![image](https://user-images.githubusercontent.com/55196383/94364650-f746ab00-0105-11eb-8e85-c9c1dd905211.png)
 
 
-## ■⚠ 利用条件 ⚠
+
+## ⚠ 利用条件 ⚠
 * 作者自身の環境以外において、期待通りの動作となるかは一切保証できません。
 * 一部の機能はモジュールを書き換えるため、ある日データが破損するかもしれません。当ツールのバックアップ機能に依存せず、自己責任でバックアップを取っておきましょう。
 * ファイル→オプション→トラスト センター→[トラスト センターの設定(T)...]→マクロの設定→開発者向けマクロ設定→「☑ VBA プロジェクト オブジェクト モデルへのアクセスを信頼する(V)」にチェックを入れないと動作しません。Excelのセキュリティを著しく低下させた状態になる覚悟をして設定を変更してください。
@@ -201,6 +202,12 @@ WinMergeによるバージョン管理をする場合におすすめです。
 2つのテキストボックスを備えたフォームが表示されます。
 
 WinAPIの名前を入力すると、[Win32API_PtrSafe.TXT](https://www.microsoft.com/en-us/download/details.aspx?id=9970)に記載されているものであれば、自動的にDeclare文を生成してくれます。
+
+
+#### 参考
+
+* [VBAでWin32APIの64bit対応自動変換プログラムを作ってみた]([https://www.excel-chunchun.com/entry/vba-64bit-declare-convert
+* [WinAPIの64bit化で出てくるPtrSafe､LongLong､LongPtrってなんなのさ？](https://www.excel-chunchun.com/entry/20200809-vba-declare-ptrsafe-longlong-longptr)
 
 
 
