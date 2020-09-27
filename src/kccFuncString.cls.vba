@@ -154,6 +154,107 @@ Public Function SplitWithInBrackets(ByVal base_str, _
 
 End Function
 
+Rem 文字列に含まれる文字列の出現位置全てを返す関数
+Rem
+Rem  @param base_str 入力文字列
+Rem  @param find_str 検索文字列
+Rem
+Rem  @return As Variant/Long(1 To #) 検索文字列の先頭インデックスの配列
+Rem
+Rem  @example
+Rem          find_str = "a"
+Rem          Missing              >> Variant(0 to -1) {}
+Rem          String ""            >> Variant(0 to -1) {}
+Rem          String "a"           >> Long(1 to 1) {1}
+Rem          String "abacda"      >> Long(1 to 3) {1,3,6}
+Rem
+Rem          find_str = "bc"
+Rem          String "abacda"      >> Variant(0 to -1) {}
+Rem          String "dsbcffdgrbc" >> Long(1 to 2) {3,10}
+Rem
+Rem  @note
+Rem     最大65535件までなことに注意
+Rem
+Public Function InStrAll(base_str, find_str) As Variant
+    If IsMissing(base_str) Then Exit Function
+    If base_str = "" Or find_str = "" Then Exit Function
+    Dim n As Long: n = 0
+    Dim retVal As Long: retVal = 0
+    Dim retIndexs() As Long
+    ReDim retIndexs(1 To 65535)
+    Do
+        n = InStr(n + 1, base_str, find_str)
+        If n = 0 Then
+            Exit Do
+        Else
+            retVal = retVal + 1
+            If UBound(retIndexs) > retVal Then
+                retIndexs(retVal) = n
+            End If
+        End If
+    Loop
+    If retVal = 0 Then
+        InStrAll = VBA.Array()
+    Else
+        ReDim Preserve retIndexs(1 To retVal)
+        InStrAll = retIndexs
+    End If
+End Function
+
+Rem 検索文字が繰り返された文字数を返す
+Rem
+Rem  @param base_str       入力文字列
+Rem  @param find_str       検索文字列
+Rem  @param start_index    検索開始位置(1~)
+Rem
+Rem  @retuen As Long 検索文字が続いた文字数(検索文字数*回数)
+Rem                   全てがfind_strならlen(base_str)
+Rem
+Rem  @example
+Rem          find_str = "a"
+Rem          Missing         >> Long 0
+Rem          String ""       >> Long 0
+Rem
+Rem          start_index = 1
+Rem          String "a"      >> Long 1
+Rem          String "abaa"   >> Long 1
+Rem          String "xyzaaa" >> Long 0
+Rem
+Rem          start_index = 3
+Rem          String "a"      >> Long 0
+Rem          String "abaa"   >> Long 2
+Rem          String "xyzaaa" >> Long 0
+Rem
+Rem          start_index = 4
+Rem          String "a"      >> Long 0
+Rem          String "abaa"   >> Long 1
+Rem          String "xyzaaa" >> Long 3
+Rem
+Public Function InStrRept(base_str, find_str, Optional start_index = 1) As Long
+    If IsMissing(base_str) Then Exit Function
+    If base_str = "" Then Exit Function
+    If start_index < 0 Then Err.Raise 9999, , "start_indexは文字列の開始位置(1~)を指定して下さい"
+    Dim i As Long
+    For i = start_index To Len(base_str) Step Len(find_str)
+        If Mid(base_str, i, Len(find_str)) <> find_str Then Exit For
+    Next
+    InStrRept = i - start_index
+End Function
+
+Rem 両端のスペースを除去するTrimを配列全体に適用する
+Rem
+Rem  @param As Variant/String() arr_base_str 入力文字列配列
+Rem
+Rem  @return As Variant/String()             出力文字列配列
+Rem
+Public Function TrimArray(ByRef arr_base_str) As Variant
+    Dim i As Long
+    For i = LBound(arr_base_str) + 1 To UBound(arr_base_str)
+        arr_base_str(i) = Trim(arr_base_str(i))
+    Next
+    TrimArray = arr_base_str
+End Function
+
 Rem 通常トリムに加えて、文字列中の連続スペースをシングルスペースに変換する。
 Rem Excel関数のTRIM互換
 Rem
@@ -169,6 +270,26 @@ Public Function Trim2to1(ByVal base_str) As String
         If Trim2to1 = base_str Then Exit Do
         base_str = Trim2to1
     Loop
+End Function
+
+Rem 区切り文字ごとに先頭に所定の文字を追記する
+Rem
+Rem  @param base_str       変換元文字列(Declare文)
+Rem  @param delimiter      改行文字列（既定：CR+LF）
+Rem
+Rem  @return As String     整形後の文字列
+Rem
+Public Function InsertString(base_str, add_str, Optional Delimiter = vbCrLf) As String
+    InsertString = add_str & Replace(base_str, Delimiter, Delimiter & add_str)
+End Function
+Rem   コメント「'」を挿入
+Public Function InsertComment(ByVal base_str, Optional Delimiter = vbCrLf) As String
+    InsertComment = InsertString(base_str, "'")
+End Function
+Rem   インデント「    」を挿入
+Rem  @param indent_level   インデントする幅(4*(1~#))
+Public Function InsertIndent(ByVal base_str, Optional indent_level = 1, Optional Delimiter = vbCrLf) As String
+    InsertIndent = InsertString(base_str, String(4 * indent_level, " "))
 End Function
 
 Rem Right関数拡張  最後に出現する区切り文字列を切れ目として右側の文字を返す

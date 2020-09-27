@@ -68,6 +68,7 @@ Public Function Init(obj, Optional is_file As Boolean = True) As kccPath
         Case "Workbook":  IsFile = True:    FullPath = ToWorkbook(obj).FullName
         Case "Window":    IsFile = True:    FullPath = ToWindow(obj).Parent.FullName
         Case "VBProject": IsFile = True:    FullPath = VBEProjectFileName(ToVBProject(obj))
+        Case "kccPath":   IsFile = obj.IsFile: FullPath = obj.FullPath
         Case Else
             On Error Resume Next
             FullPath = obj.CreateClass.FullPath: If FullPath <> "" Then IsFile = True: Exit Function
@@ -419,11 +420,6 @@ CopyFilesError:
     End Select
 End Function
 
-Rem フォルダが存在するか否か
-Public Function FolderExists() As Boolean
-    FolderExists = fso.FolderExists(Me.FullPath)
-End Function
-
 Rem パス文字列を単純に置換
 Public Function ReplacePath(src, dest) As kccPath
     Set ReplacePath = Me.Clone
@@ -484,3 +480,22 @@ Public Sub ConvertCharCode_SJIS_to_utf8()
         .Close
     End With
 End Sub
+
+Rem UTF-8で作成されたファイルを読むとき
+Public Function ReadUTF8Text(argPath As String) As String
+
+    Dim buf  As String
+
+    With CreateObject("ADODB.Stream")
+        .Charset = "UTF-8"
+        .Type = 2           'adTypeText
+        .LineSeparator = -1 'adCrLf
+        .Open
+        .LoadFromFile argPath
+        buf = .ReadText(-1) 'adReadAll
+        .Close
+    End With
+
+    ReadUTF8Text = buf
+
+End Function

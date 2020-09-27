@@ -2250,3 +2250,15 @@ Rem VBAプロジェクトのパスワードを1234へ変更する
 Public Sub BreakPassword1234Project()
     MsgBox "未実装"
 End Sub
+
+Public Sub OpenFormDeclareSourceGenerate()
+    FormDeclareSourceGenerate.Show
+End Sub
+
+Public Sub OpenFormDeclareSourceTo64bit()
+    FormDeclareSourceTo64bit.Show
+End Sub
+
+Public Sub OpenTextFileBy大文字小文字()
+    MsgBox "未実装"
+End Sub

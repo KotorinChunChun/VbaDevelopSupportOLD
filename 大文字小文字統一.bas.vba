@@ -448,6 +448,7 @@ End Type
 Type KeywordUpperLowerCaseUnification_Excel_WorksheetFunction
     Min As Long
     Max As Long
+    Sum as Long
 End Type
 
 'その他　未分類
@@ -550,5 +551,9 @@ Dim FName
 Dim ResponseText
 Dim msg
 Dim PROC_NAME
+Dim cnt
+dim ProcName
+dim Result
 
 '変更保留メンバ（コード変更と大文字小文字変更のコミットを分離するために使用する
+

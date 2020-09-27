@@ -13,7 +13,7 @@ Rem  @module        kccFuncPath
 Rem
 Rem  @description   ファイル・フォルダ・パス解析関数
 Rem
-Rem  @update        2020/08/06
+Rem  @update        2020/09/22
 Rem
 Rem  @author        @KotorinChunChun (GitHub / Twitter)
 Rem
@@ -729,6 +729,10 @@ Rem         Next
 Rem     Next
 Rem End Sub
 
+Rem 一時ファイルのフルパスを取得
+Public Function GetPathByTemporaryFile() As String
+    GetPathByTemporaryFile = GetPathTemporary & "\" & fso.GetTempName
+End Function
 
 Rem --------------------------------------------------------------------------------
 Rem   フォルダの一括作成
@@ -756,71 +760,64 @@ Public Sub CreateAllFolder(ByVal strPath As String, Optional without_lastfilenam
 
 End Sub
 
-
-Rem --------------------------------------------------------------------------------
-Rem   マイドキュメントフォルダを取得
-Rem --------------------------------------------------------------------------------
-Public Function GetPathMyDocument() As String
+Function GetPathWSH(WSH_SpecialFolders_Keyword) As String
     On Error Resume Next
-    GetPathMyDocument = CreateObject("Wscript.Shell").SpecialFolders("MyDocuments")
+    GetPathWSH = CreateObject("Wscript.Shell").SpecialFolders(WSH_SpecialFolders_Keyword)
 End Function
 
-Rem --------------------------------------------------------------------------------
-Rem 　アプリケーションフォルダ取得
-Rem --------------------------------------------------------------------------------
-Public Function GetAppDataFolder() As String
+Rem ドキュメントフォルダ
+Public Function GetPathMyDocument() As String: GetPathMyDocument = GetPathWSH("MyDocuments"): End Function
+Rem AppDataフォルダ
+Public Function GetPathAppData() As String: GetPathAppData = GetPathWSH("AppData"): End Function
+Rem デスクトップフォルダ
+Public Function GetPathDesktop() As String: GetPathDesktop = GetPathWSH("Desktop"): End Function
 
-    On Error Resume Next
+Rem テンポラ\一時ファイルリフォルダ
+Public Function GetPathTemporary() As String: GetPathTemporary = fso.GetSpecialFolder(TemporaryFolder): End Function
+
+Rem アプリ名のサブフォルダを生成してラップして返す
+Public Function GetAppPath(SpecialFolders_Keyword, ProjectFolderName) As String
+    If VBA.IsMissing(ProjectFolderName) Then ProjectFolderName = ""
+    If ProjectFolderName = "" Then ProjectFolderName = ThisWorkbook.Name
     
-    Dim strFolder As String
-    
-    GetAppDataFolder = ""
-    
+    GetAppPath = ""
     With CreateObject("Scripting.FileSystemObject")
-    
-        strFolder = .BuildPath(CreateObject("Wscript.Shell").SpecialFolders("AppData"), ThisWorkbook.Name)
-        
+        Dim strFolder As String
+        strFolder = .BuildPath(GetPathAppData, ProjectFolderName)
         If .FolderExists(strFolder) Then
         Else
-            .CreateFolder strFolder
+            On Error Resume Next
+                .CreateFolder strFolder
+            On Error GoTo 0
         End If
-        
-        GetAppDataFolder = .BuildPath(strFolder, "\")
-        
+        GetAppPath = .BuildPath(strFolder, "\")
     End With
-    
 
 End Function
 
-Rem --------------------------------------------------------------------------------
-Rem 　テンポラリフォルダ取得
-Rem --------------------------------------------------------------------------------
-Public Function GetTempFolder() As String
+Rem AppDataフォルダ
+Public Function GetAppPathAppData(Optional ProjectFolderName) As String: GetAppPathAppData = GetAppPath("AppData", ProjectFolderName): End Function
 
-    On Error Resume Next
-    
-    Dim strFolder As String
-    
-    GetTempFolder = ""
-    
+Rem テンポラリフォルダ取得
+Rem
+Rem  @return C:\Users\%USERNAME%\AppData\Local\Temp
+Rem
+Public Function GetAppPathTemporary() As String
+    GetAppPathTemporary = ""
     With CreateObject("Scripting.FileSystemObject")
-    
-        strFolder = GetAppDataFolder & "Temp"
-        
+        Dim strFolder As String
+        strFolder = GetPathTemporary() & "\Temp"
         If .FolderExists(strFolder) Then
         Else
-            .CreateFolder strFolder
+            On Error Resume Next
+                .CreateFolder strFolder
+            On Error GoTo 0
         End If
-        
-        GetTempFolder = .BuildPath(strFolder, "\")
-        
+        GetAppPathTemporary = .BuildPath(strFolder, "\")
     End With
-    
 End Function
 
-Rem デスクトップ
-Public Function GetDesktopPath() As String: GetDesktopPath = CreateObject("Wscript.Shell").SpecialFolders(SpecialFolderKey_Desktop) & "\": End Function
-
+Rem テンポラリフォルダ取得
 Public Function CreateTempFolder(SpecialFolderKey As String, Optional folder_name_format As String = "yyyymmdd_hhmmss") As String
     CreateTempFolder = CreateObject("Wscript.Shell").SpecialFolders(CVar(SpecialFolderKey)) & "\" & Format(Now, folder_name_format)
     On Error Resume Next

@@ -62,14 +62,19 @@ Public Sub ソースをSRCからインポートする():            Call VBComponents_Import_
 Public Sub CustomUIをエクスポートする():               Call CurrentProject_CustomUI_Export: End Sub
 Public Sub CustomUIをインポートする():                 Call CurrentProject_CustomUI_Import: End Sub
 
-Public Sub プロジェクトのフォルダを開く():             Call OpenProjectFolder: End Sub
-Public Sub プロジェクトを閉じる():                     Call CloseProject: End Sub
+Public Sub Declareの生成():                           Call OpenFormDeclareSourceGenerate: End Sub
+Public Sub Declareの変換():                           Call OpenFormDeclareSourceTo64bit: End Sub
+Public Sub 大文字小文字統一テキストを開く():           Call OpenTextFileBy大文字小文字: End Sub
+
 Public Sub プロジェクトのパスワードを1234に変更する(): Call BreakPassword1234Project: End Sub
 
+Public Sub プロジェクトのフォルダを開く():             Call OpenProjectFolder: End Sub
+Public Sub プロジェクトを閉じる():                     Call CloseProject: End Sub
 Public Sub ファイル化されていないブック全てを閉じる(): Call CloseNofileWorkbook: End Sub
 
 Public Sub 全てのコードウインドウを閉じる():           Call CloseCodePanes: End Sub
 Public Sub イミディエイトウィンドウを空にする():       Call ImdClearGAX: End Sub
+
 Public Sub VBA開発支援アドインを終了する():            Call Close_Addin: End Sub
 
 'Public Sub テスト関数を実行する():          Call TestExecute: End Sub
