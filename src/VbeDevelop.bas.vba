@@ -122,13 +122,12 @@ Rem アクティブなプロジェクトの保存フォルダを開く
 Public Sub OpenProjectFolder()
 On Error Resume Next
     Dim fn: fn = Application.VBE.ActiveVBProject.FileName
-    Shell "explorer.exe " & fn & ",/select", vbNormalFocus
+    kccFuncWindowsProcess.ShellExplorer fn, True
 End Sub
 
 Rem WEBサイトを開く（関連付けプログラムで開く）
 Public Sub OpenWebSite(URL)
-On Error Resume Next
-    CreateObject("Wscript.Shell").Run URL, 3
+    kccFuncWindowsProcess.OpenAssociationAPI URL
 End Sub
 
 Sub Test_VBP()
@@ -1758,7 +1757,7 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     'プロジェクトをリリースフォルダへ複製
     If ExportBinFolder <> "" Then
         Dim binPath As kccPath
-        Set binPath = prjPath.MovePathByFolder(ExportBinFolder).ReplacePathAuto(DateTime:=NowDateTime)
+        Set binPath = prjPath.MovePathToFolderPath(ExportBinFolder).ReplacePathAuto(DateTime:=NowDateTime)
         If binPath.FullPath <> prjPath.FullPath Then
             binPath.DeleteFolder
             DoEvents
@@ -1771,11 +1770,11 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     '既存ソースを一旦別のフォルダに移動して、出力後に比較して、完全一致なら巻き戻す。
     If ExportSrcFolder <> "" Then
         Dim srcPath As kccPath
-        Set srcPath = prjPath.MovePathByFolder(ExportSrcFolder).ReplacePathAuto(DateTime:=NowDateTime)
+        Set srcPath = prjPath.MovePathToFolderPath(ExportSrcFolder).ReplacePathAuto(DateTime:=NowDateTime)
         
         'src を src_backへ改名しつつ削除
         Dim backPath As kccPath
-        Set backPath = srcPath.MovePathByFolder("..\src_back\")
+        Set backPath = srcPath.MovePathToFolderPath("..\src_back\")
         backPath.DeleteFolder
         srcPath.CreateFolder.Folder.Name = backPath.FolderName
         
@@ -1806,10 +1805,10 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     
     'binとsrcのバックアップ
     If BackupBinFile <> "" Then
-        binPath.CopyFiles prjPath.MovePathByFile(BackupBinFile).ReplacePathAuto(DateTime:=NowDateTime), withoutFilterString:="*~$*"
+        binPath.CopyFiles prjPath.MovePathToFilePath(BackupBinFile).ReplacePathAuto(DateTime:=NowDateTime), withoutFilterString:="*~$*"
     End If
     If BackupSrcFile <> "" Then
-        srcPath.CopyFiles prjPath.MovePathByFile(BackupSrcFile).ReplacePathAuto(DateTime:=NowDateTime)
+        srcPath.CopyFiles prjPath.MovePathToFilePath(BackupSrcFile).ReplacePathAuto(DateTime:=NowDateTime)
     End If
     
     Debug.Print "VBA Exported : " & prjPath.FileName
@@ -1868,8 +1867,8 @@ Private Sub CustomUI_ExportAndOpen(prj_path As kccPath)
     
     If xml1.Exists Or xml2.Exists Then
         Shell "explorer " & tempPath, vbNormalFocus
-        If xml1.Exists Then kccFuncWindowsProcess.ShellEx xml1.FullPath
-        If xml2.Exists Then kccFuncWindowsProcess.ShellEx xml2.FullPath
+        If xml1.Exists Then kccFuncWindowsProcess.OpenAssociationAPI xml1.FullPath
+        If xml2.Exists Then kccFuncWindowsProcess.OpenAssociationAPI xml2.FullPath
     Else
         MsgBox "CustomUIは含まれていないようです。", vbOKOnly, PROC_NAME
     End If
@@ -2254,7 +2253,15 @@ End Sub
 
 Rem VBAプロジェクトのパスワードを1234へ変更する
 Public Sub BreakPassword1234Project()
-    MsgBox "未実装"
+    Dim beforePath As kccPath: Set beforePath = kccPath.Init(Application.VBE.ActiveVBProject)
+    Dim afterPath As kccPath: Set afterPath = beforePath.MovePathToFilePath("|t_1234|e")
+    Select Case MsgBox(beforePath.FileName & "を" & afterPath.FileName & "へ出力します。", vbOKCancel)
+        Case vbOK
+            Dim res: res = BrokenVbaPassword(beforePath.FullPath, afterPath.FullPath)
+            afterPath.OpenExplorer
+            MsgBox "完了！！！" & res, vbOKOnly
+        Case vbCancel
+    End Select
 End Sub
 
 Public Sub OpenFormDeclareSourceGenerate()
@@ -2265,6 +2272,12 @@ Public Sub OpenFormDeclareSourceTo64bit()
     FormDeclareSourceTo64bit.Show
 End Sub
 
+Rem 同じフォルダ、又は上位フォルダの大文字小文字ファイルを開く
 Public Sub OpenTextFileBy大文字小文字()
-    MsgBox "未実装"
+    Dim targetPath As kccPath
+    Set targetPath = kccPath.Init(ThisWorkbook.Path, False).MovePathToFilePath(DEF_大文字小文字ファイル)
+    If Not targetPath.Exists Then
+        Set targetPath = targetPath.MoveParentFolder("..\")
+    End If
+    targetPath.OpenAssociation
 End Sub

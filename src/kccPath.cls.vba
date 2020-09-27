@@ -241,21 +241,38 @@ Public Function MoveFolderPath(relative_path) As String
 End Function
 
 Rem 相対パスにより移動したフォルダのインスタンスを新規生成
-Public Function MovePathByFolder(relative_path, Optional KeepFileName As Boolean = False) As kccPath
-    Dim bas As String: bas = Me.CurrentFolderPath
-    Dim ref As String: ref = relative_path
-    Dim ppp As String: ppp = kccFuncString.AbsolutePathNameEx(bas, ref)
-    Set MovePathByFolder = kccPath.Init(ppp, False)
+Public Function MovePathToFolderPath(relative_path) As kccPath
+    Dim basePath As String: basePath = Me.CurrentFolderPath
+    Dim refePath As String: refePath = relative_path
+    Dim absoPath As String: absoPath = kccFuncString.AbsolutePathNameEx(basePath, refePath)
+    Set MovePathToFolderPath = kccPath.Init(absoPath, False)
 End Function
 
 Rem 相対パスにより移動したファイルのインスタンスを新規生成
-Rem   既存がフォルダのとき：「現パス\ファイル名」
-Rem   既存がファイルのとき：「カレントフォルダ\ファイル名」
-Public Function MovePathByFile(relative_path) As kccPath
-    Dim bas As String: bas = Me.CurrentFolderPath
-    Dim ref As String: ref = IIf(relative_path Like "*\*", "", ".\") & relative_path
-    Dim ppp As String: ppp = kccFuncString.AbsolutePathNameEx(bas, ref)
-    Set MovePathByFile = kccPath.Init(ppp, True)
+Rem   既存がフォルダのとき：「現パス\relative_path」
+Rem   既存がファイルのとき：「カレントフォルダ\relative_path」
+Rem
+Rem  特別に使用できる文字 : |t |e
+Rem    エスケープ文字は、ファイル名に使用できないパイプ | とする。
+Rem    hoge.ext
+Rem      元のファイル名       : hoge : |t : titleの略
+Rem      元のファイルの拡張子 : .ext : |e : extensionの略
+Public Function MovePathToFilePath(ByVal relative_path) As kccPath
+    If VarType(relative_path) <> vbString Then Err.Raise 9999, , "型が違います"
+    If relative_path = "" Then Set MovePathToFilePath = kccPath.Init(Me)
+    relative_path = Replace(relative_path, "|t", Me.BaseName)
+    relative_path = Replace(relative_path, "|e", Me.Extension)
+    '自身がフォルダで移動先ファイルがファイル名のみしか指定されなかった場合、カレントを示す\を追記
+    If Not Me.IsFile And Not relative_path Like "\*" Then relative_path = "\" & relative_path
+    Dim basePath As String: basePath = Me.CurrentFolderPath
+    Dim refePath As String: refePath = IIf(relative_path Like "*\*", "", ".\") & relative_path
+    Dim absoPath As String: absoPath = kccFuncString.AbsolutePathNameEx(basePath, refePath)
+    Set MovePathToFilePath = kccPath.Init(absoPath, True)
+End Function
+
+Rem 相対パスによりファイル名を維持したまま親フォルダを移動する
+Public Function MoveParentFolder(ByVal relative_path) As kccPath
+    Set MoveParentFolder = Me.MovePathToFilePath(relative_path & "|t|e")
 End Function
 
 Rem フォルダを一気に作成
@@ -328,7 +345,7 @@ Public Function CopyFile(dest As kccPath, _
     
     Dim fl As File:   Set fl = Me.File
     Dim destFile As kccPath: Set destFile = dest
-    If dest.IsFile Then Else Set destFile = destFile.MovePathByFile(".\" & Me.File.Name)
+    If dest.IsFile Then Else Set destFile = destFile.MovePathToFilePath(".\" & Me.File.Name)
     
     Set CopyFile = kccResult.Init(True)
     
@@ -395,7 +412,7 @@ Public Function CopyFiles(dest As kccPath, _
             If dest.IsFile Then
                 fd = dest.ReplacePathAuto(FileName:=fl.Name).CreateFolder.FullPath
             Else
-                fd = dest.ReplacePathAuto(FileName:=fl.Name).MovePathByFile(fl.Name).CreateFolder.FullPath
+                fd = dest.ReplacePathAuto(FileName:=fl.Name).MovePathToFilePath(fl.Name).CreateFolder.FullPath
             End If
             On Error GoTo CopyFilesError
                 fl.Copy fd, True
@@ -439,7 +456,27 @@ Public Function ReplacePathAuto(Optional DateTime, Optional FileName) As kccPath
     Set ReplacePathAuto = obj
 End Function
 
-' ファイルの文字コードをSJISからUTF8(BOM無し)に変換する
+Rem エクスプローラで開く
+Rem  @param IsSelected  対象を選択状態にするか
+Rem                       既定は対象によって変化
+Rem                         ファイル：True
+Rem                         フォルダ：False
+Rem
+Public Sub OpenExplorer(Optional IsSelected)
+    If VBA.IsMissing(IsSelected) Then
+        IsSelected = Me.IsFile
+    End If
+    kccFuncWindowsProcess.ShellExplorer Me.FullPath, (IsSelected = True)
+End Sub
+
+Rem 関連付けられたプログラムで開く
+Rem   ファイル：関連付けられたプログラム
+Rem   フォルダ：エクスプローラ
+Public Sub OpenAssociation()
+    Debug.Print kccFuncWindowsProcess.OpenAssociationShell32(Me.FullPath)
+End Sub
+
+Rem ファイルの文字コードをSJISからUTF8(BOM無し)に変換する
 Public Sub ConvertCharCode_SJIS_to_utf8()
     If Me.IsFile Then Else Exit Sub
     If fso.FileExists(Me.FullPath) Then Else Exit Sub
@@ -481,7 +518,7 @@ Public Sub ConvertCharCode_SJIS_to_utf8()
     End With
 End Sub
 
-Rem UTF-8で作成されたファイルを読むとき
+Rem UTF-8で作成されたファイルを読む
 Public Function ReadUTF8Text(argPath As String) As String
 
     Dim buf  As String

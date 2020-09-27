@@ -75,8 +75,43 @@ Private Const SE_ERR_SHARE = 26           '共有違反が発生しました。
 #End If
 Rem --------------------------------------------------------------------------------
 
-'指定ファイルを関連付けられたアプリケーションで開く
-Public Sub ShellEx(FileName As String)
+Rem https://excel-ubara.com/excelvba4/EXCEL295.html
+Rem
+
+Rem Shell
+Rem 実行ファイルの指定が必須で、対象ファイルはパラメータとして付与しないといけない
+Public Function OpenAssociationShell(ByVal ExeFileName As String)
+    VBA.Shell ExeFileName, vbNormalFocus
+'5
+'プロシージャの呼び出し､または引数が不正です｡
+End Function
+
+Rem VBAからはバッチを生成し起動、そのバッチの中でファイルを開く方法
+Rem Win10関連付け失敗せず
+Public Function OpenAssociationCmdExe(ByVal FileName As String)
+    Dim batFile As String
+    FileName = """" & FileName & """"
+    batFile = ThisWorkbook.Path & "\vba_temp.bat"
+    Open batFile For Output As #1
+    Print #1, FileName
+    Close #1
+    VBA.Shell batFile, vbMinimizedNoFocus
+End Function
+
+Rem Shell32
+Rem Win10関連付け失敗せず
+Public Function OpenAssociationShell32(ByVal FileName As String)
+    Dim sh As Object 'Shell32.Shell '参照設定「Microsoft Shell Controls And Automation」
+    Set sh = CreateObject("Shell.Application")
+    sh.ShellExecute FileName
+    Set sh = Nothing
+End Function
+
+Rem 指定ファイルを関連付けられたアプリケーションで開く(API)
+Rem
+Rem .vbaのオープンに失敗
+Rem   ret = 31 : 指定されたファイル拡張子に関連付けられたアプリケーションがありません。
+Public Function OpenAssociationAPI(ByVal FileName As String)
 
     'Application.hwndが使えるのはExcel2002以降
 #If VBA7 Then
@@ -86,5 +121,41 @@ Public Sub ShellEx(FileName As String)
 #End If
     ret = ShellExecute(GetActiveWindow(), "Open", FileName, _
               vbNullString, vbNullString, SW_SHOW)
-              
+    OpenAssociationAPI = CLng(ret) 'SR_ERR
+End Function
+
+Rem 指定ファイルを関連付けられたアプリケーションで開く(WSH方式)
+Rem
+Rem .vbaのオープンで実行時エラー
+Rem   -2147023741
+Rem   Run' メソッドは失敗しました: 'IWshShell3' オブジェクト
+Public Function OpenAssociationWSH(ByVal FileName)
+    OpenAssociationWSH = CreateObject("Wscript.Shell").Run(FileName, SW_SHOWMAXIMIZED)
+End Function
+
+Rem 指定ファイルを関連付けられたアプリケーションで開く(Excelのハイパーリンク機能)
+Rem
+Rem 必ず確認メッセージが出る
+Rem
+Rem .vbaのオープンで実行時エラー
+Rem   -2147221018
+Rem   このファイルを開くためのプログラムが登録されていません｡
+Public Function OpenAssociationExcelHyperlink(ByVal FileName)
+    ThisWorkbook.FollowHyperlink FileName
+End Function
+
+Rem ファイル・フォルダをエクスプローラで開く
+Rem
+Rem  @param full_path   対象ファイル・フォルダのフルパス
+Rem  @param IsSelected  選択状態で開くか
+Rem
+Rem  @note
+Rem    選択状態にすると挙動が微妙に変化するので注意
+Rem
+Public Sub ShellExplorer(full_path, Optional IsSelected As Boolean = False)
+    If IsSelected Then
+        VBA.Shell "explorer " & full_path & ",/select", vbNormalFocus
+    Else
+        VBA.Shell "explorer " & full_path & "", vbNormalFocus
+    End If
 End Sub

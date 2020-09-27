@@ -45,6 +45,8 @@ Public Const APP_SETTINGFILE = APP_NAME & ".xml"
 Public Const APP_MENU_MODULE_NAME = "AppMain"
 Public Const APP_URL = "https://github.com/KotorinChunChun/VbaDevelopSupport"
 
+Public Const DEF_大文字小文字ファイル = "大文字小文字統一.bas.vba"
+
 Rem 本アドインで「停止」したらこれを実行して再起動させる
 Public Sub Reset_Addin(): Call VbeMenuItemDel: Call VbeMenuItemAdd: End Sub
 Public Sub Close_Addin(): Call ThisWorkbook.Close(False): End Sub

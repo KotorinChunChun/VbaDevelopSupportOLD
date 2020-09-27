@@ -152,11 +152,11 @@ Function CompZip(target_paths, Optional zip_file_path) As String
     Dim targetPaths As Collection
     Set targetPaths = ToCollection(target_paths)
     Dim i As Long
-    For i = 0 To targetPaths.Count
+    For i = 1 To targetPaths.Count
         Dim s As String: s = targetPaths.Item(i)
         If s Like "*\" Then targetPaths(i) = Left(s, Len(s) - 1)
     Next
-    Dim firstTargetPath As String: firstTargetPath = targetPaths(0)
+    Dim firstTargetPath As String: firstTargetPath = targetPaths.Item(1)
     
     '省略時   : 元ファイルと同じフォルダで先頭のBaseName
     If VBA.IsMissing(zip_file_path) Then zip_file_path = ""
