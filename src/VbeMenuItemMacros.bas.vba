@@ -59,11 +59,12 @@ Private Sub VbeMenuUpdate(AddOrDel, moduleName)
         
         Dim i As Long
         For i = LBound(arr) To UBound(arr)
-            Select Case arr(i).ProcName
-                Case "Reset_Addin", "Close_Addin"
-                Case "Auto_Open", "Auto_Close", "Auto_Sub"
-                Case "GetInstructions", "VbeMenuItemAdd", "VbeMenuItemDel"
+            Select Case Split(arr(i).ProcName, "_", 2)(0)
+                Case "Reset", "Close", "Auto", "Show"
                     'Ç±ÇÍÇÁÇÕèàóùÇµÇ»Ç¢ÅB
+                Case "Group"
+                    'Debug.Print arr(i).ProcName
+                    Menu.AddSubMenuGroup Replace(arr(i).ProcName, "Group_", "")
                 Case Else
                     Menu.AddSubMenu arr(i).ProcName, arr(i).Shortcut
             End Select

@@ -45,14 +45,33 @@ Public Sub Init(tag As String, rootCaption As String, vbc As VBComponent)
     RootMenu.tag = MenuTag
 End Sub
 
+Rem VBEにサブメニューを追加する
 Public Sub AddSubMenu(ProcName As String, Shortcut As String)
     Dim SubMenu As CommandBarControl
     Set SubMenu = RootMenu.Controls.Add
     
     With SubMenu
-        .Caption = ProcName & "(&" & Shortcut & ")"
+        .Caption = ProcName & IIf(Shortcut = "", "", "(&" & Shortcut & ")")
         .BeginGroup = False
         .OnAction = MenuMacroComponentFullName & "." & ProcName
+    End With
+    
+    With New VbeMenuItemEventHandler
+        Set .MenuEvent = Application.VBE.Events.CommandBarEvents(SubMenu)
+        EventHandlers.Add .Self
+    End With
+End Sub
+
+Rem VBEにセパレータ＋サブメニューを追加する(dummy)
+Public Sub AddSubMenuGroup(ProcName As String)
+    Dim SubMenu As CommandBarControl
+    Set SubMenu = RootMenu.Controls.Add
+    
+    With SubMenu
+        .Caption = "-----" & ProcName & "-----"
+        .BeginGroup = True
+        .OnAction = "dummy"
+        .Enabled = False
     End With
     
     With New VbeMenuItemEventHandler

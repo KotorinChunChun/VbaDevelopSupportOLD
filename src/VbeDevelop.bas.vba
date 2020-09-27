@@ -125,6 +125,12 @@ On Error Resume Next
     Shell "explorer.exe " & fn & ",/select", vbNormalFocus
 End Sub
 
+Rem WEBサイトを開く（関連付けプログラムで開く）
+Public Sub OpenWebSite(URL)
+On Error Resume Next
+    CreateObject("Wscript.Shell").Run URL, 3
+End Sub
+
 Sub Test_VBP()
     Dim prjPath As kccPath: Set prjPath = kccPath.Init(Application.VBE.ActiveVBProject)
     Dim obj
