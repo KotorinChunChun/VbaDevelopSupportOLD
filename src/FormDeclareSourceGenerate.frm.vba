@@ -33,20 +33,20 @@ Private Const WS_THICKFRAME = &H40000
         Private Declare PtrSafe Function SetWindowLongPtr Lib "User32" Alias "SetWindowLongA" (ByVal hWnd As LongPtr, ByVal nIndex As Long, ByVal dwNewLong As LongPtr) As LongPtr
     #End If
 #Else
-    Private Declare Function GetWindowLong Lib "user32" Alias "GetWindowLongA" (ByVal hwnd As Long, ByVal nIndex As Long) As Long
-    Private Declare Function SetWindowLong Lib "user32" Alias "SetWindowLongA" (ByVal hwnd As Long, ByVal nIndex As Long, ByVal dwNewLong As Long) As Long
+    Private Declare Function GetWindowLong Lib "User32" Alias "GetWindowLongA" (ByVal hWnd As Long, ByVal nIndex As Long) As Long
+    Private Declare Function SetWindowLong Lib "User32" Alias "SetWindowLongA" (ByVal hWnd As Long, ByVal nIndex As Long, ByVal dwNewLong As Long) As Long
 #End If
 
 #If VBA7 Then
     Private Declare PtrSafe Function GetActiveWindow Lib "User32" () As LongPtr
 #Else
-    Private Declare Function GetActiveWindow Lib "user32" () As Long
+    Private Declare Function GetActiveWindow Lib "User32" () As Long
 #End If
 
 #If VBA7 Then
     Private Declare PtrSafe Function DrawMenuBar Lib "User32" (ByVal hWnd As LongPtr) As Long
 #Else
-    Private Declare Function DrawMenuBar Lib "user32" (ByVal hwnd As Long) As Long
+    Private Declare Function DrawMenuBar Lib "User32" (ByVal hWnd As Long) As Long
 #End If
 
 Private WithEvents TextBox1 As MSForms.TextBox
