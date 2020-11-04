@@ -17,10 +17,13 @@ Option Explicit
 
 Rem --------------------------------------------------------------------------------
 Rem ShellExecute関数
+Rem https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shellexecutea
 Rem 機能   指定ファイルを指定した動作で実行します｡
 Rem 引数
 Rem  hWnd           ShellExecuteを呼び出すウィンドウのハンドル
-Rem  lpOperation    処理制御文字列。指定しないときは"open"になります。設定値はSHELLEXECUTEINFO構造体のlpVerbメンバを参照してください。但し、"properties"は設定できません。
+Rem  lpOperation    処理制御文字列 open edit explore find print runas NULL
+Rem                 NULLの挙動:デフォルト動作(定義されていたら)→OPEN(定義されていたら)→レジストリで列挙されている最初の動作
+Rem                 設定値はSHELLEXECUTEINFO構造体のlpVerbメンバを参照してください。但し、"properties"は設定できません。
 Rem  lpFile         起動するファイルの名前
 Rem  lpParameters   起動する実行ファイルへのパラメータ（lpFileが実行可能ファイルのとき）。lpFileがドキュメントファイルのときは設定しないで下さい。
 Rem  lpDirectory    作業用ディレクトリ｡設定しないときはカレントディレクトリになります｡
@@ -109,7 +112,7 @@ End Function
 
 Rem 指定ファイルを関連付けられたアプリケーションで開く(API)
 Rem
-Rem .vbaのオープンに失敗
+Rem  ※"open"動作が設定されていないとエラーになる
 Rem   ret = 31 : 指定されたファイル拡張子に関連付けられたアプリケーションがありません。
 Public Function OpenAssociationAPI(ByVal FileName As String)
 
@@ -119,14 +122,14 @@ Public Function OpenAssociationAPI(ByVal FileName As String)
 #Else
     Dim ret As Long
 #End If
-    ret = ShellExecute(GetActiveWindow(), "Open", FileName, _
-              vbNullString, vbNullString, SW_SHOW)
+    ret = ShellExecute(GetActiveWindow(), vbNullString, FileName, vbNullString, vbNullString, SW_SHOW)
+'    ret = ShellExecute(GetActiveWindow(), "Open", FileName, vbNullString, vbNullString, SW_SHOW)
     OpenAssociationAPI = CLng(ret) 'SR_ERR
 End Function
 
 Rem 指定ファイルを関連付けられたアプリケーションで開く(WSH方式)
 Rem
-Rem .vbaのオープンで実行時エラー
+Rem  ※"open"動作が設定されていないとエラーになる
 Rem   -2147023741
 Rem   Run' メソッドは失敗しました: 'IWshShell3' オブジェクト
 Public Function OpenAssociationWSH(ByVal FileName)
@@ -137,7 +140,7 @@ Rem 指定ファイルを関連付けられたアプリケーションで開く(Excelのハイパーリンク機能
 Rem
 Rem 必ず確認メッセージが出る
 Rem
-Rem .vbaのオープンで実行時エラー
+Rem  ※"open"動作が設定されていないとエラーになる
 Rem   -2147221018
 Rem   このファイルを開くためのプログラムが登録されていません｡
 Public Function OpenAssociationExcelHyperlink(ByVal FileName)
