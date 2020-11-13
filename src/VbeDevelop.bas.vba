@@ -1488,7 +1488,7 @@ Private Sub ResetCommandBars()
 
   If MsgBox(Prompt:="やり直しできませんが、すべてのVBEのコマンドバーをリセットしますか？", Buttons:=vbYesNo + vbQuestion, Title:="確認") <> vbYes Then Exit Sub
   On Error Resume Next
-  Application.cursor = xlWait ' 砂時計型カーソルポインタ
+  Application.Cursor = xlWait ' 砂時計型カーソルポインタ
   Application.StatusBar = "すべてのVBEのコマンドバーをリセットしてます。しばらくお待ちください..."
   For Each cb In Application.VBE.CommandBars
     If cb.BuiltIn Then
@@ -1498,7 +1498,7 @@ Private Sub ResetCommandBars()
     End If
   Next
   Application.StatusBar = ""
-  Application.cursor = xlDefault ' 標準のカーソルポインタ
+  Application.Cursor = xlDefault ' 標準のカーソルポインタ
   On Error GoTo 0
 End Sub
 
@@ -1751,13 +1751,17 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     End If
     
     'プロジェクトの上書き保存
-    If MsgBox(Join(Array( _
+    Dim res As VbMsgBoxResult
+    res = MsgBox(Join(Array( _
         prjPath.FileName, _
         "エクスポートを実行します。", _
-        "実行前にプロジェクトを保存します。"), vbLf), vbOKCancel, PROC_NAME) = vbCancel Then Exit Sub
-    Call UserNameStackPush(" ")
-    prjPath.Workbook.Save
-    Call UserNameStackPush
+        "実行前にブックを保存しますか？"), vbLf), vbYesNoCancel, PROC_NAME)
+    If res = vbCancel Then Exit Sub
+    If res = vbYes Then
+        Call UserNameStackPush(" ")
+        prjPath.Workbook.Save
+        Call UserNameStackPush
+    End If
     
     'プロジェクトをリリースフォルダへ複製
     If ExportBinFolder <> "" Then

@@ -111,7 +111,9 @@ Rem
 Rem  もしかしたらこの方法では取得できない事例があるかもしれない。
 Rem
 Public Function GetWorkbook(book_str_name) As Excel.Workbook
+    On Error Resume Next
     Set GetWorkbook = Workbooks(book_str_name)
+    On Error GoTo 0
 '    Dim wb As Workbook
 '    For Each wb In Workbooks
 '        If wb.Name = book_str_name Then
@@ -230,6 +232,7 @@ End Function
 
 Rem Excelワークブック
 Public Function Workbook() As Excel.Workbook
+    If Me.FileName = "" Then Exit Function
     '[Workbooks("Book1.xlsx")]
     '[Workbooks("Book1")]
     Set Workbook = GetWorkbook(Me.FileName)
