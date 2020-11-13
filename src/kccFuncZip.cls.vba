@@ -327,9 +327,9 @@ Sub 圧縮(ByVal OldFld As String, ByVal Str As String)
     ts.Close
     
     'フォルダオブジェクト取得
-    Dim sh As Object, fol As Object
-    Set sh = CreateObject("Shell.Application")
-    Set fol = sh.Namespace(Str & "\" & Result & ".zip")
+    Dim Sh As Object, fol As Object
+    Set Sh = CreateObject("Shell.Application")
+    Set fol = Sh.Namespace(Str & "\" & Result & ".zip")
     
     'サンプル：フォルダ内のXLSファイルを圧縮
     Dim FName As String
@@ -344,13 +344,13 @@ End Sub
 'パスワード付きZIP圧縮　Lhaplus使用版
 'テストデータが0バイトの場合パスはつかない。
 Sub CompPasswordZipForLhaplus()
-    Dim WSH As Object
+    Dim wsh As Object
     Dim wExec As Object
     Dim comStr As String
-    Set WSH = CreateObject("WScript.Shell")
+    Set wsh = CreateObject("WScript.Shell")
     comStr = "C:\Program Files\Lhaplus\Lhaplus.exe /c:zip /p:123 /n:C:\Users\ユーザー名\Desktop\圧縮.zip C:\Users\ユーザー名\Desktop\圧縮"
-    Set wExec = WSH.Exec(comStr)
-    Set WSH = Nothing
+    Set wExec = wsh.Exec(comStr)
+    Set wsh = Nothing
     Set wExec = Nothing
 End Sub
  

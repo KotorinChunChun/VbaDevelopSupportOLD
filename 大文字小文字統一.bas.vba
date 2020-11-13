@@ -566,5 +566,36 @@ Dim cnt
 dim ProcName
 dim Result
 
+Type 未定Type
+    Output  As Long
+    Test    As Long
+    OLD_NAME    As Long
+    NEW_NAME    As Long
+            
+    Cursor  As Long
+            
+    wsh As Long
+    wb As Long 'ApplicationイベントでWbだがwbで上書き
+    ws As Long
+    No  As Long
+    ColumnIndex As Long
+    Key1    As Long
+    Key2    As Long
+    Adrs    As Long
+    SHN As Long
+    ColIndex    As Long
+    CelIndex    As Long
+            
+    Target  As Long
+    Sh  As Long
+    Index   As Long
+            
+    AWin    As Long
+    adr As Long
+    sw  As Long
+    dic As Long
+    rgs As Long
+End Type
+
 '変更保留メンバ（コード変更と大文字小文字変更のコミットを分離するために使用する
 
