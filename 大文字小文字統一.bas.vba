@@ -589,12 +589,19 @@ Type 未定Type
     Target  As Long
     Sh  As Long
     Index   As Long
+    AddItem As Long
             
     AWin    As Long
     adr As Long
     sw  As Long
     dic As Long
     rgs As Long
+    
+    SX   As Long
+    SY   As Long
+    ZX   As Long
+    ZY   As Long
+    Params As Long
 End Type
 
 '変更保留メンバ（コード変更と大文字小文字変更のコミットを分離するために使用する
