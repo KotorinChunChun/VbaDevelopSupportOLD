@@ -1884,7 +1884,7 @@ Private Sub CustomUI_Export(prj_path As kccPath, output_path As kccPath)
     
     Dim tempPath As String
     With kccFuncZip.DecompZip(prj_path.FullPath)
-        tempPath = .TempFolder
+        tempPath = .DecompFolder
         
         Dim xml1 As kccPath: Set xml1 = kccPath.Init(tempPath & "\" & "customUI\customUI.xml")
         Dim xml2 As kccPath: Set xml2 = kccPath.Init(tempPath & "\" & "customUI\customUI14.xml")
@@ -1904,7 +1904,7 @@ Private Sub CustomUI_ExportAndOpen(prj_path As kccPath)
     
     Dim tempPath As String
     With kccFuncZip.DecompZip(prj_path.FullPath)
-        tempPath = .TempFolder
+        tempPath = .DecompFolder
     
         Dim xml1 As kccPath: Set xml1 = kccPath.Init(tempPath & "\" & "customUI\customUI.xml")
         Dim xml2 As kccPath: Set xml2 = kccPath.Init(tempPath & "\" & "customUI\customUI14.xml")
@@ -1936,11 +1936,57 @@ Private Sub Test_CustomUIをtempに展開して開いてみるだけ()
     
     Dim tempPath As String
     With kccFuncZip.DecompZip(inFilePath, "\")
-        tempPath = .TempFolder
-        .isLeaveFolder = True
+        tempPath = .DecompFolder
         Shell "explorer " & tempPath, vbNormalFocus
         Shell "notepad " & tempPath & "\customUI\customUI14.xml", vbNormalFocus
     End With
+End Sub
+
+Private Sub Test_Zip_一時フォルダの自動削除検証()
+    Const Path = "C:\vba\test_CustomUI_Export.xlam"
+    Dim tempPath As String
+    
+    Debug.Print "-----tempへの展開-----"
+    
+    With kccFuncZip.DecompZip(Path)
+        tempPath = .DecompFolder
+    End With
+    Debug.Print "自動削除未指定(ON)", fso.FolderExists(tempPath) = False, tempPath
+    Application.Wait [Now() + "00:00:01"]
+    
+    With kccFuncZip.DecompZip(Path, , AutoDelete:=False)
+        tempPath = .DecompFolder
+    End With
+    Debug.Print "自動削除OFF", fso.FolderExists(tempPath) = True, tempPath
+    Application.Wait [Now() + "00:00:01"]
+    
+    With kccFuncZip.DecompZip(Path, , AutoDelete:=True)
+        tempPath = .DecompFolder
+    End With
+    Debug.Print "自動削除ON", fso.FolderExists(tempPath) = False, tempPath
+    Application.Wait [Now() + "00:00:01"]
+    
+    
+    Debug.Print "-----xlamと同じフォルダへの展開-----"
+    
+    With kccFuncZip.DecompZip(Path, "\")
+        tempPath = .DecompFolder
+    End With
+    Debug.Print "自動削除未指定(OFF)", fso.FolderExists(tempPath) = True, tempPath
+    Application.Wait [Now() + "00:00:01"]
+    
+    With kccFuncZip.DecompZip(Path, "\", AutoDelete:=False)
+        tempPath = .DecompFolder
+    End With
+    Debug.Print "自動削除OFF", fso.FolderExists(tempPath) = True, tempPath
+    Application.Wait [Now() + "00:00:01"]
+    
+    With kccFuncZip.DecompZip(Path, "\", AutoDelete:=True)
+        tempPath = .DecompFolder
+    End With
+    Debug.Print "自動削除ON", fso.FolderExists(tempPath) = False, tempPath
+    Application.Wait [Now() + "00:00:01"]
+    
 End Sub
 
 Private Function isVBProjectProtected(prj As VBProject) As Boolean

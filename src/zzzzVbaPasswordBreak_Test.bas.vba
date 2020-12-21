@@ -126,7 +126,7 @@ Function BrokenVbaPassword(inFilePath, outFilePath)
         Case "xlsx", "xlsm", "xlam"
             With kccFuncZip.DecompZip(inFilePath)
                 Dim tempPath
-                tempPath = .TempFolder
+                tempPath = .DecompFolder
                 vbaPath = tempPath & "\xl\vbaProject.bin"
             
                 Call vbaProjectCrack("" & vbaPath, "" & vbaPath) '& "2"

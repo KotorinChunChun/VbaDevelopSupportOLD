@@ -7,18 +7,57 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+Rem --------------------------------------------------------------------------------
+Rem
+Rem  @module        kccFuncZip
+Rem
+Rem  @description   ZIPファイル管理クラス
+Rem
+Rem  @update        2020/12/21
+Rem
+Rem  @author        @KotorinChunChun (GitHub / Twitter)
+Rem
+Rem  @license       MIT (http://www.opensource.org/licenses/mit-license.php)
+Rem
+Rem --------------------------------------------------------------------------------
+Rem  @references
+Rem    Microsoft Scripting Runtime
+Rem
+Rem --------------------------------------------------------------------------------
+Rem  @refModules
+Rem    kccFuncString
+Rem
+Rem --------------------------------------------------------------------------------
+Rem  @functions
+Rem    DecompZip        ZIPファイルを解凍する
+Rem    CompZip          ファイル・フォルダをZIP形式で圧縮する
+Rem    DeleteTempFolder 能動的に一時フォルダを削除する
+Rem
+Rem --------------------------------------------------------------------------------
+Rem  @properties
+Rem    DecompFolder 直前に解凍されたフォルダのフルパス
+Rem    isTempFolder 直前の解凍が一時フォルダか示すフラグ
+Rem                 オブジェクト削除時のフォルダ自動削除に影響する
+Rem                 もしFalseを
+Rem
+Rem --------------------------------------------------------------------------------
+Rem  @note
+Rem    ZIPファイルの操作は、Microsoft非推奨の方法を採用している
+Rem    ある日うごかなくなる可能性があることに注意すること
+Rem
+Rem --------------------------------------------------------------------------------
 Option Explicit
 
 Private Declare PtrSafe Sub Sleep Lib "Kernel32" (ByVal dwMilliseconds As Long)
 
 Private Const TEMP_FOLDER_NAME = "VbaUnZip"
 Private fso As New FileSystemObject
-Private TempFolder__ As String
-Private isLeaveFolder__ As Boolean
+Private DecompFolder__ As String
+Private AutoDeleteDecompFolder__ As Boolean
 
 Property Get sha() As Object: Set sha = CreateObject("Shell.Application"): End Property
-Property Get TempFolder() As String: TempFolder = TempFolder__: End Property
-Property Let isLeaveFolder(pIsLeaveFolder As Boolean): isLeaveFolder__ = pIsLeaveFolder: End Property
+Property Get DecompFolder() As String: DecompFolder = DecompFolder__: End Property
+Property Get AutoDeleteDecompFolder() As Boolean: AutoDeleteDecompFolder = AutoDeleteDecompFolder__: End Property
 
 Rem ZIPファイルを解凍する
 Rem
@@ -29,7 +68,7 @@ Rem                           ルート開始パス : 指定パス
 Rem                           相対パス       : 元ファイル基準の相対パス
 Rem                         ※指定パスに元ファイルの拡張子を除いた名前のフォルダを生成します。
 Rem
-Rem  @return As String      解凍されたパスの絶対パス形式
+Rem  @return As kccFuncZip  解凍されたパスのオブジェクト
 Rem
 Rem  @note
 Rem    内部処理の流れ
@@ -47,16 +86,16 @@ Rem   もし実装するとなると解凍したいファイルを個別に削除→移動するロジックに変え
 Rem
 Rem   パスワード付きZIPファイルの解凍は断念した。
 Rem
-Public Function DecompZip(ByVal inFilePath, Optional outParentPath) As kccFuncZip
+Public Function DecompZip(ByVal inFilePath, Optional outParentPath, Optional AutoDelete) As kccFuncZip
     Const PROC_NAME = "DecompZip"
     If Me Is kccFuncZip Then
         With New kccFuncZip
-            Set DecompZip = .DecompZip(inFilePath, outParentPath)
+            Set DecompZip = .DecompZip(inFilePath, outParentPath, AutoDelete)
         End With
         Exit Function
     End If
     Set DecompZip = Me
-    TempFolder__ = ""
+    DecompFolder__ = ""
     
     If Not fso.FileExists(inFilePath) Then
         Err.Raise 9999, PROC_NAME, "展開したいZIPファイルがありません：" & inFilePath
@@ -113,16 +152,18 @@ Public Function DecompZip(ByVal inFilePath, Optional outParentPath) As kccFuncZi
     'これだと安定性に欠けるため、パスワードZIP対応は断念
 '    Application.SendKeys zipPw & "{Enter}"
     
-'    TempFolder__ = CreateObject("Shell.Application").Namespace("" & tempFolderPath).CopyHere(objZip, &H4 Or &H10)
-    TempFolder__ = CopyHere(tempFolderPath, objZip)
+'    DecompFolder__ = CreateObject("Shell.Application").Namespace("" & tempFolderPath).CopyHere(objZip, &H4 Or &H10)
+    DecompFolder__ = CopyHere(tempFolderPath, objZip)
 '    sha.Namespace(unzipfld_).CopyHere( sha.Namespace(zippth_).Items, &H4 Or &H10)
     
     'キャッシュのZIPファイル削除
     fso.DeleteFile zip_file_path
     
     If outFolderPath = "" Then
-        TempFolder__ = tempFolderPath
+        AutoDeleteDecompFolder__ = IIf(IsMissing(AutoDelete), True, AutoDelete)
+        DecompFolder__ = tempFolderPath
     Else
+        AutoDeleteDecompFolder__ = IIf(IsMissing(AutoDelete), False, AutoDelete)
         If fso.GetDriveName(tempFolderPath) <> fso.GetDriveName(outFolderPath) Then
             'MoveFolderはドライブ間の移動ができないためCopyFolder
             'コピー先に\を付けるとフォルダ複製。\が無いと中身複製になるらしい。
@@ -133,7 +174,7 @@ Public Function DecompZip(ByVal inFilePath, Optional outParentPath) As kccFuncZi
             '一時フォルダから出力フォルダへ移動
             fso.MoveFolder tempFolderPath, outFolderPath
         End If
-        TempFolder__ = outFolderPath
+        DecompFolder__ = outFolderPath
     End If
 End Function
 
@@ -142,7 +183,7 @@ Private Sub Test_DecompZip()
     Dim outFolder: outFolder = "C:\vba\zip\temp"
 '    Debug.Print DecompZip(inFile)
     With DecompZip(inFile, outFolder)
-        Debug.Print .TempFolder
+        Debug.Print .DecompFolder
     End With
 '    Debug.Print DecompZip(inFile, outFolder, "a")
 End Sub
@@ -343,8 +384,8 @@ End Function
 
 Rem インスタンス終了時に展開先フォルダの削除
 Private Sub Class_Terminate()
-    If Not isLeaveFolder__ Then
-        Call DeleteFolder(TempFolder)
+    If AutoDeleteDecompFolder__ Then
+        Call DeleteFolder(DecompFolder)
     End If
 End Sub
 
