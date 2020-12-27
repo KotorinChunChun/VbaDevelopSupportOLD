@@ -1745,6 +1745,11 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     Dim NowDateTime As Date: NowDateTime = Now()
     Dim prjPath As kccPath: Set prjPath = kccPath.Init(ExportObject)
     
+    If prjPath.Workbook.ReadOnly Then
+        MsgBox "[" & prjPath.FileName & "] は読み取り専用です。処理を中止します。", vbOKOnly + vbCritical, PROC_NAME
+        Exit Sub
+    End If
+    
     'プロジェクトの上書き保存
     If MsgBox(Join(Array( _
         prjPath.FileName, _
@@ -2280,4 +2285,23 @@ Public Sub OpenTextFileBy大文字小文字()
         Set targetPath = targetPath.MoveParentFolder("..\")
     End If
     targetPath.OpenAssociation
+End Sub
+
+'.vbaをつけていなかったファイルに付け足す
+Sub Test_AddVBA()
+    Const TARGET_PATH = "C:\Users\hogehoge\src\20190416\"
+    Dim p As kccPath: Set p = kccPath.Init(TARGET_PATH)
+    Dim fl As File
+    For Each fl In p.Folder.Files
+        Select Case VBA.Right(fl.Name, 3)
+            Case "bas", "cls", "frm"
+                fl.Name = fl.Name & ".vba"
+            Case "frx"
+                fl.Name = Replace(fl.Name, ".frx", ".frm.frx")
+            Case "vba"
+                'nochange
+            Case Else
+                Stop
+        End Select
+    Next
 End Sub
