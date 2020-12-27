@@ -112,11 +112,13 @@ Rem     v = TextParse_VbProcedure("Property Get RowKeys(p As Variant, q As Varia
 Rem     DpP "", v
 Rem End Sub
 
-Public Property Get fso() As FileSystemObject
-    Static xxFso As Object  'FileSystemObject
-    If xxFso Is Nothing Then Set xxFso = CreateObject("Scripting.FileSystemObject")
-    Set fso = xxFso
-End Property
+Private fso As New FileSystemObject
+
+Rem 本モジュール用終了時初期化処理
+Public Sub Terminate()
+    'CustomUI Import/Export用のZIP展開一時フォルダの初期化
+    Call kccFuncZip.DeleteTempFolder
+End Sub
 
 Rem アクティブなプロジェクトの保存フォルダを開く
 Public Sub OpenProjectFolder()
@@ -1488,7 +1490,7 @@ Private Sub ResetCommandBars()
 
   If MsgBox(Prompt:="やり直しできませんが、すべてのVBEのコマンドバーをリセットしますか？", Buttons:=vbYesNo + vbQuestion, Title:="確認") <> vbYes Then Exit Sub
   On Error Resume Next
-  Application.cursor = xlWait ' 砂時計型カーソルポインタ
+  Application.Cursor = xlWait ' 砂時計型カーソルポインタ
   Application.StatusBar = "すべてのVBEのコマンドバーをリセットしてます。しばらくお待ちください..."
   For Each cb In Application.VBE.CommandBars
     If cb.BuiltIn Then
@@ -1498,7 +1500,7 @@ Private Sub ResetCommandBars()
     End If
   Next
   Application.StatusBar = ""
-  Application.cursor = xlDefault ' 標準のカーソルポインタ
+  Application.Cursor = xlDefault ' 標準のカーソルポインタ
   On Error GoTo 0
 End Sub
 
@@ -1726,6 +1728,28 @@ Public Sub VBComponents_BackupAndExport()
             ".\..\backup\src\[YYYYMMDD]_[HHMMSS]\[FILENAME]")
 End Sub
 
+Public Sub VBComponents_BackupAndExportForAccess(): Call VBComponents_BackupAndExportForApps("Access.Application"): End Sub
+Public Sub VBComponents_BackupAndExportForPowerPoint(): Call VBComponents_BackupAndExportForApps("PowerPoint.Application"): End Sub
+Public Sub VBComponents_BackupAndExportForWord(): Call VBComponents_BackupAndExportForApps("Word.Application"): End Sub
+
+Private Sub VBComponents_BackupAndExportForApps(AppClass As String)
+    Dim objApplication As Object
+    On Error Resume Next
+    Set objApplication = GetObject(, AppClass)
+    On Error GoTo 0
+    If objApplication Is Nothing Then
+        MsgBox "実行中の" & AppClass & "が見つかりませんでした。", vbCritical + vbOKOnly, "BackupAndExport"
+        Exit Sub
+    End If
+    
+    Call VBComponents_BackupAndExport_Sub( _
+            objApplication.VBE.ActiveVBProject, _
+            ".\.\bin", _
+            ".\.\src", _
+            ".\.\backup\bin\[YYYYMMDD]_[HHMMSS]_[FILENAME]", _
+            ".\.\backup\src\[YYYYMMDD]_[HHMMSS]\[FILENAME]")
+End Sub
+
 Rem  プロジェクトのソースコードをエクスポートしたりバックアップする処理
 Rem
 Rem  @param ExportObject    出力プロジェクト（Workbook,VBProject)
@@ -1745,19 +1769,25 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     Dim NowDateTime As Date: NowDateTime = Now()
     Dim prjPath As kccPath: Set prjPath = kccPath.Init(ExportObject)
     
-    If prjPath.Workbook.ReadOnly Then
-        MsgBox "[" & prjPath.FileName & "] は読み取り専用です。処理を中止します。", vbOKOnly + vbCritical, PROC_NAME
-        Exit Sub
-    End If
+    If Not prjPath.Workbook Is Nothing Then
+        If prjPath.Workbook.ReadOnly Then
+            MsgBox "[" & prjPath.FileName & "] は読み取り専用です。処理を中止します。", vbOKOnly + vbCritical, PROC_NAME
+            Exit Sub
+        End If
     
     'プロジェクトの上書き保存
-    If MsgBox(Join(Array( _
-        prjPath.FileName, _
-        "エクスポートを実行します。", _
-        "実行前にプロジェクトを保存します。"), vbLf), vbOKCancel, PROC_NAME) = vbCancel Then Exit Sub
-    Call UserNameStackPush(" ")
-    prjPath.Workbook.Save
-    Call UserNameStackPush
+    Dim res As VbMsgBoxResult
+        res = MsgBox(Join(Array( _
+            prjPath.FileName, _
+            "エクスポートを実行します。", _
+            "実行前にブックを保存しますか？"), vbLf), vbYesNoCancel, PROC_NAME)
+        If res = vbCancel Then Exit Sub
+        If res = vbYes Then
+            Call UserNameStackPush(" ")
+            prjPath.Workbook.Save
+            Call UserNameStackPush
+        End If
+    End If
     
     'プロジェクトをリリースフォルダへ複製
     If ExportBinFolder <> "" Then
@@ -1785,22 +1815,28 @@ Public Sub VBComponents_BackupAndExport_Sub( _
         
         'export
         srcPath.CreateFolder
-        Call VBComponents_Export(prjPath.VBProject, srcPath)
+        Call VBComponents_Export(ExportObject, srcPath)
         Call CustomUI_Export(prjPath, srcPath)
         
         'merge And restore
         Dim f1 As File, f2 As File
         For Each f1 In srcPath.Folder.Files
             If f1.Name Like "*.frx" Then
+                Dim isRestore As Boolean: isRestore = False
                 For Each f2 In backPath.Folder.Files
                     If f1.Name = f2.Name Then
                         If f1.Size = f2.Size Then
                             '一致
                             Debug.Print "restore : " & f1.Name
                             f2.Copy f1.Path, True
+                            isRestore = True
                         End If
                     End If
                 Next
+#If DEBUG_MODE Then
+                'frxが何故か全部更新されてしまうときの確認用
+                If Not isRestore Then Stop
+#End If
             End If
         Next
         
@@ -1847,13 +1883,15 @@ Private Sub CustomUI_Export(prj_path As kccPath, output_path As kccPath)
 '    inFilePath = Path
     
     Dim tempPath As String
-    tempPath = kccFuncZip.DecompZip(prj_path.FullPath)
-    
-    Dim xml1 As kccPath: Set xml1 = kccPath.Init(tempPath & "\" & "customUI\customUI.xml")
-    Dim xml2 As kccPath: Set xml2 = kccPath.Init(tempPath & "\" & "customUI\customUI14.xml")
-    
-    xml1.CopyFiles output_path
-    xml2.CopyFiles output_path
+    With kccFuncZip.DecompZip(prj_path.FullPath)
+        tempPath = .DecompFolder
+        
+        Dim xml1 As kccPath: Set xml1 = kccPath.Init(tempPath & "\" & "customUI\customUI.xml")
+        Dim xml2 As kccPath: Set xml2 = kccPath.Init(tempPath & "\" & "customUI\customUI14.xml")
+        
+        xml1.CopyFiles output_path
+        xml2.CopyFiles output_path
+    End With
     
 End Sub
 
@@ -1865,18 +1903,20 @@ Private Sub CustomUI_ExportAndOpen(prj_path As kccPath)
     Const PROC_NAME = "CustomUI_ExportAndOpen"
     
     Dim tempPath As String
-    tempPath = kccFuncZip.DecompZip(prj_path.FullPath)
+    With kccFuncZip.DecompZip(prj_path.FullPath)
+        tempPath = .DecompFolder
     
-    Dim xml1 As kccPath: Set xml1 = kccPath.Init(tempPath & "\" & "customUI\customUI.xml")
-    Dim xml2 As kccPath: Set xml2 = kccPath.Init(tempPath & "\" & "customUI\customUI14.xml")
-    
-    If xml1.Exists Or xml2.Exists Then
-        Shell "explorer " & tempPath, vbNormalFocus
-        If xml1.Exists Then kccFuncWindowsProcess.OpenAssociationAPI xml1.FullPath
-        If xml2.Exists Then kccFuncWindowsProcess.OpenAssociationAPI xml2.FullPath
-    Else
-        MsgBox "CustomUIは含まれていないようです。", vbOKOnly, PROC_NAME
-    End If
+        Dim xml1 As kccPath: Set xml1 = kccPath.Init(tempPath & "\" & "customUI\customUI.xml")
+        Dim xml2 As kccPath: Set xml2 = kccPath.Init(tempPath & "\" & "customUI\customUI14.xml")
+        
+        If xml1.Exists Or xml2.Exists Then
+            Shell "explorer " & tempPath, vbNormalFocus
+            If xml1.Exists Then kccFuncWindowsProcess.OpenAssociationAPI xml1.FullPath
+            If xml2.Exists Then kccFuncWindowsProcess.OpenAssociationAPI xml2.FullPath
+        Else
+            MsgBox "CustomUIは含まれていないようです。", vbOKOnly, PROC_NAME
+        End If
+    End With
     
 End Sub
 
@@ -1889,24 +1929,80 @@ Public Sub CurrentProject_CustomUI_Export()
 End Sub
 
 Private Sub Test_CustomUIをtempに展開して開いてみるだけ()
-    Const Path = "D:\vba\test_CustomUI_Export.xlam"
+    Const Path = "C:\vba\test_CustomUI_Export.xlam"
     
     Dim inFilePath As String
     inFilePath = Path
     
     Dim tempPath As String
-    tempPath = kccFuncZip.DecompZip(inFilePath, "\")
-    
-    Shell "explorer " & tempPath, vbNormalFocus
-    
-    Shell "notepad " & tempPath & "\customUI\customUI14.xml", vbNormalFocus
+    With kccFuncZip.DecompZip(inFilePath, "\")
+        tempPath = .DecompFolder
+        Shell "explorer " & tempPath, vbNormalFocus
+        Shell "notepad " & tempPath & "\customUI\customUI14.xml", vbNormalFocus
+    End With
 End Sub
+
+Private Sub Test_Zip_一時フォルダの自動削除検証()
+    Const Path = "C:\vba\test_CustomUI_Export.xlam"
+    Dim tempPath As String
+    
+    Debug.Print "-----tempへの展開-----"
+    
+    With kccFuncZip.DecompZip(Path)
+        tempPath = .DecompFolder
+    End With
+    Debug.Print "自動削除未指定(ON)", fso.FolderExists(tempPath) = False, tempPath
+    Application.Wait [Now() + "00:00:01"]
+    
+    With kccFuncZip.DecompZip(Path, , AutoDelete:=False)
+        tempPath = .DecompFolder
+    End With
+    Debug.Print "自動削除OFF", fso.FolderExists(tempPath) = True, tempPath
+    Application.Wait [Now() + "00:00:01"]
+    
+    With kccFuncZip.DecompZip(Path, , AutoDelete:=True)
+        tempPath = .DecompFolder
+    End With
+    Debug.Print "自動削除ON", fso.FolderExists(tempPath) = False, tempPath
+    Application.Wait [Now() + "00:00:01"]
+    
+    
+    Debug.Print "-----xlamと同じフォルダへの展開-----"
+    
+    With kccFuncZip.DecompZip(Path, "\")
+        tempPath = .DecompFolder
+    End With
+    Debug.Print "自動削除未指定(OFF)", fso.FolderExists(tempPath) = True, tempPath
+    Application.Wait [Now() + "00:00:01"]
+    
+    With kccFuncZip.DecompZip(Path, "\", AutoDelete:=False)
+        tempPath = .DecompFolder
+    End With
+    Debug.Print "自動削除OFF", fso.FolderExists(tempPath) = True, tempPath
+    Application.Wait [Now() + "00:00:01"]
+    
+    With kccFuncZip.DecompZip(Path, "\", AutoDelete:=True)
+        tempPath = .DecompFolder
+    End With
+    Debug.Print "自動削除ON", fso.FolderExists(tempPath) = False, tempPath
+    Application.Wait [Now() + "00:00:01"]
+    
+End Sub
+
+Private Function isVBProjectProtected(prj As VBProject) As Boolean
+    On Error Resume Next
+    Dim dummy
+    Set dummy = prj.VBComponents
+    On Error GoTo 0
+    isVBProjectProtected = IsEmpty(dummy)
+End Function
 
 Rem プロジェクトのソースコードを指定フォルダにエクスポート
 Rem
 Rem
 Private Sub VBComponents_Export(prj As VBProject, output_path As kccPath)
     If prj Is Nothing Then MsgBox "VBAプロジェクト無し", vbOKOnly, "Export Error": Exit Sub
+    If isVBProjectProtected(prj) Then MsgBox "VBAプロジェクトのロックを解除してください", vbOKOnly, "Export Error": Exit Sub
     output_path.CreateFolder
     
     Dim i As Long

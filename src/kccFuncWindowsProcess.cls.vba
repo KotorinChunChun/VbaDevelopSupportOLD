@@ -104,10 +104,10 @@ End Function
 Rem Shell32
 Rem Win10関連付け失敗せず
 Public Function OpenAssociationShell32(ByVal FileName As String)
-    Dim sh As Object 'Shell32.Shell '参照設定「Microsoft Shell Controls And Automation」
-    Set sh = CreateObject("Shell.Application")
-    sh.ShellExecute FileName
-    Set sh = Nothing
+    Dim Sh As Object 'Shell32.Shell '参照設定「Microsoft Shell Controls And Automation」
+    Set Sh = CreateObject("Shell.Application")
+    Sh.ShellExecute FileName
+    Set Sh = Nothing
 End Function
 
 Rem 指定ファイルを関連付けられたアプリケーションで開く(API)

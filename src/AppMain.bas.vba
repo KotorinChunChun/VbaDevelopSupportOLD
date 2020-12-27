@@ -33,6 +33,7 @@ Rem ----------------------------------------------------------------------------
 Rem  @note
 Rem Public Function ParamsToString(Optional Delimiter = " ,") As String のコンマ適切にパースできない不具合がある
 Rem なぜか閉じたはずのブックがゾンビ化する
+Rem OutlookのVBEへのアクセス手段は存在せずエクスポートさせることができない。
 Rem
 Rem
 Rem --------------------------------------------------------------------------------
@@ -65,6 +66,10 @@ Public Sub ソースをSRCからインポートする():             Call VBComponents_Import
 
 Public Sub CustomUIをエクスポートする():                Call CurrentProject_CustomUI_Export: End Sub
 Public Sub CustomUIをインポートする():                  Call CurrentProject_CustomUI_Import: End Sub
+
+Public Sub Accessのソースをバックアップとエクスポートする():    Call VBComponents_BackupAndExportForAccess: End Sub
+Public Sub PowerPointのソースをバックアップとエクスポートする():    Call VBComponents_BackupAndExportForPowerPoint: End Sub
+Public Sub Wordのソースをバックアップとエクスポートする():    Call VBComponents_BackupAndExportForWord: End Sub
 
 Public Sub Group_コーディング支援(): End Sub
 Public Sub Declareの生成():                             Call OpenFormDeclareSourceGenerate: End Sub

@@ -91,6 +91,8 @@ Rem  未保存のブックではVBProject.FileNameがエラーになる。
 Rem  VBProjectから直接名前を取得する手段は他に存在しない。
 Rem  未保存のブックでWorkbook.FullPathなどは[Book1]と言った単純な名前しか返さない。
 Rem
+Rem  この関数を使うには[VBA プロジェクト オブジェクトモデルへのアクセス]の許可が必要
+Rem
 Private Property Get VBEProjectFileName(prj As VBProject) As String
 On Error Resume Next
     VBEProjectFileName = prj.FileName
@@ -111,7 +113,9 @@ Rem
 Rem  もしかしたらこの方法では取得できない事例があるかもしれない。
 Rem
 Public Function GetWorkbook(book_str_name) As Excel.Workbook
+    On Error Resume Next
     Set GetWorkbook = Workbooks(book_str_name)
+    On Error GoTo 0
 '    Dim wb As Workbook
 '    For Each wb In Workbooks
 '        If wb.Name = book_str_name Then
@@ -222,14 +226,26 @@ On Error Resume Next
 '            End If
 '        End If
 '    Next
-    Dim wb As Workbook
-    Set wb = Me.Workbook
-    If wb Is Nothing Then Stop
-    Set VBProject = wb.VBProject
+    Select Case Me.Extension
+        Case ".xls", ".xlsm", ".xla", ".xlam", ".xlsb"
+            Dim wb As Workbook
+            Set wb = Me.Workbook
+            If wb Is Nothing Then Stop
+            Set VBProject = wb.VBProject
+        Case ".mdb", ".accdb"
+            Stop
+        Case ".doc", "docm", ".dotm"
+            Stop
+        Case ".ppt", ".pptm", ".ppa", ".ppam"
+            Stop
+        Case Else
+            Stop
+    End Select
 End Function
 
 Rem Excelワークブック
 Public Function Workbook() As Excel.Workbook
+    If Me.FileName = "" Then Exit Function
     '[Workbooks("Book1.xlsx")]
     '[Workbooks("Book1")]
     Set Workbook = GetWorkbook(Me.FileName)

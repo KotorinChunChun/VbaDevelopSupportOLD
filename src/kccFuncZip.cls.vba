@@ -7,25 +7,73 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+Rem --------------------------------------------------------------------------------
+Rem
+Rem  @module        kccFuncZip
+Rem
+Rem  @description   ZIPファイル管理クラス
+Rem
+Rem  @update        2020/12/21
+Rem
+Rem  @author        @KotorinChunChun (GitHub / Twitter)
+Rem
+Rem  @license       MIT (http://www.opensource.org/licenses/mit-license.php)
+Rem
+Rem --------------------------------------------------------------------------------
+Rem  @references
+Rem    Microsoft Scripting Runtime
+Rem
+Rem --------------------------------------------------------------------------------
+Rem  @refModules
+Rem    kccFuncString
+Rem
+Rem --------------------------------------------------------------------------------
+Rem  @functions
+Rem    DecompZip        ZIPファイルを解凍する
+Rem    CompZip          ファイル・フォルダをZIP形式で圧縮する
+Rem    DeleteTempFolder 能動的に一時フォルダを削除する
+Rem
+Rem --------------------------------------------------------------------------------
+Rem  @properties
+Rem    DecompFolder 直前に解凍されたフォルダのフルパス
+Rem    isTempFolder 直前の解凍が一時フォルダか示すフラグ
+Rem                 オブジェクト削除時のフォルダ自動削除に影響する
+Rem                 もしFalseを
+Rem
+Rem --------------------------------------------------------------------------------
+Rem  @note
+Rem    ZIPファイルの操作は、Microsoft非推奨の方法を採用している
+Rem    ある日うごかなくなる可能性があることに注意すること
+Rem
+Rem --------------------------------------------------------------------------------
 Option Explicit
 
 Private Declare PtrSafe Sub Sleep Lib "Kernel32" (ByVal dwMilliseconds As Long)
+
+Private Const TEMP_FOLDER_NAME = "VbaUnZip"
+Private fso As New FileSystemObject
+Private DecompFolder__ As String
+Private AutoDeleteDecompFolder__ As Boolean
+
+Property Get sha() As Object: Set sha = CreateObject("Shell.Application"): End Property
+Property Get DecompFolder() As String: DecompFolder = DecompFolder__: End Property
+Property Get AutoDeleteDecompFolder() As Boolean: AutoDeleteDecompFolder = AutoDeleteDecompFolder__: End Property
 
 Rem ZIPファイルを解凍する
 Rem
 Rem  @param inFilePath      解凍したいファイルのフルパス
 Rem  @param outParentPath   解凍先親フォルダ
-Rem                           省略時         : 一時フォルダ
+Rem                           省略時         : 一時フォルダ(インスタンスが破棄されるまで残ります)
 Rem                           ルート開始パス : 指定パス
 Rem                           相対パス       : 元ファイル基準の相対パス
 Rem                         ※指定パスに元ファイルの拡張子を除いた名前のフォルダを生成します。
 Rem
-Rem  @return As String      解凍されたパスの絶対パス形式
+Rem  @return As kccFuncZip  解凍されたパスのオブジェクト
 Rem
 Rem  @note
 Rem    内部処理の流れ
-Rem    1. %temp%\VbaUnZip\FILENAME.zip へ元のファイルをコピー
-Rem    2. %temp%\VbaUnZip\FILENAME\ へ解凍
+Rem    1. %temp%\[TEMP_FOLDER_NAME]\FILENAME.zip へ元のファイルをコピー
+Rem    2. %temp%\[TEMP_FOLDER_NAME]\FILENAME\ へ解凍
 Rem    3. 1のファイルを削除
 Rem    4. outFolderPathへ移動 (非省略時)
 Rem       ※ドライブが違うとMove出来ないためCopyからのDeleteとなる
@@ -38,8 +86,17 @@ Rem   もし実装するとなると解凍したいファイルを個別に削除→移動するロジックに変え
 Rem
 Rem   パスワード付きZIPファイルの解凍は断念した。
 Rem
-Function DecompZip(ByVal inFilePath, Optional outParentPath) As String
+Public Function DecompZip(ByVal inFilePath, Optional outParentPath, Optional AutoDelete) As kccFuncZip
     Const PROC_NAME = "DecompZip"
+    If Me Is kccFuncZip Then
+        With New kccFuncZip
+            Set DecompZip = .DecompZip(inFilePath, outParentPath, AutoDelete)
+        End With
+        Exit Function
+    End If
+    Set DecompZip = Me
+    DecompFolder__ = ""
+    
     If Not fso.FileExists(inFilePath) Then
         Err.Raise 9999, PROC_NAME, "展開したいZIPファイルがありません：" & inFilePath
         Exit Function
@@ -47,7 +104,7 @@ Function DecompZip(ByVal inFilePath, Optional outParentPath) As String
     
     '一時フォルダの準備
     Dim tempFolderPath As String
-    tempFolderPath = GetTempFolder("VbaUnZip") & fso.GetBaseName(inFilePath)
+    tempFolderPath = GetTempFolder(TEMP_FOLDER_NAME) & "\" & fso.GetBaseName(inFilePath)
     If fso.FolderExists(tempFolderPath) Then
         If Not DeleteFolder(tempFolderPath) Then
             Err.Raise 9999, PROC_NAME, "解凍一時フォルダの初期化に失敗：" & tempFolderPath
@@ -95,16 +152,18 @@ Function DecompZip(ByVal inFilePath, Optional outParentPath) As String
     'これだと安定性に欠けるため、パスワードZIP対応は断念
 '    Application.SendKeys zipPw & "{Enter}"
     
-'    DecompZip = CreateObject("Shell.Application").Namespace("" & tempFolderPath).CopyHere(objZip, &H4 Or &H10)
-    DecompZip = CopyHere(tempFolderPath, objZip)
+'    DecompFolder__ = CreateObject("Shell.Application").Namespace("" & tempFolderPath).CopyHere(objZip, &H4 Or &H10)
+    DecompFolder__ = CopyHere(tempFolderPath, objZip)
 '    sha.Namespace(unzipfld_).CopyHere( sha.Namespace(zippth_).Items, &H4 Or &H10)
     
     'キャッシュのZIPファイル削除
     fso.DeleteFile zip_file_path
     
     If outFolderPath = "" Then
-        DecompZip = tempFolderPath
+        AutoDeleteDecompFolder__ = IIf(IsMissing(AutoDelete), True, AutoDelete)
+        DecompFolder__ = tempFolderPath
     Else
+        AutoDeleteDecompFolder__ = IIf(IsMissing(AutoDelete), False, AutoDelete)
         If fso.GetDriveName(tempFolderPath) <> fso.GetDriveName(outFolderPath) Then
             'MoveFolderはドライブ間の移動ができないためCopyFolder
             'コピー先に\を付けるとフォルダ複製。\が無いと中身複製になるらしい。
@@ -112,22 +171,25 @@ Function DecompZip(ByVal inFilePath, Optional outParentPath) As String
             fso.CopyFolder tempFolderPath, outFolderPath
             fso.DeleteFolder tempFolderPath
         Else
+            '一時フォルダから出力フォルダへ移動
             fso.MoveFolder tempFolderPath, outFolderPath
         End If
-        DecompZip = outFolderPath
+        DecompFolder__ = outFolderPath
     End If
 End Function
 
-Sub Test_DecompZip()
-    Dim inFile: inFile = "D:\vba\zip\test.xlsm"
-    Dim outFolder: outFolder = "D:\vba\zip\temp"
+Private Sub Test_DecompZip()
+    Dim inFile: inFile = "C:\vba\zip\test.xlsm"
+    Dim outFolder: outFolder = "C:\vba\zip\temp"
 '    Debug.Print DecompZip(inFile)
-    Debug.Print DecompZip(inFile, outFolder)
+    With DecompZip(inFile, outFolder)
+        Debug.Print .DecompFolder
+    End With
 '    Debug.Print DecompZip(inFile, outFolder, "a")
 End Sub
  
-Sub Test_CompZip()
-    Dim inFolder: inFolder = "D:\vba\zip\temp"
+Private Sub Test_CompZip()
+    Dim inFolder: inFolder = "C:\vba\zip\temp"
 '    Dim outFile: outFile = "D:\vba\zip\hoge.xlsm"
     Debug.Print CompZip(inFolder)
 End Sub
@@ -146,7 +208,7 @@ Rem
 Rem  @note
 Rem
 Rem
-Function CompZip(target_paths, Optional zip_file_path) As String
+Public Function CompZip(target_paths, Optional zip_file_path) As String
     Const PROC_NAME = "CompZip"
     
     Dim targetPaths As Collection
@@ -219,7 +281,7 @@ End Function
 
 '非同期を解消済みのCopyHereメソッド
 '※ObjectやString厳禁 shaにはVariantで渡すこと
-Function CopyHere(ToObjectOrPath As Variant, FromObjectOrPath As Variant) As Boolean
+Private Function CopyHere(ToObjectOrPath As Variant, FromObjectOrPath As Variant) As Boolean
     Dim toObj
     If IsObject(ToObjectOrPath) Then
         Set toObj = ToObjectOrPath
@@ -242,7 +304,7 @@ Function CopyHere(ToObjectOrPath As Variant, FromObjectOrPath As Variant) As Boo
 End Function
 
 Rem 指定ファイルが書き込み可能となるまで待機する
-Function WaitFileClosed(fn As String, Optional max_wait_second)
+Private Function WaitFileClosed(fn As String, Optional max_wait_second)
     Do
         'ココに遅延が必須。そうしないとCopyHereが始まる前に検証用のOpenが動いてしまう
         Application.Wait [Now() + "00:00:00.2"]
@@ -259,7 +321,7 @@ Function WaitFileClosed(fn As String, Optional max_wait_second)
     Application.Wait [Now() + "00:00:00.2"]
 End Function
 
-Public Function ToCollection(var) As Collection
+Private Function ToCollection(var) As Collection
     Dim Item
     If TypeName(var) = "Collection" Then
         Set ToCollection = var
@@ -280,236 +342,269 @@ Public Function ToCollection(var) As Collection
     End If
 End Function
 
+Rem 一時フォルダを作成しそのフルパスを返す
+Rem C:\Users\[USERNAME]\AppData\Roaming
+Rem C:\Users\[USERNAME]\AppData\Roaming\aaa
+Private Function GetTempFolder(subFolder)
+    GetTempFolder = VBA.CreateObject("Wscript.Shell").SpecialFolders("AppData")
+    GetTempFolder = GetTempFolder & IIf(subFolder = "", "", "\" & subFolder)
+    On Error Resume Next
+    fso.CreateFolder GetTempFolder
+End Function
+
+Rem フォルダを削除する
+Rem @param delPath 削除フォルダ
+Rem @return
+Rem   削除実施成功 True
+Rem   削除実施失敗 False
+Rem   削除実施不要 False
+Private Function DeleteFolder(delPath) As Boolean
+    DeleteFolder = False
+    
+    If Not fso.FolderExists(delPath) Then
+        Debug.Print "DeleteFolder(): 対象パス(" & delPath & ")が存在しない"
+        Exit Function
+    End If
+    
+    On Error Resume Next
+    fso.DeleteFolder delPath
+    If Err.Number <> 0 Then Debug.Print "DeleteFolder(): " & Err.Description, delPath
+    On Error GoTo 0
+    
+    DeleteFolder = Not fso.FolderExists(delPath)
+End Function
+
+Rem 削除されていない一時フォルダを削除
+Public Function DeleteTempFolder() As Boolean
+    On Error Resume Next
+    fso.DeleteFolder GetTempFolder(TEMP_FOLDER_NAME)
+    On Error GoTo 0
+    DeleteTempFolder = Not fso.FolderExists(TEMP_FOLDER_NAME)
+End Function
+
+Rem インスタンス終了時に展開先フォルダの削除
+Private Sub Class_Terminate()
+    If AutoDeleteDecompFolder__ Then
+        Call DeleteFolder(DecompFolder)
+    End If
+End Sub
+
+'------------------------------------------------------------------------------------------
+'------以下、検討したコード-----
+'------権利は各URL先にあります----
 '------------------------------------------------------------------------------------------
 
 'IShellDispatch Folder3のParentFolderを遡ってフルパスを取得する
 'この案はダメだった。物理的にありえないパスを示してしまった。
 '結果
-' デスクトップ\USERNAME\AppData\Roaming\VbaUnZip\BOX_sample(group_mng1)_v1.0
+' デスクトップ\USERNAME\AppData\Roaming\[TEMP_FOLDER_NAME]\BOX_sample(group_mng1)_v1.0
 '正解
-'    C:\Users\USERNAME\AppData\Roaming\VbaUnZip
-Function GetFullPathByFolder3(obj) As String
-    Dim ret As String
-    ret = ""
-    Dim nextObj
-    Set nextObj = obj
-    Do
-        ret = nextObj & IIf(ret = "", "", "\") & ret
-        Debug.Print ret
-'        Stop
-        Set nextObj = nextObj.ParentFolder
-        If nextObj Is Nothing Then Exit Do
-    Loop
-    GetFullPathByFolder3 = ret
-End Function
-
-Function GetTempFolder(subFolder)
-    GetTempFolder = VBA.CreateObject("Wscript.Shell").SpecialFolders("AppData") & "\"
-    GetTempFolder = GetTempFolder & IIf(subFolder = "", "", subFolder & "\")
-    On Error Resume Next
-    fso.CreateFolder GetTempFolder
-End Function
+'    C:\Users\USERNAME\AppData\Roaming\[TEMP_FOLDER_NAME]
+'Function GetFullPathByFolder3(obj) As String
+'    Dim ret As String
+'    ret = ""
+'    Dim nextObj
+'    Set nextObj = obj
+'    Do
+'        ret = nextObj & IIf(ret = "", "", "\") & ret
+'        Debug.Print ret
+''        Stop
+'        Set nextObj = nextObj.ParentFolder
+'        If nextObj Is Nothing Then Exit Do
+'    Loop
+'    GetFullPathByFolder3 = ret
+'End Function
  
 'http://excelfactory.net/excelboard/excelvba/excel.cgi?mode=all&namber=188859&rev=0
-Sub 圧縮(ByVal OldFld As String, ByVal Str As String)
-    
-    Dim Result As Variant
-    Result = Split(Str, "\") 'strを\で分割する
-    Result = Result(UBound(Result)) 'フォルダ名を取り出す
-    
-    '空のZIPファイル作成
-    Dim ts As TextStream
-    Set ts = fso.CreateTextFile(Str & "\" & Result & ".zip")
-    
-    Dim msg As String
-    msg = "PK" & Chr(5) & Chr(6) & String(18, 0)
-    ts.Write (msg)
-    ts.Close
-    
-    'フォルダオブジェクト取得
-    Dim sh As Object, fol As Object
-    Set sh = CreateObject("Shell.Application")
-    Set fol = sh.Namespace(Str & "\" & Result & ".zip")
-    
-    'サンプル：フォルダ内のXLSファイルを圧縮
-    Dim FName As String
-    FName = Dir(OldFld & "*")
-    Do While (FName <> "")
-        fol.MoveHere OldFld & FName 'ZIPへファイル追加
-        FName = Dir()
-    Loop
-
-End Sub
+'Sub excelfactory圧縮(ByVal OldFld As String, ByVal Str As String)
+'
+'    Dim Result As Variant
+'    Result = Split(Str, "\") 'strを\で分割する
+'    Result = Result(UBound(Result)) 'フォルダ名を取り出す
+'
+'    '空のZIPファイル作成
+'    Dim ts As TextStream
+'    Set ts = fso.CreateTextFile(Str & "\" & Result & ".zip")
+'
+'    Dim msg As String
+'    msg = "PK" & Chr(5) & Chr(6) & String(18, 0)
+'    ts.Write (msg)
+'    ts.Close
+'
+'    'フォルダオブジェクト取得
+'    Dim Sh As Object, fol As Object
+'    Set Sh = CreateObject("Shell.Application")
+'    Set fol = Sh.Namespace(Str & "\" & Result & ".zip")
+'
+'    'サンプル：フォルダ内のXLSファイルを圧縮
+'    Dim FName As String
+'    FName = Dir(OldFld & "*")
+'    Do While (FName <> "")
+'        fol.MoveHere OldFld & FName 'ZIPへファイル追加
+'        FName = Dir()
+'    Loop
+'
+'End Sub
 
 'パスワード付きZIP圧縮　Lhaplus使用版
 'テストデータが0バイトの場合パスはつかない。
-Sub CompPasswordZipForLhaplus()
-    Dim WSH As Object
-    Dim wExec As Object
-    Dim comStr As String
-    Set WSH = CreateObject("WScript.Shell")
-    comStr = "C:\Program Files\Lhaplus\Lhaplus.exe /c:zip /p:123 /n:C:\Users\ユーザー名\Desktop\圧縮.zip C:\Users\ユーザー名\Desktop\圧縮"
-    Set wExec = WSH.Exec(comStr)
-    Set WSH = Nothing
-    Set wExec = Nothing
-End Sub
+'Sub CompPasswordZipForLhaplus()
+'    Dim wsh As Object
+'    Dim wExec As Object
+'    Dim comStr As String
+'    Set wsh = CreateObject("WScript.Shell")
+'    comStr = "C:\Program Files\Lhaplus\Lhaplus.exe /c:zip /p:123 /n:C:\Users\ユーザー名\Desktop\圧縮.zip C:\Users\ユーザー名\Desktop\圧縮"
+'    Set wExec = wsh.Exec(comStr)
+'    Set wsh = Nothing
+'    Set wExec = Nothing
+'End Sub
  
+'7-ZIPならば、-pでパスワード指定できる
 
-'7-ZIPならば、-pでパスワード指定できるようです。お試しください。
-
-'PDF
-'xpdfが良いらしい
+'PDFはxpdfが良いらしい
 'http://pdf-file.nnn2.com/?p=858
 
+'--------------------------------------------------------------
 
 'https://qiita.com/RelaxTools/items/375492175ef902e59ca5
-
-Sub Main()
-
-    Dim Col As Collection
-
-    Set Col = New Collection
-
-    Col.Add "e:\README.md"
-
-    CompressArchive Col, "E:\aaa.zip"
-
-
-End Sub
-
-'--------------------------------------------------------------
-' Zip 圧縮処理
-'--------------------------------------------------------------
-Private Sub CompressArchive(Col As Collection, strDest As String)
-
-    Dim strCommand As String
-    Dim strPath  As String
-    Dim v As Variant
-    Dim First As Boolean
-
-    'コマンド
-    strCommand = "Compress-Archive"
-
-    strCommand = strCommand & " -Path"
-
-    First = True
-    For Each v In Col
-
-        If First Then
-            strPath = """" & v & """"
-            First = False
-        Else
-            strPath = strPath & ",""" & v & """"
-        End If
-    Next
-
-    strCommand = strCommand & " " & strPath
-
-    strCommand = strCommand & " -DestinationPath"
-    strCommand = strCommand & " """ & strDest & """"
-
-    strCommand = strCommand & " -Force"
-
-
-    'PowerShell を実行する
-    ExecPowerShell strCommand
-
-End Sub
-
-'--------------------------------------------------------------
-' PowerShell 実行
-'--------------------------------------------------------------
-Private Sub ExecPowerShell(strCommand As String)
-
-    Dim strTemp As String
-    Dim strFile As String
-    Dim strBuf As String
-
-    With CreateObject("Scripting.FileSystemObject")
-
-        strTemp = .GetSpecialFolder(2).Path
-        strFile = .BuildPath(strTemp, .GetTempName & ".ps1")
-
-        'テキスト出力
-        With .CreateTextFile(strFile, True)
-            .Write strCommand
-            .Close
-        End With
-
-        strBuf = "powershell"
-        strBuf = strBuf & " -ExecutionPolicy"
-        strBuf = strBuf & " RemoteSigned"
-        strBuf = strBuf & " -File"
-        strBuf = strBuf & " """ & strFile & """"
-
-        With CreateObject("WScript.Shell")
-            Call .Run(strBuf, 0, True)
-        End With
-
-        .DeleteFile strFile
-
-    End With
-
-End Sub
+'Sub Test_CompressArchive()
+'    Dim Col As Collection
+'    Set Col = New Collection
+'    Col.Add "e:\README.md"
+'    CompressArchive Col, "E:\aaa.zip"
+'End Sub
+'
+''--------------------------------------------------------------
+'' Zip 圧縮処理
+''--------------------------------------------------------------
+'Private Sub CompressArchive(Col As Collection, strDest As String)
+'
+'    Dim strCommand As String
+'    Dim strPath  As String
+'    Dim v As Variant
+'    Dim First As Boolean
+'
+'    'コマンド
+'    strCommand = "Compress-Archive"
+'
+'    strCommand = strCommand & " -Path"
+'
+'    First = True
+'    For Each v In Col
+'
+'        If First Then
+'            strPath = """" & v & """"
+'            First = False
+'        Else
+'            strPath = strPath & ",""" & v & """"
+'        End If
+'    Next
+'
+'    strCommand = strCommand & " " & strPath
+'
+'    strCommand = strCommand & " -DestinationPath"
+'    strCommand = strCommand & " """ & strDest & """"
+'
+'    strCommand = strCommand & " -Force"
+'
+'
+'    'PowerShell を実行する
+'    ExecPowerShell strCommand
+'
+'End Sub
+'
+''--------------------------------------------------------------
+'' PowerShell 実行
+''--------------------------------------------------------------
+'Private Sub ExecPowerShell(strCommand As String)
+'
+'    Dim strTemp As String
+'    Dim strFile As String
+'    Dim strBuf As String
+'
+'    With CreateObject("Scripting.FileSystemObject")
+'
+'        strTemp = .GetSpecialFolder(2).Path
+'        strFile = .BuildPath(strTemp, .GetTempName & ".ps1")
+'
+'        'テキスト出力
+'        With .CreateTextFile(strFile, True)
+'            .Write strCommand
+'            .Close
+'        End With
+'
+'        strBuf = "powershell"
+'        strBuf = strBuf & " -ExecutionPolicy"
+'        strBuf = strBuf & " RemoteSigned"
+'        strBuf = strBuf & " -File"
+'        strBuf = strBuf & " """ & strFile & """"
+'
+'        With CreateObject("WScript.Shell")
+'            Call .Run(strBuf, 0, True)
+'        End With
+'
+'        .DeleteFile strFile
+'
+'    End With
+'
+'End Sub
 
 
 'Scripting.FileSystemObject、Shell.Applicationを使用。
 'https://qiita.com/kou_tana77/items/06f7dc897ef1a69d2ea8
-Public Function zip(ArrPath() As String, zippth As String) As Boolean
-    zip = False
-    On Error GoTo Err
-    Dim fso As Object, sha As Object
-    Set fso = CreateObject("Scripting.FileSystemObject")
-    Set sha = CreateObject("Shell.Application")
-    If fso.FileExists(zippth) = True Then
-        fso.DeleteFile zippth
-    End If
-    With fso.CreateTextFile(zippth, True)
-        .Write "PK" & Chr(5) & Chr(6) & String(18, 0)
-        .Close
-    End With
-    Dim zipfld As Object
-    Set zipfld = sha.Namespace(fso.GetAbsolutePathName(zippth))
-    Dim idx As Long, maxidx As Long: maxidx = UBound(ArrPath, 1)
-    Dim n As Long: n = 0
-    Dim f As Variant
-    Dim start_tim As Date, cpyflg As Boolean
-    For idx = 0 To maxidx
-        cpyflg = False
-        f = fso.GetAbsolutePathName(ArrPath(idx))
-        If fso.FolderExists(ArrPath(idx)) = True Then
-            If sha.Namespace(f).Items().Count > 0 Then  '空フォルダでない？
-                                                        '⇒空フォルダは圧縮できない
-                cpyflg = True
-            End If
-        ElseIf Dir(ArrPath(idx)) <> "" Then
-            cpyflg = True
-        End If
-        If cpyflg = True Then
-            zipfld.CopyHere f, &H4 Or &H10
-            n = n + 1
-            'コピーが終わるのを待つ
-            start_tim = Now
-            Do Until zipfld.Items().Count = n
-                If DateDiff("s", start_tim, Now) > 5 Then    'タイムオーバー
-                    Exit Function
-                End If
-                Debug.Print CStr(n) & "/" & CStr(zipfld.Items().Count)
-                Sleep 10
-            Loop
-        End If
-    Next
-    zip = True
-Err:
-    If Err.Number <> 0 Then
-        Debug.Print "zip(): " & Err.Description
-    End If
-    Set fso = Nothing
-    Set sha = Nothing
-End Function
-
-Property Get fso() As FileSystemObject: Set fso = CreateObject("Scripting.FileSystemObject"): End Property
-Property Get sha() As Object: Set sha = CreateObject("Shell.Application"): End Property
+'zipファイルの解凍
+'Public Function zip(ArrPath() As String, zippth As String) As Boolean
+'    zip = False
+'    On Error GoTo Err
+'    Dim fso As Object, sha As Object
+'    Set fso = CreateObject("Scripting.FileSystemObject")
+'    Set sha = CreateObject("Shell.Application")
+'    If fso.FileExists(zippth) = True Then
+'        fso.DeleteFile zippth
+'    End If
+'    With fso.CreateTextFile(zippth, True)
+'        .Write "PK" & Chr(5) & Chr(6) & String(18, 0)
+'        .Close
+'    End With
+'    Dim zipfld As Object
+'    Set zipfld = sha.Namespace(fso.GetAbsolutePathName(zippth))
+'    Dim idx As Long, maxidx As Long: maxidx = UBound(ArrPath, 1)
+'    Dim n As Long: n = 0
+'    Dim f As Variant
+'    Dim start_tim As Date, cpyflg As Boolean
+'    For idx = 0 To maxidx
+'        cpyflg = False
+'        f = fso.GetAbsolutePathName(ArrPath(idx))
+'        If fso.FolderExists(ArrPath(idx)) = True Then
+'            If sha.Namespace(f).Items().Count > 0 Then  '空フォルダでない？
+'                                                        '⇒空フォルダは圧縮できない
+'                cpyflg = True
+'            End If
+'        ElseIf Dir(ArrPath(idx)) <> "" Then
+'            cpyflg = True
+'        End If
+'        If cpyflg = True Then
+'            zipfld.CopyHere f, &H4 Or &H10
+'            n = n + 1
+'            'コピーが終わるのを待つ
+'            start_tim = Now
+'            Do Until zipfld.Items().Count = n
+'                If DateDiff("s", start_tim, Now) > 5 Then    'タイムオーバー
+'                    Exit Function
+'                End If
+'                Debug.Print CStr(n) & "/" & CStr(zipfld.Items().Count)
+'                Sleep 10
+'            Loop
+'        End If
+'    Next
+'    zip = True
+'Err:
+'    If Err.Number <> 0 Then
+'        Debug.Print "zip(): " & Err.Description
+'    End If
+'    Set fso = Nothing
+'    Set sha = Nothing
+'End Function
 
 'Sub Test_UnZip()
 '    Dim arr: arr = VBA.Array("D:\vba\zip\test.zip")
@@ -618,20 +713,3 @@ Property Get sha() As Object: Set sha = CreateObject("Shell.Application"): End P
 '        BaseName = Path_
 '    End If
 'End Function
-
-Rem 削除が完了してればOK
-Public Function DeleteFolder(Path) As Boolean
-    DeleteFolder = False
-    
-    If Not fso.FolderExists(Path) Then
-        Debug.Print "DeleteFolder(): 対象パス(" & Path & ")が存在しない"
-        Exit Function
-    End If
-    
-    On Error Resume Next
-    fso.DeleteFolder Path
-    If Err.Number <> 0 Then Debug.Print "DeleteFolder(): " & Err.Description, Path
-    On Error GoTo 0
-    
-    DeleteFolder = Not fso.FolderExists(Path)
-End Function
