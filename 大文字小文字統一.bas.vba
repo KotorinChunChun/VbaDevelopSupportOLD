@@ -2,14 +2,25 @@
 'このソースコード全文を適当なモジュールにコピペした後、Ctrl+Zで戻すことで大文字小文字が統一できる。
 Option Explicit
 
+'大文字小文字反転には弱点がある。
+'コンパイル制御をしている場合
+'32bitでは反映される。
+'64bitではもう一方には変更が反映されない？？？
 
 'WinAPIのDLL文字列
 '先頭大文字、".dll"無しで統一
-Public Declare PtrSafe Function GdipCreateSolidFill Lib "GDIPlus" ()
 Public Declare PtrSafe Sub CopyMemory Lib "Kernel32" ()
 Public Declare PtrSafe Function GetAsyncKeyState% Lib "User32" ()
+Public Declare PtrSafe Function CreateCompatibleDC Lib "GDI32" ( ByVal hDc As LongPtr ) As Long
+Public Declare PtrSafe Function GdipCreateSolidFill Lib "GDIPlus" ()
 Public Declare PtrSafe Function SHCreateDirectoryEx Lib "Shell32" ()
-
+Public Declare PtrSafe Function ObjectFromLresult Lib "oleacc" ()
+Private Declare PtrSafe Function IIDFromString Lib "ole32" (ByVal lpsz As LongPtr, ByRef lpiid As GUID) As Long
+Private Declare PtrSafe Function OleCreatePictureIndirect Lib "oleaut32.dll" (PicDesc As PICTDESC, ByRef refiid As GUID, ByVal fPictureOwnsHandle As Long, obj As Any) As Long
+Private Declare PtrSafe Function WNetGetConnection Lib "mpr.dll" Alias "WNetGetConnectionW" ()
+Declare PtrSafe Function XDW_Finalize Lib "xdwapi.dll" (ByVal reserved As String) As Long
+Declare PtrSafe Function RegCloseKey Lib "advapi32.dll" (ByVal hKey As LongPtr) As Long
+Public Declare PtrSafe Sub ColorRGBToHLS Lib "SHLWAPI.DLL" ()
 
 'VBA標準関数
 Type KeywordUpperLowerCaseUnification_VBA_Function
