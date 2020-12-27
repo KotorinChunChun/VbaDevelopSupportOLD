@@ -611,3 +611,4 @@ End Type
 Dim IR
 Dim R3
 Dim ok
+dim txt

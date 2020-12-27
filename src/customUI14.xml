@@ -1,0 +1,26 @@
+<customUI  xmlns="http://schemas.microsoft.com/office/2009/07/customui" >
+	<ribbon >
+		<tabs >
+			<tab 
+				id="VbaDevelopSupport_Tab1"
+				label="VbaDevelopSupport">
+				<group 
+					id="VbaDevelopSupport_Group1"
+					label="アドイン">
+					<button 
+						id="VbaDevelopSupport_Group1_Button1"
+						imageMso="AnimationCustomAddEntranceDialog"
+						size="large"
+						label="VBEメニュー再構築"
+						onAction="Rbn_VbaDevelopSupport_アドイン_VBEメニュー再構築_onAction"/>
+					<button 
+						id="VbaDevelopSupport_Group1_Button2"
+						imageMso="XDPPClose"
+						size="large"
+						label="終了"
+						onAction="Rbn_VbaDevelopSupport_アドイン_終了_onAction"/>
+				</group >
+			</tab >
+		</tabs >
+	</ribbon >
+</customUI >

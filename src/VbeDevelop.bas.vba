@@ -1903,16 +1903,20 @@ Private Sub CustomUI_ExportAndOpen(prj_path As kccPath)
     Const PROC_NAME = "CustomUI_ExportAndOpen"
     
     Dim tempPath As String
-    With kccFuncZip.DecompZip(prj_path.FullPath)
+    With kccFuncZip.DecompZip(prj_path.FullPath, AutoDelete:=False)
         tempPath = .DecompFolder
     
         Dim xml1 As kccPath: Set xml1 = kccPath.Init(tempPath & "\" & "customUI\customUI.xml")
         Dim xml2 As kccPath: Set xml2 = kccPath.Init(tempPath & "\" & "customUI\customUI14.xml")
         
         If xml1.Exists Or xml2.Exists Then
-            Shell "explorer " & tempPath, vbNormalFocus
-            If xml1.Exists Then kccFuncWindowsProcess.OpenAssociationAPI xml1.FullPath
-            If xml2.Exists Then kccFuncWindowsProcess.OpenAssociationAPI xml2.FullPath
+            Select Case MsgBox(Replace("はい：ファイルを開く\nいいえ：フォルダを開く\n", "\n", vbLf), vbYesNo)
+                Case VbMsgBoxResult.vbYes
+                    If xml1.Exists Then kccFuncWindowsProcess.OpenAssociationAPI xml1.FullPath
+                    If xml2.Exists Then kccFuncWindowsProcess.OpenAssociationAPI xml2.FullPath
+                Case VbMsgBoxResult.vbNo
+                    Shell "explorer " & tempPath, vbNormalFocus
+            End Select
         Else
             MsgBox "CustomUIは含まれていないようです。", vbOKOnly, PROC_NAME
         End If
