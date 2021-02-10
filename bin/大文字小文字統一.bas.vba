@@ -11,7 +11,7 @@ Option Explicit
 'êÊì™ëÂï∂éöÅA".dll"ñ≥ÇµÇ≈ìùàÍ
 Public Declare PtrSafe Sub CopyMemory Lib "Kernel32" ()
 Public Declare PtrSafe Function GetAsyncKeyState% Lib "User32" ()
-Public Declare PtrSafe Function CreateCompatibleDC Lib "GDI32" ( ByVal hDc As LongPtr ) As Long
+Public Declare PtrSafe Function CreateCompatibleDC Lib "gdi32" ( ByVal hDc As LongPtr ) As Long
 Public Declare PtrSafe Function GdipCreateSolidFill Lib "GDIPlus" ()
 Public Declare PtrSafe Function SHCreateDirectoryEx Lib "Shell32" ()
 Public Declare PtrSafe Function ObjectFromLresult Lib "oleacc" ()
@@ -608,7 +608,13 @@ End Type
 
 
 
-Dim IR
-Dim R3
+dim ir
+Dim r3
 Dim ok
 dim txt
+dim keta
+dim txt
+dim mode
+Dim Compare
+dim ret
+
