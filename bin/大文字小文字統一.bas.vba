@@ -11,7 +11,7 @@ Option Explicit
 '先頭大文字、".dll"無しで統一
 Public Declare PtrSafe Sub CopyMemory Lib "Kernel32" ()
 Public Declare PtrSafe Function GetAsyncKeyState% Lib "User32" ()
-Public Declare PtrSafe Function CreateCompatibleDC Lib "gdi32" ( ByVal hDc As LongPtr ) As Long
+Public Declare PtrSafe Function CreateCompatibleDC Lib "Gdi32" (ByVal hDc As LongPtr) As Long
 Public Declare PtrSafe Function GdipCreateSolidFill Lib "GDIPlus" ()
 Public Declare PtrSafe Function SHCreateDirectoryEx Lib "Shell32" ()
 Public Declare PtrSafe Function ObjectFromLresult Lib "oleacc" ()
@@ -244,20 +244,29 @@ End Type
 
 'VBA定義済みステートメント
 Type KeywordUpperLowerCaseUnification_VBA_Statement
-    Goto As Long
-    Get As Long
-    Set As Long
-    Let As Long
-    Select As Long
-    End As Long
-    Next As Long
+    Goto                    As Long
+    Get                     As Long
+    Set                     As Long
+    Let                     As Long
+    Select                  As Long
+    End                     As Long
+    Next                    As Long
 End Type
 'Application.Goto
 'GoTo Label
 
 'VBA名前付き引数
 Type KeywordUpperLowerCaseUnification_VBA_NamedParam
-    Delimiter As Long
+    Delimiter               As Long
+    Target                  As Long
+    Sh                      As Long
+    No                      As Long
+    Key1                    As Long
+    Key2                    As Long
+    Params                  As Long
+    Compare                 As Long
+    Cursor                  As Long
+    Output                  As Long
 End Type
 
 'Excelキーワード
@@ -448,26 +457,35 @@ Type KeywordUpperLowerCaseUnification_Excel_Method
 End Type
 
 Type KeywordUpperLowerCaseUnification_Excel_Other
-    Selection As Long
-    Test      As Long
-    Caption   As Long
-    Col       As Long
-    Cols      As Long
+    Selection               As Long
+    Test                    As Long
+    Caption                 As Long
+    Col                     As Long
+    Cols                    As Long
 End Type
 
 'Excel関数
 Type KeywordUpperLowerCaseUnification_Excel_WorksheetFunction
-    Min As Long
-    Max As Long
-    Sum as Long
+    Min                     As Long
+    Max                     As Long
+    Sum                     As Long
+    Index                   As Long
 End Type
 
-'その他　未分類
-Type KeywordUpperLowerCaseUnification_Other
-    SaveToFile          As Long
-    SetRequestHeader    As Long
+'その他 APIや参照設定してよく使うライブラリの予約語
+Type 他のライブラリで使われる予約語Type
+    SaveToFile              As Long
+    SetRequestHeader        As Long
+    Page                    As Long
+    Cursol                  As Long
+    Send                    As Long
+    Status                  As Long
+    Parameter               As Long
+    ResponseText            As Long
+    Result                  As Long
+    hWnd                    As Long
+    hDc                     As Long
 End Type
-
 
 'オリジナル一文字変数取得
 'これをソースコードに貼ると欲しい状態に変化するので
@@ -499,122 +517,128 @@ End Type
 'Y=1
 'Z=1
 
-'オリジナル一文字変数
-Dim a
-Dim b
-Dim C
-Dim d
-Dim E
-Dim f
-Dim g
-Dim H
-Dim i
-Dim j
-Dim k
-Dim l
-Dim M
-Dim n
-Dim o
-Dim p
-Dim Q
-Dim r
-Dim s
-Dim t
-Dim u
-Dim v
-Dim W
-Dim x
-Dim y
-Dim Z
+Type 一文字変数Type
+    a                       As Long
+    b                       As Long
+    C                       As Long
+    d                       As Long
+    E                       As Long
+    f                       As Long
+    g                       As Long
+    H                       As Long
+    i                       As Long
+    j                       As Long
+    k                       As Long
+    l                       As Long
+    M                       As Long
+    n                       As Long
+    o                       As Long
+    p                       As Long
+    Q                       As Long
+    r                       As Long
+    s                       As Long
+    t                       As Long
+    u                       As Long
+    v                       As Long
+    W                       As Long
+    x                       As Long
+    y                       As Long
+    Z                       As Long
+End Type
 
+Type 一文字変数と数字Type
+    n1                      As Long
+    n2                      As Long
+    r1                      As Long
+    r2                      As Long
+    r3                      As Long
+End Type
 
-'オリジナルメンバ
-Dim st
-Dim data
-Dim data1
-Dim data2
-Dim data3
-Dim data4
-Dim handle
-Dim N2
-Dim hWnd
-Dim hDc
-Dim BaseRow
-Dim BaseCol
-Dim LastRow
-Dim LastCol
-Dim ColDic
-Dim TableName
-Dim URL
-Dim OutCol
-Dim dItem
-Dim dKey
+Type 定数用Type
+    PRJ_NAME                As Long
+    PROJECT_NAME            As Long
+    MOD_NAME                As Long
+    MODULE_NAME             As Long
+    PROC_NAME               As Long
+    FUNC_NAME               As Long
+    OLD_NAME                As Long
+    NEW_NAME                As Long
+    APP_NAME                As Long
+    APP_CREATER             As Long
+    APP_VERSION             As Long
+    APP_SETTINGFILE         As Long
+    APP_UPDATE              As Long
+    APP_URL                 As Long
+End Type
 
-'暫定確定メンバ（上記に移動する前の一時置き場）
-Dim Page
-Dim Cursol
-Dim Send
-Dim Status
-Dim NewName
-Dim Parameter
-Dim objHttp
-Dim FName
-Dim ResponseText
-Dim msg
-Dim PROC_NAME
-Dim cnt
-dim ProcName
-dim Result
+'イレギュラー 上記に該当するが頻繁に多用するため上書きしている名前
+'ApplicationイベントではWbだがwbで上書き wsは違うが並べたほうが分かりやすいので。
+Type イレギュラーType
+    wb                      As Long
+    ws                      As Long
+End Type
 
-Type 未定Type
-    Output  As Long
-    Test    As Long
-    OLD_NAME    As Long
-    NEW_NAME    As Long
-            
-    Cursor  As Long
-            
-    wsh As Long
-    wb As Long 'ApplicationイベントでWbだがwbで上書き
-    ws As Long
-    No  As Long
-    ColumnIndex As Long
-    Key1    As Long
-    Key2    As Long
-    Adrs    As Long
-    SHN As Long
-    ColIndex    As Long
-    CelIndex    As Long
-            
-    Target  As Long
-    Sh  As Long
-    Index   As Long
-    AddItem As Long
-            
-    AWin    As Long
-    adr As Long
-    sw  As Long
-    dic As Long
-    rgs As Long
-    
-    SX   As Long
-    SY   As Long
-    ZX   As Long
-    ZY   As Long
-    Params As Long
+Type オリジナルメンバType
+    st                      As Long
+    ed                      As Long
+    data                    As Long
+    data1                   As Long
+    data2                   As Long
+    data3                   As Long
+    data4                   As Long
+    handle                  As Long
+    dKey                    As Long
+    dItem                   As Long
+    objHttp                 As Long
+    obj                     As Long
+    msg                     As Long
+    cnt                     As Long
+    txt                     As Long
+    ret                     As Long
+    buf                     As Long
+    wsh                     As Long
+    bkn                     As Long
+    shn                     As Long
+    adr                     As Long
+    sw                      As Long
+    dic                     As Long
+    rgs                     As Long
+    ir                      As Long
+    ok                      As Long
+    keta                    As Long
+    mode                    As Long
+End Type
+
+'過去に大文字と決めてしまって今更変えられなくなった名前
+Type Type
+    NewName                 As Long
+    FName                   As Long
+    ProcName                As Long
+    BaseRow                 As Long
+    BaseCol                 As Long
+    LastRow                 As Long
+    LastCol                 As Long
+    ColDic                  As Long
+    TableName               As Long
+    URL                     As Long
+    OutCol                  As Long
+    Adrs                    As Long
+    ColumnIndex             As Long
+    ColIndex                As Long
+    RowIndex                As Long
+    CelIndex                As Long
+    AddItem                 As Long
+    AWin                    As Long
+    SX                      As Long
+    SY                      As Long
+    ZX                      As Long
+    ZY                      As Long
 End Type
 
 '変更保留メンバ（コード変更と大文字小文字変更のコミットを分離するために使用する
 
 
+Type 未定Type
 
-dim ir
-Dim r3
-Dim ok
-dim txt
-dim keta
-dim txt
-dim mode
-Dim Compare
-dim ret
+End Type
 
