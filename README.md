@@ -120,17 +120,31 @@ GitHubで管理したい場合におすすめです。
 プロジェクトと同一フォルダのファイルすべてをbinに複製します。
 
 ```
-/任意のフォルダ/AddinName.xlam
+/dev/AddinName.xlam
+/dev/sample.sql
+/dev/memo.txt
+/dev/~$AddinName.xlam
+```
+
+ただし、同フォルダに `.kccignore` ファイルを保存することで、複製対象を制御することが可能です。
+
+`.kccignore` ファイルの書き方は、`gitignore` ファイルと同じです。
+例えば、 `~$ファイル名.xlam` というゴミファイルを除外するには、次のように書きます。
+
+```
+~$*
 ```
 
 #### 出力
 
 ```
 /bin/AddinName.xlam
+/bin/sample.sql
+/bin/memo.txt
 /src/CodeName.bas.vba
 ```
 
-※一旦srcフォルダごと削除してからエクスポートするため、大事なファイルをここに入れると消されます。
+※なお、bin、srcフォルダを削除してから、新たに作り直してエクスポートするため、大事なファイルをここに入れると消失します。
 
 
 
