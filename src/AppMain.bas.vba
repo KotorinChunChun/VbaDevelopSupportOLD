@@ -77,7 +77,7 @@ Public Sub Declareの変換():                             Call OpenFormDeclareSour
 Public Sub 大文字小文字統一テキストを開く():            Call OpenTextFileBy大文字小文字: End Sub
 
 Public Sub Group_VBEの機能拡張(): End Sub
-Public Sub プロジェクトのパスワードを1234に変更する():  Call BreakPassword1234Project: End Sub
+'Public Sub プロジェクトのパスワードを1234に変更する():  Call BreakPassword1234Project: End Sub
 
 Public Sub プロジェクトのフォルダを開く():              Call OpenProjectFolder: End Sub
 Public Sub プロジェクトを閉じる():                      Call CloseProject: End Sub

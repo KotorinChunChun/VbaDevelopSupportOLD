@@ -1797,7 +1797,7 @@ Public Sub VBComponents_BackupAndExport_Sub( _
             binPath.DeleteFolder
             DoEvents
             binPath.CreateFolder
-            If prjPath.CopyFiles(binPath).IsAbort Then Exit Sub
+            If prjPath.CurrentFolder.CopyFiles(binPath).IsAbort Then Exit Sub
         End If
     End If
     

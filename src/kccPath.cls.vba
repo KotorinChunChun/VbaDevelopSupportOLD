@@ -253,7 +253,11 @@ End Function
 
 Rem 相対パスにより移動したフォルダのパス
 Public Function MoveFolderPath(relative_path) As String
-    MoveFolderPath = kccFuncString.AbsolutePathNameEx(Me.FullPath, relative_path)
+    If Me.IsFile Then
+        MoveFolderPath = kccFuncString.AbsolutePathNameEx(Me.CurrentFolder.FullPath, relative_path)
+    Else
+        MoveFolderPath = kccFuncString.AbsolutePathNameEx(Me.FullPath, relative_path)
+    End If
 End Function
 
 Rem 相対パスにより移動したフォルダのインスタンスを新規生成
@@ -415,6 +419,11 @@ Public Function CopyFiles(dest As kccPath, _
     
     If Me.IsFile Then: Set CopyFiles = Me.CopyFile(dest): Exit Function
     
+    On Error Resume Next
+    Dim strIgnore: strIgnore = Me.Folder.Files(".kccignore").OpenAsTextStream.ReadAll()
+    Dim arrIgnore: arrIgnore = ToArrayByIgnoreFileText(strIgnore)
+    On Error GoTo 0
+    
     Set CopyFiles = kccResult.Init(True)
     
     If Me.CurrentFolderPath = "" Then Stop
@@ -423,16 +432,21 @@ Public Function CopyFiles(dest As kccPath, _
     For Each fl In Me.Folder.Files
         If fl.Name Like withFilterString And _
             Not fl.Name Like withoutFilterString Then
-            'このCopyでは失敗してもエラーが起こらないらしい？
-            'ロックされてるとエラーが出る。
-            If dest.IsFile Then
-                fd = dest.ReplacePathAuto(FileName:=fl.Name).CreateFolder.FullPath
-            Else
-                fd = dest.ReplacePathAuto(FileName:=fl.Name).MovePathToFilePath(fl.Name).CreateFolder.FullPath
+            
+            Dim fn As String: fn = fl.Path
+            If MatchLike(arrIgnore, fn) = 0 Then
+                'このCopyでは失敗してもエラーが起こらないらしい？
+                'ロックされてるとエラーが出る。
+                If dest.IsFile Then
+                    fd = dest.ReplacePathAuto(FileName:=fl.Name).CreateFolder.FullPath
+                Else
+                    fd = dest.ReplacePathAuto(FileName:=fl.Name).MovePathToFilePath(fl.Name).CreateFolder.FullPath
+                End If
+                
+                On Error GoTo CopyFilesError
+                    fl.Copy fd, True
+                On Error GoTo 0
             End If
-            On Error GoTo CopyFilesError
-                fl.Copy fd, True
-            On Error GoTo 0
         End If
     Next
     
@@ -452,6 +466,63 @@ CopyFilesError:
         Case VbMsgBoxResult.vbIgnore: CopyFiles.Add False, dest.FullPath & " 失敗し省略されました": Resume Next
     End Select
 End Function
+
+Public Function MatchLike(arr, v) As Long
+    MatchLike = 0
+    Dim xx
+    For Each xx In arr
+        MatchLike = MatchLike + 1
+        If v Like "*" & xx Then Exit Function
+    Next
+    MatchLike = 0
+End Function
+
+Rem ignoreファイルのテキストを配列に変換する
+Public Function ToArrayByIgnoreFile(ignoreFile) As Variant
+    Dim s As String
+    s = fso.OpenTextFile(ignoreFile).ReadAll()
+    ToArrayByIgnoreFile = ToArrayByIgnoreFileText(s)
+End Function
+
+Public Function ToArrayByIgnoreFileText(strIgnore) As Variant
+    Dim sss() As String: sss = Split(Replace(strIgnore, vbCrLf, vbLf), vbLf)
+    Dim arr() As Variant: ReDim arr(1 To UBound(sss))
+    
+    Dim i As Long, n As Long
+    For i = LBound(sss) To UBound(sss)
+        If sss(i) Like "[#]*" Or sss(i) = "" Then
+            'コメント
+        Else
+            n = n + 1
+            arr(n) = sss(i)
+        End If
+    Next
+    ReDim Preserve arr(1 To n)
+    ToArrayByIgnoreFileText = arr
+End Function
+
+Public Sub Test_kccPath()
+    Dim p1 As kccPath
+    Dim p2 As kccPath
+    Set p1 = kccPath.Init(ThisWorkbook).CurrentFolder
+    Dim sp2 As String
+    sp2 = p1.MoveFolderPath("..\bin\")
+    Set p2 = kccPath.Init(sp2)
+    Dim p3 As kccPath
+    
+    Dim res As kccResult
+    Set res = p1.CopyFiles(p2)
+End Sub
+
+Public Sub Test_IgnoreFile()
+    Dim ignoreFile As String
+    ignoreFile = ThisWorkbook.Path & "\.kccignore"
+    
+    Dim s As String
+    s = Join(kccPath.ToArrayByIgnoreFile(ignoreFile), vbLf)
+    
+    Debug.Print s
+End Sub
 
 Rem パス文字列を単純に置換
 Public Function ReplacePath(src, dest) As kccPath
