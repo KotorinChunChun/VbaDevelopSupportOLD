@@ -40,6 +40,8 @@ Rem
 Rem --------------------------------------------------------------------------------
 Option Explicit
 
+Private Const IGNORE_FILE = ".kccignore"
+
 Public FullPath__ As String
 Public IsFile     As Boolean
 
@@ -420,34 +422,49 @@ Public Function CopyFiles(dest As kccPath, _
     If Me.IsFile Then: Set CopyFiles = Me.CopyFile(dest): Exit Function
     
     On Error Resume Next
-    Dim strIgnore: strIgnore = Me.Folder.Files(".kccignore").OpenAsTextStream.ReadAll()
+    Dim strIgnore: strIgnore = Me.Folder.Files(IGNORE_FILE).OpenAsTextStream.ReadAll()
     Dim arrIgnore: arrIgnore = ToArrayByIgnoreFileText(strIgnore)
     On Error GoTo 0
     
     Set CopyFiles = kccResult.Init(True)
     
     If Me.CurrentFolderPath = "" Then Stop
+    Dim MePath As String: MePath = Me.Folder.Path & "\"
     Dim fl As File
     Dim fd As String
-    For Each fl In Me.Folder.Files
-        If fl.Name Like withFilterString And _
-            Not fl.Name Like withoutFilterString Then
-            
-            Dim fn As String: fn = fl.Path
-            If MatchLike(arrIgnore, fn) = 0 Then
-                'このCopyでは失敗してもエラーが起こらないらしい？
-                'ロックされてるとエラーが出る。
-                If dest.IsFile Then
-                    fd = dest.ReplacePathAuto(FileName:=fl.Name).CreateFolder.FullPath
-                Else
-                    fd = dest.ReplacePathAuto(FileName:=fl.Name).MovePathToFilePath(fl.Name).CreateFolder.FullPath
+    Dim vf
+    Dim cll As Collection
+    Set cll = kccFuncPath.GetFileFolderList(MePath, add_files:=True, add_folders:=False, search_min_layer:=-1, search_max_layer:=-1)
+'    Set cll = kccFuncArray.Concat(cll, MePath)
+    Dim newCll As Collection: Set newCll = New Collection
+    For Each vf In cll
+        If MatchLike(arrIgnore, vf) = 0 Then
+'            If vf Like "\" Then
+'                'folder
+'                newCll.Add
+'            Else
+                Set fl = fso.GetFile(MePath & vf)
+                If fl.Name Like withFilterString And Not fl.Name Like withoutFilterString Then
+                    newCll.Add vf
                 End If
-                
-                On Error GoTo CopyFilesError
-                    fl.Copy fd, True
-                On Error GoTo 0
-            End If
+'            End If
         End If
+    Next
+    
+    For Each vf In newCll
+        'このCopyでは失敗してもエラーが起こらないらしい？
+        'ロックされてるとエラーが出る。
+        If dest.IsFile Then
+            fd = dest.ReplacePathAuto(FileName:=vf).CreateFolder.FullPath
+        Else
+            fd = dest.ReplacePathAuto(FileName:=vf).MovePathToFilePath(vf).CreateFolder.FullPath
+        End If
+        
+'        On Error GoTo CopyFilesError
+        Set fl = fso.GetFile(MePath & vf)
+            fl.Copy fd, True
+            If Err Then Stop
+        On Error GoTo 0
     Next
     
     CopyFiles.Add True, PROC_NAME & " 完了しました。"
@@ -467,12 +484,28 @@ CopyFilesError:
     End Select
 End Function
 
-Public Function MatchLike(arr, v) As Long
+Rem ignoreでファイルリストを絞り込み
+Public Function IgnoreFilter(cll As Collection, arr) As Collection
+
+End Function
+
+Rem gitignore準拠判定
+Rem パスの区切は\限定
+Rem パスの文字列は小文字限定
+Public Function MatchLike(arr, ByVal v) As Long
     MatchLike = 0
+    If IsEmpty(arr) Then Exit Function
+'    Dim fln As String
+'    fln = Mid(v, Len(v) - InStr(v, "\"))
+    v = LCase(Replace(v, "/", "\"))
     Dim xx
     For Each xx In arr
         MatchLike = MatchLike + 1
-        If v Like "*" & xx Then Exit Function
+        If Right(xx, 1) = "\" Then
+            If v Like xx & "*" Then Exit Function
+        Else
+            If LCase(v) Like LCase(xx) Then Exit Function
+        End If
     Next
     MatchLike = 0
 End Function
@@ -494,7 +527,7 @@ Public Function ToArrayByIgnoreFileText(strIgnore) As Variant
             'コメント
         Else
             n = n + 1
-            arr(n) = sss(i)
+            arr(n) = LCase(Replace(sss(i), "/", "\"))
         End If
     Next
     ReDim Preserve arr(1 To n)
