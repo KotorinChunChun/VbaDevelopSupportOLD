@@ -476,6 +476,18 @@ Rem         ByVal psa As LongPtr) As LongPtr
         ByVal psa As Long) As Long
 #End If
 
+Rem SHCreateDirectoryEx の戻り値
+Const ERROR_BAD_PATHNAME = 161&         '指定されたパスが無効です。
+Const ERROR_FILENAME_EXCED_RANGE = 206& 'ファイル名または拡張子が長すぎます。
+Const ERROR_PATH_NOT_FOUND = 3&         '指定されたパスが見つかりません。
+Const ERROR_FILE_EXISTS = 80&           'ディレクトリは存在する。
+Const ERROR_ALREADY_EXISTS = 183&       'ディレクトリは存在する。
+Const ERROR_CANCELLED = 0&              'ユーザーは操作を取り消した。
+Const ERROR_ACCESS_DENIED = 5&          'アクセスが拒否されました。
+
+Rem エラーコード表
+Rem https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes
+
 Rem --------------------------------------------------------------------------------
 Rem 共通組み込み
 Private Property Get fso() As FileSystemObject
@@ -495,8 +507,9 @@ Rem                      作成に成功 : True
 Rem                      既に存在   : True
 Rem                      作成に失敗 : False
 Rem
-Public Function CreateDirectoryEx(folder_path As String) As Boolean
-    Select Case SHCreateDirectoryEx(0&, StrPtr(SupportMaxPath260over(folder_path)), 0&)
+Public Function CreateDirectoryEx(folder_path As String, Optional ByRef errValue) As Boolean
+    errValue = SHCreateDirectoryEx(0&, StrPtr(SupportMaxPath260over(folder_path)), 0&)
+    Select Case errValue
         Case 0:  CreateDirectoryEx = True '成功
         Case 183: CreateDirectoryEx = True '既に存在
         Case Else: CreateDirectoryEx = False '失敗

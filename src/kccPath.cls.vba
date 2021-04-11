@@ -304,8 +304,10 @@ Rem  失敗:ファイルが既に存在した場合
 Rem  失敗:それ以外の理由
 Public Function CreateFolder() As kccPath
     Set CreateFolder = Me
-    If Not kccFuncPath.CreateDirectoryEx(Me.CurrentFolderPath) Then
-        Debug.Print "CreateFolder 失敗 : " & Me.CurrentFolderPath
+    Dim errValue
+    If Not kccFuncPath.CreateDirectoryEx(Me.CurrentFolderPath, errValue) Then
+        Debug.Print "CreateFolder 失敗 : " & errValue & ":" & Me.CurrentFolderPath
+        Err.Raise errValue, "CreateFolder", "CreateFolder 失敗 : " & errValue & ":" & Me.CurrentFolderPath
     End If
 End Function
 
@@ -454,15 +456,19 @@ Public Function CopyFiles(dest As kccPath, _
     For Each vf In newCll
         'このCopyでは失敗してもエラーが起こらないらしい？
         'ロックされてるとエラーが出る。
+        
+        '事前にフォルダがロックされていて、フォルダ作成の工程でエラー5が発生。その後コピーでエラーが出るらしい。
+        '再現が非常に難しいため、解消できておらず。おそらくDropbox等の同期関係
         If dest.IsFile Then
             fd = dest.ReplacePathAuto(FileName:=vf).CreateFolder.FullPath
         Else
             fd = dest.ReplacePathAuto(FileName:=vf).MovePathToFilePath(vf).CreateFolder.FullPath
         End If
         
-'        On Error GoTo CopyFilesError
-        Set fl = fso.GetFile(MePath & vf)
+        On Error GoTo CopyFilesError
+            Set fl = fso.GetFile(MePath & vf)
             fl.Copy fd, True
+            Debug.Print "CopyFiles : " & fl.Path & " to " & fd
             If Err Then Stop
         On Error GoTo 0
     Next
