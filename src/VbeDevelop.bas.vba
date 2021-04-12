@@ -1775,29 +1775,32 @@ Public Sub VBComponents_BackupAndExport_Sub( _
             Exit Sub
         End If
     
-    'プロジェクトの上書き保存
-    Dim res As VbMsgBoxResult
+        'プロジェクトの上書き保存
+        Dim res As VbMsgBoxResult
         res = MsgBox(Join(Array( _
             prjPath.FileName, _
             "エクスポートを実行します。", _
             "実行前にブックを保存しますか？"), vbLf), vbYesNoCancel, PROC_NAME)
-        If res = vbCancel Then Exit Sub
-        If res = vbYes Then
-            Call UserNameStackPush(" ")
-            prjPath.Workbook.Save
-            Call UserNameStackPush
-        End If
+        Select Case res
+            Case vbYes
+                Call UserNameStackPush(" ")
+                prjPath.Workbook.Save
+                Call UserNameStackPush
+            Case vbNo
+                '何もしない
+            Case vbCancel
+                Exit Sub
+        End Select
     End If
     
     'プロジェクトをリリースフォルダへ複製
     If ExportBinFolder <> "" Then
         Dim binPath As kccPath
-        Set binPath = prjPath.MovePathToFolderPath(ExportBinFolder).ReplacePathAuto(DateTime:=NowDateTime)
+        Set binPath = prjPath.SelectPathToFolderPath(ExportBinFolder).ReplacePathAuto(DateTime:=NowDateTime)
         If binPath.FullPath <> prjPath.FullPath Then
-            binPath.DeleteFolder
-            DoEvents
+            binPath.DeleteItems
             binPath.CreateFolder
-            If prjPath.CurrentFolder.CopyFiles(binPath).IsAbort Then Exit Sub
+            If prjPath.CurrentFolder.CopyTo(binPath, UseIgnoreFile:=True).IsAbort Then Exit Sub
         End If
     End If
     
@@ -1805,20 +1808,22 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     '既存ソースを一旦別のフォルダに移動して、出力後に比較して、完全一致なら巻き戻す。
     If ExportSrcFolder <> "" Then
         Dim srcPath As kccPath
-        Set srcPath = prjPath.MovePathToFolderPath(ExportSrcFolder).ReplacePathAuto(DateTime:=NowDateTime)
+        Set srcPath = prjPath.SelectPathToFolderPath(ExportSrcFolder).ReplacePathAuto(DateTime:=NowDateTime)
         
-        'src を src_backへ改名しつつ削除
+        'src_backフォルダを作成してsrcの中身をsrc_backへ
         Dim backPath As kccPath
-        Set backPath = srcPath.MovePathToFolderPath("..\src_back\")
-        backPath.DeleteFolder
-        srcPath.CreateFolder.Folder.Name = backPath.FolderName
+        Set backPath = srcPath.SelectPathToFolderPath("..\src_back\")
+        backPath.CreateFolder
+        backPath.DeleteFiles
+        backPath.DeleteFolders
+        srcPath.MoveTo backPath
         
-        'export
+        'srcフォルダを作成して中にexport
         srcPath.CreateFolder
         Call VBComponents_Export(ExportObject, srcPath)
         Call CustomUI_Export(prjPath, srcPath)
         
-        'merge And restore
+        'backから変更がないfrxを復元
         Dim f1 As File, f2 As File
         For Each f1 In srcPath.Folder.Files
             If f1.Name Like "*.frx" Then
@@ -1840,16 +1845,19 @@ Public Sub VBComponents_BackupAndExport_Sub( _
             End If
         Next
         
-        backPath.DeleteFolder
+        'タイムスタンプの復元
         
+        
+        'backフォルダの削除
+        backPath.DeleteFolder
     End If
     
     'binとsrcのバックアップ
     If BackupBinFile <> "" Then
-        binPath.CopyFiles prjPath.MovePathToFilePath(BackupBinFile).ReplacePathAuto(DateTime:=NowDateTime), withoutFilterString:="*~$*"
+        binPath.CopyTo prjPath.SelectPathToFilePath(BackupBinFile).ReplacePathAuto(DateTime:=NowDateTime), withoutFilterString:="*~$*"
     End If
     If BackupSrcFile <> "" Then
-        srcPath.CopyFiles prjPath.MovePathToFilePath(BackupSrcFile).ReplacePathAuto(DateTime:=NowDateTime)
+        srcPath.CopyTo prjPath.SelectPathToFilePath(BackupSrcFile).ReplacePathAuto(DateTime:=NowDateTime)
     End If
     
     Debug.Print "VBA Exported : " & prjPath.FileName
@@ -1889,8 +1897,8 @@ Private Sub CustomUI_Export(prj_path As kccPath, output_path As kccPath)
         Dim xml1 As kccPath: Set xml1 = kccPath.Init(tempPath & "\" & "customUI\customUI.xml")
         Dim xml2 As kccPath: Set xml2 = kccPath.Init(tempPath & "\" & "customUI\customUI14.xml")
         
-        xml1.CopyFiles output_path
-        xml2.CopyFiles output_path
+        xml1.CopyTo output_path
+        xml2.CopyTo output_path
     End With
     
 End Sub
@@ -2359,7 +2367,7 @@ End Sub
 Rem VBAプロジェクトのパスワードを1234へ変更する
 Public Sub BreakPassword1234Project()
     Dim beforePath As kccPath: Set beforePath = kccPath.Init(Application.VBE.ActiveVBProject)
-    Dim afterPath As kccPath: Set afterPath = beforePath.MovePathToFilePath("|t_1234|e")
+    Dim afterPath As kccPath: Set afterPath = beforePath.SelectPathToFilePath("|t_1234|e")
     Select Case MsgBox(beforePath.FileName & "を" & afterPath.FileName & "へ出力します。", vbOKCancel)
         Case vbOK
             Dim res: res = BrokenVbaPassword(beforePath.FullPath, afterPath.FullPath)
@@ -2380,9 +2388,9 @@ End Sub
 Rem 同じフォルダ、又は上位フォルダの大文字小文字ファイルを開く
 Public Sub OpenTextFileBy大文字小文字()
     Dim targetPath As kccPath
-    Set targetPath = kccPath.Init(ThisWorkbook.Path, False).MovePathToFilePath(DEF_大文字小文字ファイル)
+    Set targetPath = kccPath.Init(ThisWorkbook.Path, False).SelectPathToFilePath(DEF_大文字小文字ファイル)
     If Not targetPath.Exists Then
-        Set targetPath = targetPath.MoveParentFolder("..\")
+        Set targetPath = targetPath.SelectParentFolder("..\")
     End If
     targetPath.OpenAssociation
 End Sub

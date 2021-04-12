@@ -30,6 +30,7 @@ Rem    kccFuncPath
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @history
+Rem    2021/04/12 名称がMoveから始まるパスを移動する関数の名前をSelectに変更（実体の移動と混乱する）
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @functions
@@ -254,20 +255,20 @@ Public Function Workbook() As Excel.Workbook
 End Function
 
 Rem 相対パスにより移動したフォルダのパス
-Public Function MoveFolderPath(relative_path) As String
+Public Function SelectFolderPath(relative_path) As String
     If Me.IsFile Then
-        MoveFolderPath = kccFuncString.AbsolutePathNameEx(Me.CurrentFolder.FullPath, relative_path)
+        SelectFolderPath = kccFuncString.AbsolutePathNameEx(Me.CurrentFolder.FullPath, relative_path)
     Else
-        MoveFolderPath = kccFuncString.AbsolutePathNameEx(Me.FullPath, relative_path)
+        SelectFolderPath = kccFuncString.AbsolutePathNameEx(Me.FullPath, relative_path)
     End If
 End Function
 
 Rem 相対パスにより移動したフォルダのインスタンスを新規生成
-Public Function MovePathToFolderPath(relative_path) As kccPath
+Public Function SelectPathToFolderPath(relative_path) As kccPath
     Dim basePath As String: basePath = Me.CurrentFolderPath
     Dim refePath As String: refePath = relative_path
     Dim absoPath As String: absoPath = kccFuncString.AbsolutePathNameEx(basePath, refePath)
-    Set MovePathToFolderPath = kccPath.Init(absoPath, False)
+    Set SelectPathToFolderPath = kccPath.Init(absoPath, False)
 End Function
 
 Rem 相対パスにより移動したファイルのインスタンスを新規生成
@@ -279,9 +280,9 @@ Rem    エスケープ文字は、ファイル名に使用できないパイプ | とする。
 Rem    hoge.ext
 Rem      元のファイル名       : hoge : |t : titleの略
 Rem      元のファイルの拡張子 : .ext : |e : extensionの略
-Public Function MovePathToFilePath(ByVal relative_path) As kccPath
+Public Function SelectPathToFilePath(ByVal relative_path) As kccPath
     If VarType(relative_path) <> vbString Then Err.Raise 9999, , "型が違います"
-    If relative_path = "" Then Set MovePathToFilePath = kccPath.Init(Me)
+    If relative_path = "" Then Set SelectPathToFilePath = kccPath.Init(Me)
     relative_path = Replace(relative_path, "|t", Me.BaseName)
     relative_path = Replace(relative_path, "|e", Me.Extension)
     '自身がフォルダで移動先ファイルがファイル名のみしか指定されなかった場合、カレントを示す\を追記
@@ -289,12 +290,12 @@ Public Function MovePathToFilePath(ByVal relative_path) As kccPath
     Dim basePath As String: basePath = Me.CurrentFolderPath
     Dim refePath As String: refePath = IIf(relative_path Like "*\*", "", ".\") & relative_path
     Dim absoPath As String: absoPath = kccFuncString.AbsolutePathNameEx(basePath, refePath)
-    Set MovePathToFilePath = kccPath.Init(absoPath, True)
+    Set SelectPathToFilePath = kccPath.Init(absoPath, True)
 End Function
 
 Rem 相対パスによりファイル名を維持したまま親フォルダを移動する
-Public Function MoveParentFolder(ByVal relative_path) As kccPath
-    Set MoveParentFolder = Me.MovePathToFilePath(relative_path & "|t|e")
+Public Function SelectParentFolder(ByVal relative_path) As kccPath
+    Set SelectParentFolder = Me.SelectPathToFilePath(relative_path & "|t|e")
 End Function
 
 Rem フォルダを一気に作成
@@ -369,7 +370,7 @@ Public Function CopyFile(dest As kccPath, _
     
     Dim fl As File:   Set fl = Me.File
     Dim destFile As kccPath: Set destFile = dest
-    If dest.IsFile Then Else Set destFile = destFile.MovePathToFilePath(".\" & Me.File.Name)
+    If dest.IsFile Then Else Set destFile = destFile.SelectPathToFilePath(".\" & Me.File.Name)
     
     Set CopyFile = kccResult.Init(True)
     
@@ -403,6 +404,35 @@ CopyFileError:
     End Select
 End Function
 
+Rem ファイルをすべて削除する
+Rem エラー処理は保留
+Public Function DeleteFiles()
+    fso.DeleteFile Me.FullPath & "\*"
+End Function
+
+Public Function DeleteFolders()
+    fso.DeleteFolder Me.FullPath & "\*"
+End Function
+
+Public Function DeleteItems()
+    Call DeleteFiles
+    Call DeleteFolders
+End Function
+
+Public Function MoveTo(dest As kccPath, _
+                          Optional withFilterString As String = "*", _
+                          Optional withoutFilterString As String = "", _
+                          Optional UseIgnoreFile As Boolean = False, _
+                          Optional OverWriteFiles = True) As kccResult
+    Set MoveTo = Me.MoveCopyTo( _
+                            dest, _
+                            IsCopy:=False, _
+                            withFilterString:=withFilterString, _
+                            withoutFilterString:=withoutFilterString, _
+                            UseIgnoreFile:=UseIgnoreFile, _
+                            OverWriteFiles:=OverWriteFiles)
+End Function
+
 Rem フォルダ内のファイル・フォルダをまとめてコピーする
 Rem
 Rem  @param dest                コピー先ファイル名またはフォルダ
@@ -415,20 +445,52 @@ Rem    dest:=ファイル指定・・・対象ファイル名のフォルダを作成
 Rem    dest:=フォルダ指定・・・対象フォルダ名のフォルダを作成
 Rem    速度は低下するが無視している
 Rem
-Public Function CopyFiles(dest As kccPath, _
+Public Function CopyTo(dest As kccPath, _
                           Optional withFilterString As String = "*", _
                           Optional withoutFilterString As String = "", _
+                          Optional UseIgnoreFile As Boolean = False, _
                           Optional OverWriteFiles = True) As kccResult
-    Const PROC_NAME = "CopyFiles"
+    Set CopyTo = Me.MoveCopyTo( _
+                            dest, _
+                            IsCopy:=True, _
+                            withFilterString:=withFilterString, _
+                            withoutFilterString:=withoutFilterString, _
+                            UseIgnoreFile:=UseIgnoreFile, _
+                            OverWriteFiles:=OverWriteFiles)
+End Function
+
+Rem フォルダ内のファイル・フォルダをまとめてコピーする
+Rem
+Rem  @param dest                コピー先ファイル名またはフォルダ
+Rem  @param IsCopy              コピーするのか移動するのか(既定:False:移動)
+Rem  @param withFilterString    含めるファイルを表すLike比較用文字列(既定:全て)
+Rem  @param withoutFilterString 除外するファイルを表すLike比較用文字列(既定:無し)
+Rem  @param OverWriteFiles      コピー先ファイルが存在する時上書きするか(既定:True)
+Rem
+Rem  @note
+Rem    dest:=ファイル指定・・・対象ファイル名のフォルダを作成
+Rem    dest:=フォルダ指定・・・対象フォルダ名のフォルダを作成
+Rem    速度は低下するが無視している
+Rem
+Public Function MoveCopyTo(dest As kccPath, _
+                          Optional IsCopy As Boolean = False, _
+                          Optional withFilterString As String = "*", _
+                          Optional withoutFilterString As String = "", _
+                          Optional UseIgnoreFile As Boolean = False, _
+                          Optional OverWriteFiles = True) As kccResult
+    Const PROC_NAME = "MoveCopyTo"
     
-    If Me.IsFile Then: Set CopyFiles = Me.CopyFile(dest): Exit Function
+    If Me.IsFile Then: Set MoveCopyTo = Me.CopyFile(dest): Exit Function
     
-    On Error Resume Next
-    Dim strIgnore: strIgnore = Me.Folder.Files(IGNORE_FILE).OpenAsTextStream.ReadAll()
-    Dim arrIgnore: arrIgnore = ToArrayByIgnoreFileText(strIgnore)
-    On Error GoTo 0
+    Dim strIgnore, arrIgnore
+    If UseIgnoreFile Then
+        On Error Resume Next
+        strIgnore = Me.Folder.Files(IGNORE_FILE).OpenAsTextStream.ReadAll()
+        arrIgnore = ToArrayByIgnoreFileText(strIgnore)
+        On Error GoTo 0
+    End If
     
-    Set CopyFiles = kccResult.Init(True)
+    Set MoveCopyTo = kccResult.Init(True)
     
     If Me.CurrentFolderPath = "" Then Stop
     Dim MePath As String: MePath = Me.Folder.Path & "\"
@@ -462,18 +524,22 @@ Public Function CopyFiles(dest As kccPath, _
         If dest.IsFile Then
             fd = dest.ReplacePathAuto(FileName:=vf).CreateFolder.FullPath
         Else
-            fd = dest.ReplacePathAuto(FileName:=vf).MovePathToFilePath(vf).CreateFolder.FullPath
+            fd = dest.ReplacePathAuto(FileName:=vf).SelectPathToFilePath(vf).CreateFolder.FullPath
         End If
         
         On Error GoTo CopyFilesError
             Set fl = fso.GetFile(MePath & vf)
-            fl.Copy fd, True
-            Debug.Print "CopyFiles : " & fl.Path & " to " & fd
+            If IsCopy Then
+                fl.Copy fd, True
+            Else
+                fl.Move fd
+            End If
+            Debug.Print "MoveCopyTo : " & fl.Path & " to " & fd
             If Err Then Stop
         On Error GoTo 0
     Next
     
-    CopyFiles.Add True, PROC_NAME & " 完了しました。"
+    MoveCopyTo.Add True, PROC_NAME & " 完了しました。"
     
 CopyFilesEnd:
     Exit Function
@@ -484,9 +550,9 @@ CopyFilesError:
             "[" & fd & "]" & "へファイルをコピーできません。" & vbLf & _
             "ファイルまたは上位のフォルダがロックされていないか確認してください。", _
             vbAbortRetryIgnore, PROC_NAME)
-        Case VbMsgBoxResult.vbAbort: CopyFiles.Add False, dest.FullPath & " 失敗し中止されました", True: Resume CopyFilesEnd
-        Case VbMsgBoxResult.vbRetry: CopyFiles.Add False, dest.FullPath & " 失敗し再試行しました": Resume
-        Case VbMsgBoxResult.vbIgnore: CopyFiles.Add False, dest.FullPath & " 失敗し省略されました": Resume Next
+        Case VbMsgBoxResult.vbAbort: MoveCopyTo.Add False, dest.FullPath & " 失敗し中止されました", True: Resume CopyFilesEnd
+        Case VbMsgBoxResult.vbRetry: MoveCopyTo.Add False, dest.FullPath & " 失敗し再試行しました": Resume
+        Case VbMsgBoxResult.vbIgnore: MoveCopyTo.Add False, dest.FullPath & " 失敗し省略されました": Resume Next
     End Select
 End Function
 
@@ -545,12 +611,12 @@ Public Sub Test_kccPath()
     Dim p2 As kccPath
     Set p1 = kccPath.Init(ThisWorkbook).CurrentFolder
     Dim sp2 As String
-    sp2 = p1.MoveFolderPath("..\bin\")
+    sp2 = p1.SelectFolderPath("..\bin\")
     Set p2 = kccPath.Init(sp2)
     Dim p3 As kccPath
     
     Dim res As kccResult
-    Set res = p1.CopyFiles(p2)
+    Set res = p1.CopyTo(p2)
 End Sub
 
 Public Sub Test_IgnoreFile()
@@ -621,7 +687,7 @@ Public Sub ConvertCharCode_SJIS_to_utf8()
             .Open
             .LoadFromFile fn
             .Position = 0
-            .copyTo destWithBOM
+            .CopyTo destWithBOM
             .Close
         End With
         
@@ -635,7 +701,7 @@ Public Sub ConvertCharCode_SJIS_to_utf8()
         With dest
             .Type = 1 ' adTypeBinary
             .Open
-            destWithBOM.copyTo dest
+            destWithBOM.CopyTo dest
             .SaveToFile fn, 2
             .Close
         End With
