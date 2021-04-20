@@ -15,19 +15,19 @@
 Option Explicit
 
 'WinAPIのDLL文字列
-Public Declare PtrSafe Sub CopyMemory Lib "Kernel32" ()
-Public Declare PtrSafe Function GetAsyncKeyState% Lib "User32" ()
-Public Declare PtrSafe Function CreateCompatibleDC Lib "Gdi32" (ByVal hDc As LongPtr) As Long
-Public Declare PtrSafe Function GdipCreateSolidFill Lib "GDIPlus" ()
-Public Declare PtrSafe Function SHCreateDirectoryEx Lib "Shell32" ()
-Public Declare PtrSafe Function ObjectFromLresult Lib "oleacc" ()
-Private Declare PtrSafe Function IIDFromString Lib "ole32" (ByVal lpsz As LongPtr, ByRef lpiid As GUID) As Long
-Private Declare PtrSafe Function OleCreatePictureIndirect Lib "oleaut32" (PicDesc As PICTDESC, ByRef refiid As GUID, ByVal fPictureOwnsHandle As Long, obj As Any) As Long
-Private Declare PtrSafe Function WNetGetConnection Lib "mpr" Alias "WNetGetConnectionW" ()
-Declare PtrSafe Function XDW_Finalize Lib "xdwapi" (ByVal reserved As String) As Long
-Declare PtrSafe Function RegCloseKey Lib "advapi32" (ByVal hKey As LongPtr) As Long
-Public Declare PtrSafe Sub ColorRGBToHLS Lib "SHLWAPI" ()
-Private Declare PtrSafe Function rtcCallByName Lib "VBE7"
+Declare PtrSafe Sub WinAPI01 Lib "Kernel32" ()
+Declare PtrSafe Sub WinAPI02 Lib "User32" ()
+Declare PtrSafe Sub WinAPI03 Lib "Gdi32" ()
+Declare PtrSafe Sub WinAPI04 Lib "GDIPlus" ()
+Declare PtrSafe Sub WinAPI05 Lib "Shell32" ()
+Declare PtrSafe Sub WinAPI06 Lib "oleacc" ()
+Declare PtrSafe Sub WinAPI07 Lib "ole32" ()
+Declare PtrSafe Sub WinAPI08 Lib "oleaut32" ()
+Declare PtrSafe Sub WinAPI09 Lib "mpr" ()
+Declare PtrSafe Sub WinAPI10 Lib "xdwapi" ()
+Declare PtrSafe Sub WinAPI11 Lib "advapi32" ()
+Declare PtrSafe Sub WinAPI12 Lib "SHLWAPI" ()
+Declare PtrSafe Sub WinAPI13 Lib "VBE7" ()
 
 'VBA標準関数
 Type KeywordUpperLowerCaseUnification_VBA_Function
@@ -484,13 +484,13 @@ Type KeywordUpperLowerCaseUnification_FileSystemObject
     'オブジェクト
     Collection              As Long
     Dictionary              As Long
-    Drive            	    As Long
-    Drives            	    As Long
-    File            	    As Long
-    Files            	    As Long
+    Drive                   As Long
+    Drives                  As Long
+    File                    As Long
+    Files                   As Long
     FileSystemObject        As Long
-    Folder            	    As Long
-    Folders            	    As Long
+    Folder                  As Long
+    Folders                 As Long
     TextStream              As Long
 
     'メソッド
@@ -524,7 +524,7 @@ Type KeywordUpperLowerCaseUnification_FileSystemObject
 
     'プロパティ
     Property                As Long
-    Drives                  As Long
+    'Drives                  As Long
     Name                    As Long
     Path                    As Long
     Size                    As Long
@@ -696,8 +696,6 @@ End Type
 
 '変更保留メンバ（コード変更と大文字小文字変更のコミットを分離するために使用する
 
-
 Type 未定Type
-
+    未定 As Long
 End Type
-
