@@ -6,6 +6,7 @@ Option Explicit
 'コンパイル制御をしている場合
 '32bitでは反映される。
 '64bitではもう一方には変更が反映されない？？？
+'VBA7 = 0 : 
 
 'WinAPIのDLL文字列
 '先頭大文字、".dll"無しで統一
@@ -16,11 +17,12 @@ Public Declare PtrSafe Function GdipCreateSolidFill Lib "GDIPlus" ()
 Public Declare PtrSafe Function SHCreateDirectoryEx Lib "Shell32" ()
 Public Declare PtrSafe Function ObjectFromLresult Lib "oleacc" ()
 Private Declare PtrSafe Function IIDFromString Lib "ole32" (ByVal lpsz As LongPtr, ByRef lpiid As GUID) As Long
-Private Declare PtrSafe Function OleCreatePictureIndirect Lib "oleaut32.dll" (PicDesc As PICTDESC, ByRef refiid As GUID, ByVal fPictureOwnsHandle As Long, obj As Any) As Long
-Private Declare PtrSafe Function WNetGetConnection Lib "mpr.dll" Alias "WNetGetConnectionW" ()
-Declare PtrSafe Function XDW_Finalize Lib "xdwapi.dll" (ByVal reserved As String) As Long
-Declare PtrSafe Function RegCloseKey Lib "advapi32.dll" (ByVal hKey As LongPtr) As Long
-Public Declare PtrSafe Sub ColorRGBToHLS Lib "SHLWAPI.DLL" ()
+Private Declare PtrSafe Function OleCreatePictureIndirect Lib "oleaut32" (PicDesc As PICTDESC, ByRef refiid As GUID, ByVal fPictureOwnsHandle As Long, obj As Any) As Long
+Private Declare PtrSafe Function WNetGetConnection Lib "mpr" Alias "WNetGetConnectionW" ()
+Declare PtrSafe Function XDW_Finalize Lib "xdwapi" (ByVal reserved As String) As Long
+Declare PtrSafe Function RegCloseKey Lib "advapi32" (ByVal hKey As LongPtr) As Long
+Public Declare PtrSafe Sub ColorRGBToHLS Lib "SHLWAPI" ()
+Private Declare PtrSafe Function rtcCallByName Lib "VBE7"
 
 'VBA標準関数
 Type KeywordUpperLowerCaseUnification_VBA_Function
@@ -472,6 +474,58 @@ Type KeywordUpperLowerCaseUnification_Excel_WorksheetFunction
     Index                   As Long
 End Type
 
+'FileSystemObject
+Type KeywordUpperLowerCaseUnification_FileSystemObject
+    'オブジェクト
+    Collection              As Long
+    Dictionary              As Long
+    Drive            	    As Long
+    Drives            	    As Long
+    File            	    As Long
+    Files            	    As Long
+    FileSystemObject        As Long
+    Folder            	    As Long
+    Folders            	    As Long
+    TextStream              As Long
+
+    'メソッド
+    BuildPath               As Long
+    CopyFile                As Long
+    CopyFolder              As Long
+    CreateFolder            As Long
+    CreateTextFile          As Long
+    DeleteFile              As Long
+    DeleteFolder            As Long
+    DriveExists             As Long
+    FileExists              As Long
+    FolderExists            As Long
+    GetAbsolutePathName     As Long
+    GetBaseName             As Long
+    GetDrive                As Long
+    GetDriveName            As Long
+    GetExtensionName        As Long
+    GetFile                 As Long
+    GetFileName             As Long
+    GetFolder               As Long
+    GetParentFolderName     As Long
+    GetSpecialFolder        As Long
+    GetTempName             As Long
+    Move                    As Long
+    MoveFile                As Long
+    MoveFolder              As Long
+    OpenAsTextStream        As Long
+    OpenTextFile            As Long
+    WriteLine               As Long
+
+    'プロパティ
+    Property                As Long
+    Drives                  As Long
+    Name                    As Long
+    Path                    As Long
+    Size                    As Long
+    Type                    As Long
+End Type
+
 'その他 APIや参照設定してよく使うライブラリの予約語
 Type 他のライブラリで使われる予約語Type
     SaveToFile              As Long
@@ -610,7 +664,7 @@ Type オリジナルメンバType
 End Type
 
 '過去に大文字と決めてしまって今更変えられなくなった名前
-Type Type
+Type TypeType
     NewName                 As Long
     FName                   As Long
     ProcName                As Long
