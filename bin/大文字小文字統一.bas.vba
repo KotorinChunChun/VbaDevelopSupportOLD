@@ -15,19 +15,19 @@
 Option Explicit
 
 'WinAPIのDLL文字列
-Public Declare PtrSafe Sub CopyMemory Lib "Kernel32" ()
-Public Declare PtrSafe Function GetAsyncKeyState% Lib "User32" ()
-Public Declare PtrSafe Function CreateCompatibleDC Lib "Gdi32" (ByVal hDc As LongPtr) As Long
-Public Declare PtrSafe Function GdipCreateSolidFill Lib "GDIPlus" ()
-Public Declare PtrSafe Function SHCreateDirectoryEx Lib "Shell32" ()
-Public Declare PtrSafe Function ObjectFromLresult Lib "oleacc" ()
-Private Declare PtrSafe Function IIDFromString Lib "ole32" (ByVal lpsz As LongPtr, ByRef lpiid As GUID) As Long
-Private Declare PtrSafe Function OleCreatePictureIndirect Lib "oleaut32" (PicDesc As PICTDESC, ByRef refiid As GUID, ByVal fPictureOwnsHandle As Long, obj As Any) As Long
-Private Declare PtrSafe Function WNetGetConnection Lib "mpr" Alias "WNetGetConnectionW" ()
+Declare PtrSafe Sub CopyMemory Lib "Kernel32" ()
+Declare PtrSafe Function GetAsyncKeyState% Lib "User32" ()
+Declare PtrSafe Function CreateCompatibleDC Lib "Gdi32" (ByVal hDc As LongPtr) As Long
+Declare PtrSafe Function GdipCreateSolidFill Lib "GDIPlus" ()
+Declare PtrSafe Function SHCreateDirectoryEx Lib "Shell32" ()
+Declare PtrSafe Function ObjectFromLresult Lib "oleacc" ()
+Declare PtrSafe Function IIDFromString Lib "ole32" (ByVal lpsz As LongPtr, ByRef lpiid As GUID) As Long
+Declare PtrSafe Function OleCreatePictureIndirect Lib "oleaut32" (PicDesc As PICTDESC, ByRef refiid As GUID, ByVal fPictureOwnsHandle As Long, obj As Any) As Long
+Declare PtrSafe Function WNetGetConnection Lib "mpr" Alias "WNetGetConnectionW" ()
 Declare PtrSafe Function XDW_Finalize Lib "xdwapi" (ByVal reserved As String) As Long
 Declare PtrSafe Function RegCloseKey Lib "advapi32" (ByVal hKey As LongPtr) As Long
-Public Declare PtrSafe Sub ColorRGBToHLS Lib "SHLWAPI" ()
-Private Declare PtrSafe Function rtcCallByName Lib "VBE7"
+Declare PtrSafe Sub ColorRGBToHLS Lib "SHLWAPI" ()
+Declare PtrSafe Function rtcCallByName Lib "VBE7" ()
 
 'VBA標準関数
 Type KeywordUpperLowerCaseUnification_VBA_Function
@@ -484,13 +484,13 @@ Type KeywordUpperLowerCaseUnification_FileSystemObject
     'オブジェクト
     Collection              As Long
     Dictionary              As Long
-    Drive            	    As Long
-    Drives            	    As Long
-    File            	    As Long
-    Files            	    As Long
+    Drive                   As Long
+    Drives                  As Long
+    File                    As Long
+    Files                   As Long
     FileSystemObject        As Long
-    Folder            	    As Long
-    Folders            	    As Long
+    Folder                  As Long
+    Folders                 As Long
     TextStream              As Long
 
     'メソッド
@@ -700,4 +700,3 @@ End Type
 Type 未定Type
 
 End Type
-
