@@ -1,15 +1,20 @@
-
 'このソースコード全文を適当なモジュールにコピペした後、Ctrl+Zで戻すことで大文字小文字が統一できる。
+'
+'ただし、以下の点に注意が必要
+'・Declare文のDLL名は、拡張子の有無で別物として扱われる
+'・条件付きコンパイルによって、コンパイル対象外となっている範囲は、VBEの自動修正が働かない
+'
+'本コードでは「.dll無し」で統一している。
+'できるだけ「先頭大文字」で統一している。（ただし定義済みの状態を優先したため一部は違う）
+
+'Declareも踏まえた修正手順は、
+'1. 置換で「.dll"」を「"」へ（ひとつずつ慎重にやること）
+'2. 定義ファイルをコピペ
+'3. 置換で「"user32"」を「"User32"」に置換（大文字小文字チェック有りで個別実行が望ましい）
+
 Option Explicit
 
-'大文字小文字反転には弱点がある。
-'コンパイル制御をしている場合
-'32bitでは反映される。
-'64bitではもう一方には変更が反映されない？？？
-'VBA7 = 0 : 
-
 'WinAPIのDLL文字列
-'先頭大文字、".dll"無しで統一
 Public Declare PtrSafe Sub CopyMemory Lib "Kernel32" ()
 Public Declare PtrSafe Function GetAsyncKeyState% Lib "User32" ()
 Public Declare PtrSafe Function CreateCompatibleDC Lib "Gdi32" (ByVal hDc As LongPtr) As Long
