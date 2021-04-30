@@ -407,10 +407,12 @@ End Function
 Rem ファイルをすべて削除する
 Rem エラー処理は保留
 Public Function DeleteFiles()
+    On Error Resume Next
     fso.DeleteFile Me.FullPath & "\*"
 End Function
 
 Public Function DeleteFolders()
+    On Error Resume Next
     fso.DeleteFolder Me.FullPath & "\*"
 End Function
 
@@ -564,22 +566,28 @@ End Function
 Rem gitignore準拠判定
 Rem パスの区切は\限定
 Rem パスの文字列は小文字限定
-Public Function MatchLike(arr, ByVal v) As Long
+Public Function MatchLike(arr, ByVal test_value) As Long
     MatchLike = 0
     If IsEmpty(arr) Then Exit Function
-'    Dim fln As String
-'    fln = Mid(v, Len(v) - InStr(v, "\"))
-    v = LCase(Replace(v, "/", "\"))
-    Dim xx
-    For Each xx In arr
-        MatchLike = MatchLike + 1
-        If Right(xx, 1) = "\" Then
-            If v Like xx & "*" Then Exit Function
+    Dim tv: tv = LCase(Replace(test_value, "/", "\"))
+    
+    Dim i As Long
+    For i = 1 To UBound(arr)
+        Dim ptn: ptn = arr(i)
+        If ptn Like "!*" Then
+            Rem 除外しない
+            Dim inPtn
+            inPtn = Mid(ptn, 2, Len(ptn))
+            If tv Like inPtn Then MatchLike = 0
         Else
-            If LCase(v) Like LCase(xx) Then Exit Function
+            Rem 除外する
+            If Right(ptn, 1) = "\" Then
+                If tv Like ptn & "*" Then MatchLike = i
+            Else
+                If LCase(tv) Like LCase(ptn) Then MatchLike = i
+            End If
         End If
     Next
-    MatchLike = 0
 End Function
 
 Rem ignoreファイルのテキストを配列に変換する
