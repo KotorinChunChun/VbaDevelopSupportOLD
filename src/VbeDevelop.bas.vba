@@ -1735,6 +1735,7 @@ Rem
 Public Sub VBComponents_Export_YYYYMMDD()
     Call VBComponents_BackupAndExport_Sub( _
             Application.VBE.ActiveVBProject, _
+            ".\", _
             "", _
             ".\src\[YYYYMMDD]_[HHMMSS]\", _
             "", "")
@@ -1749,9 +1750,11 @@ Public Sub VBComponents_Export_SRC()
     Dim obj As Object: Set obj = Application.VBE.ActiveVBProject
     Dim fn As String: fn = kccPath.Init(obj).CurrentFolder.FullPath
     Dim st As kccSettings: Set st = kccSettings.Init(fn)
+    If st.fn = "" Then Set st = st.CreateDefaultSetting()
     With st
         Call VBComponents_BackupAndExport_Sub( _
                 obj, _
+                .ProjectFolder, _
                 .ExportBinFolder, _
                 .ExportSrcFolder, _
                 "", "")
@@ -1771,6 +1774,7 @@ Public Sub VBComponents_BackupAndExport()
     With st
         Call VBComponents_BackupAndExport_Sub( _
                 obj, _
+                .ProjectFolder, _
                 .ExportBinFolder, _
                 .ExportSrcFolder, _
                 .BackupBinFile, _
@@ -1794,6 +1798,7 @@ Private Sub VBComponents_BackupAndExportForApps(AppClass As String)
     
     Call VBComponents_BackupAndExport_Sub( _
             objApplication.VBE.ActiveVBProject, _
+            ".\", _
             ".\.\bin", _
             ".\.\src", _
             ".\.\backup\bin\[YYYYMMDD]_[HHMMSS]_[FILENAME]", _
@@ -1809,15 +1814,18 @@ Rem  @param BackupBinFile   バックアップbinファイル命名規則
 Rem  @param BackupSrcFile   エクスポートsrcファイル命名規則
 Rem
 Public Sub VBComponents_BackupAndExport_Sub( _
-            ExportObject As Object, _
-            ExportBinFolder As String, _
-            ExportSrcFolder As String, _
-            BackupBinFile As String, _
-            BackupSrcFile As String)
+            ByVal ExportObject As Object, _
+            ByVal ProjectFolder As String, _
+            ByVal ExportBinFolder As String, _
+            ByVal ExportSrcFolder As String, _
+            ByVal BackupBinFile As String, _
+            ByVal BackupSrcFile As String)
     Const PROC_NAME = "VBComponents_Export"
     
+    If ProjectFolder = "" Then Stop: Exit Sub
     Dim NowDateTime As Date: NowDateTime = Now()
     Dim objFilePath As kccPath: Set objFilePath = kccPath.Init(ExportObject)
+    Dim prjPath As kccPath: Set prjPath = kccPath.Init(ProjectFolder)
     
     If Not objFilePath.Workbook Is Nothing Then
         If objFilePath.Workbook.ReadOnly Then
