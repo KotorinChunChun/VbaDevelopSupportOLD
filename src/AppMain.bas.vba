@@ -5,7 +5,7 @@ Rem  @module        AppMain
 Rem
 Rem  @description   VBA開発を支援するVBE拡張アドイン
 Rem
-Rem  @update        0.1.x
+Rem  @update        0.2.x
 Rem
 Rem  @author        @KotorinChunChun (GitHub / Twitter)
 Rem
@@ -16,24 +16,25 @@ Rem  @references
 Rem    Microsoft Visual Basic for Applications Extensibility 5.3
 Rem    Microsoft Scripting Runtime
 Rem    Microsoft Excel 16.0 Object Library
-Rem
-Rem --------------------------------------------------------------------------------
-Rem  @refModules
-Rem    VbProcInfo
-Rem    VbeMenuItemCreator
-Rem    kccFuncString
-Rem    kccFuncPath
-Rem    kccPath
+Rem    Microsoft VBScript Regular Expressions 5.5
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @history
-Rem    2020/08/01 再整備
+Rem    2020/08/01 0.1.x 再整備
+Rem                     CustomUIの出力に対応
+Rem                     Excel以外のプロセスの出力に対応
+Rem                     Win32API_PtrSafe.txtからWinAPIのDeclare文の自動生成に対応
+Rem                     .kccignoreファイルでdevからbinにコピーするファイル指定に対応
+Rem
+Rem    2021/04/30 0.2.x 複数のマクロブックから構成されたプロジェクトへ対応
+Rem                     フォルダ構成をkccsettings.jsonで定義できるように変更
+Rem                     出力パスsrcの既定値が ./src/[FILENAME]/*.vba に変更
 Rem
 Rem --------------------------------------------------------------------------------
 Rem  @note
-Rem Public Function ParamsToString(Optional Delimiter = " ,") As String のコンマ適切にパースできない不具合がある
-Rem なぜか閉じたはずのブックがゾンビ化する
-Rem OutlookのVBEへのアクセス手段は存在せずエクスポートさせることができない。
+Rem    Public Function ParamsToString(Optional Delimiter = " ,") As String のコンマ適切にパースできない不具合がある
+Rem    なぜか閉じたはずのブックがゾンビ化して残ることがある。
+Rem    OutlookのVBEへのアクセス手段は存在せずエクスポートさせることができない。
 Rem
 Rem
 Rem --------------------------------------------------------------------------------
@@ -41,7 +42,7 @@ Option Explicit
 
 Public Const APP_NAME = "VBA開発支援アドイン"
 Public Const APP_CREATER = "@KotorinChunChun"
-Public Const APP_VERSION = "0.1.x"
+Public Const APP_VERSION = "0.2.x"
 Public Const APP_SETTINGFILE = APP_NAME & ".xml"
 Public Const APP_MENU_MODULE_NAME = "AppMain"
 Public Const APP_URL = "https://github.com/KotorinChunChun/VbaDevelopSupport"

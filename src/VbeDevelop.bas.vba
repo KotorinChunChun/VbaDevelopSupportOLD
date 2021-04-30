@@ -1746,11 +1746,16 @@ Rem  /bin/AddinName.xlam
 Rem  /src/CodeName.bas.vba
 Rem
 Public Sub VBComponents_Export_SRC()
-    Call VBComponents_BackupAndExport_Sub( _
-            Application.VBE.ActiveVBProject, _
-            ".\..\bin", _
-            ".\..\src", _
-            "", "")
+    Dim obj As Object: Set obj = Application.VBE.ActiveVBProject
+    Dim fn As String: fn = kccPath.Init(obj).CurrentFolder.FullPath
+    Dim st As kccSettings: Set st = kccSettings.Init(fn)
+    With st
+        Call VBComponents_BackupAndExport_Sub( _
+                obj, _
+                .ExportBinFolder, _
+                .ExportSrcFolder, _
+                "", "")
+    End With
 End Sub
 
 Rem アクティブなプロジェクトをGIT用バックアップ＆エクスポート
@@ -1761,12 +1766,16 @@ Rem  /backup/bin/YYYYMMDD_HHMMSS_AddinName.xlam
 Rem  /backup/src/CodeName.bas.vba
 Rem
 Public Sub VBComponents_BackupAndExport()
-    Call VBComponents_BackupAndExport_Sub( _
-            Application.VBE.ActiveVBProject, _
-            ".\..\bin", _
-            ".\..\src", _
-            ".\..\backup\bin\[YYYYMMDD]_[HHMMSS]_[FILENAME]", _
-            ".\..\backup\src\[YYYYMMDD]_[HHMMSS]\[FILENAME]")
+    Dim obj As Object: Set obj = Application.VBE.ActiveVBProject
+    Dim st As kccSettings: Set st = kccSettings.Init(kccPath.Init(obj).FullPath)
+    With st
+        Call VBComponents_BackupAndExport_Sub( _
+                obj, _
+                .ExportBinFolder, _
+                .ExportSrcFolder, _
+                .BackupBinFile, _
+                .BackupSrcFile)
+    End With
 End Sub
 
 Public Sub VBComponents_BackupAndExportForAccess(): Call VBComponents_BackupAndExportForApps("Access.Application"): End Sub
@@ -1838,7 +1847,7 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     If ExportBinFolder <> "" Then
         Dim binPath As kccPath
         Set binPath = prjPath.SelectPathToFolderPath(ExportBinFolder).ReplacePathAuto(DateTime:=NowDateTime)
-        If binPath.FullPath <> prjPath.FullPath Then
+        If binPath.FullPath <> prjPath.CurrentFolder.FullPath Then
             binPath.DeleteItems
             binPath.CreateFolder
             If prjPath.CurrentFolder.CopyTo(binPath, UseIgnoreFile:=True).IsAbort Then Exit Sub
@@ -1849,11 +1858,13 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     '既存ソースを一旦別のフォルダに移動して、出力後に比較して、完全一致なら巻き戻す。
     If ExportSrcFolder <> "" Then
         Dim srcPath As kccPath
-        Set srcPath = prjPath.SelectPathToFolderPath(ExportSrcFolder).ReplacePathAuto(DateTime:=NowDateTime)
+        Set srcPath = prjPath.SelectPathToFolderPath(ExportSrcFolder)
+        Set srcPath = srcPath.ReplacePathAuto(DateTime:=NowDateTime, FileName:=prjPath.Name)
+        srcPath.CreateFolder
         
         'src_backフォルダを作成してsrcの中身をsrc_backへ
         Dim backPath As kccPath
-        Set backPath = srcPath.SelectPathToFolderPath("..\src_back\")
+        Set backPath = srcPath.SelectPathToFolderPath("..\" & srcPath.Name & "_back\")
         backPath.CreateFolder
         backPath.DeleteFiles
         backPath.DeleteFolders
