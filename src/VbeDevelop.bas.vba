@@ -1674,6 +1674,47 @@ Sub Test_AbsolutePathNameEx()
     Debug.Print kccFuncString.AbsolutePathNameEx("C:\vba\hoge\", "hoge.xls")
 End Sub
 
+Sub Test_Load_kccsettings()
+    Const SETTINGS_FILE_NAME = "kccsettings.json"
+    
+    Rem JsonテキストをUTF8で読み込み、規約違反のコメント行を削除
+    Dim jsonText As String
+    jsonText = kccPath.ReadUTF8Text(ThisWorkbook.Path & "\" & SETTINGS_FILE_NAME)
+    jsonText = kccWsFuncRegExp.RegexReplace(jsonText, "[ ]*//.*\r\n", "")
+    Debug.Print jsonText
+    Stop
+    
+    Rem Jsonをパース
+    Dim dic As Dictionary
+    Set dic = JsonConverter.ParseJson(jsonText)
+    Dim dKey, dItem
+    For Each dKey In dic
+        Debug.Print dKey, dic(dKey)
+    Next
+    Stop
+End Sub
+
+Sub Test_Load_kccsettings_class()
+    Dim st As kccSettings
+    Set st = kccSettings.Init(ThisWorkbook.Path)
+    Debug.Print st.ExportBinFolder
+    Debug.Print st.ExportSrcFolder
+    Debug.Print st.BackupBinFile
+    Debug.Print st.BackupSrcFile
+    Stop
+End Sub
+
+Sub Test_Load_kccsettings_default()
+    Dim st As kccSettings
+    Set st = kccSettings.Init(ThisWorkbook.Path)
+    st.CreateDefaultSetting
+    Debug.Print st.ExportBinFolder
+    Debug.Print st.ExportSrcFolder
+    Debug.Print st.BackupBinFile
+    Debug.Print st.BackupSrcFile
+    Stop
+End Sub
+
 Rem アクティブなプロジェクトへソースをSRCからインポート
 Rem
 Rem  /src/CodeName.bas.vba

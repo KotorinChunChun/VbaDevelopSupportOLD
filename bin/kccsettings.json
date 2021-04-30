@@ -1,0 +1,19 @@
+{
+    // "#" で始まる行はコメント
+    // .kccsettingファイルは .dev フォルダ直下に保存してください。
+    // 書き出し時には再帰的に上位のフォルダを調べて読み込まれます。
+    //
+    // バックスラッシュ（￥記号）とスラッシュは、バックスラッシュによるエスケープが必要です。
+    //
+    // binPath リリースフォルダ
+    "ExportBinFolder": ".\\..\\bin",
+    // srcPath ソースコードフォルダ
+    "ExportSrcFolder": ".\\..\\src",
+    //"ExportSrcFolder": ".\\..\\src\\[FILENAME]",
+    // src
+    // backup binフォルダ
+    "BackupBinFile": ".\\..\\backup\\bin\\[YYYYMMDD]_[HHMMSS]_[FILENAME]",
+    // backup srcフォルダ
+    "BackupSrcFile": ".\\..\\backup\\src\\[YYYYMMDD]_[HHMMSS]_[FILENAME]"
+        //"BackupSrcFile": ".\\..\\backup\\src\\[FILENAME]\\[YYYYMMDD]_[HHMMSS]_[FILENAME]"
+}
