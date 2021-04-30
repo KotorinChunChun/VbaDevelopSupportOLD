@@ -133,27 +133,27 @@ Public Sub OpenWebSite(URL)
 End Sub
 
 Sub Test_VBP()
-    Dim prjPath As kccPath: Set prjPath = kccPath.Init(Application.VBE.ActiveVBProject)
+    Dim objFilePath As kccPath: Set objFilePath = kccPath.Init(Application.VBE.ActiveVBProject)
     Dim obj
-    Set obj = prjPath.VBProject
+    Set obj = objFilePath.VBProject
     Debug.Print obj.Name
     Stop
 End Sub
 
 Rem 現在アクティブなプロジェクトのワークブックを閉じる
 Public Sub CloseProject()
-    Dim prjPath As kccPath: Set prjPath = kccPath.Init(Application.VBE.ActiveVBProject)
-    If prjPath Is Nothing Then Exit Sub
-    prjPath.Workbook.Close
+    Dim objFilePath As kccPath: Set objFilePath = kccPath.Init(Application.VBE.ActiveVBProject)
+    If objFilePath Is Nothing Then Exit Sub
+    objFilePath.Workbook.Close
 End Sub
 
 Rem アクティブブックのソースコードのプロシージャ一覧を新規ブックへ出力
 Public Sub VbeProcInfo_Output()
-    Dim prjPath As kccPath: Set prjPath = kccPath.Init(Application.VBE.ActiveVBProject)
+    Dim objFilePath As kccPath: Set objFilePath = kccPath.Init(Application.VBE.ActiveVBProject)
     
     'プロシージャ一覧を取得して二次元配列を取得する処理
     Dim data
-    data = VbeProcInfo_GetTable(prjPath.Workbook.VBProject)
+    data = VbeProcInfo_GetTable(objFilePath.Workbook.VBProject)
     
     '二次元配列をブックに出力する処理
     
@@ -1817,24 +1817,24 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     Const PROC_NAME = "VBComponents_Export"
     
     Dim NowDateTime As Date: NowDateTime = Now()
-    Dim prjPath As kccPath: Set prjPath = kccPath.Init(ExportObject)
+    Dim objFilePath As kccPath: Set objFilePath = kccPath.Init(ExportObject)
     
-    If Not prjPath.Workbook Is Nothing Then
-        If prjPath.Workbook.ReadOnly Then
-            MsgBox "[" & prjPath.FileName & "] は読み取り専用です。処理を中止します。", vbOKOnly + vbCritical, PROC_NAME
+    If Not objFilePath.Workbook Is Nothing Then
+        If objFilePath.Workbook.ReadOnly Then
+            MsgBox "[" & objFilePath.FileName & "] は読み取り専用です。処理を中止します。", vbOKOnly + vbCritical, PROC_NAME
             Exit Sub
         End If
-    
+        
         'プロジェクトの上書き保存
         Dim res As VbMsgBoxResult
         res = MsgBox(Join(Array( _
-            prjPath.FileName, _
+            objFilePath.FileName, _
             "エクスポートを実行します。", _
             "実行前にブックを保存しますか？"), vbLf), vbYesNoCancel, PROC_NAME)
         Select Case res
             Case vbYes
                 Call UserNameStackPush(" ")
-                prjPath.Workbook.Save
+                objFilePath.Workbook.Save
                 Call UserNameStackPush
             Case vbNo
                 '何もしない
@@ -1846,11 +1846,11 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     'プロジェクトをリリースフォルダへ複製
     If ExportBinFolder <> "" Then
         Dim binPath As kccPath
-        Set binPath = prjPath.SelectPathToFolderPath(ExportBinFolder).ReplacePathAuto(DateTime:=NowDateTime)
-        If binPath.FullPath <> prjPath.CurrentFolder.FullPath Then
+        Set binPath = objFilePath.SelectPathToFolderPath(ExportBinFolder).ReplacePathAuto(DateTime:=NowDateTime)
+        If binPath.FullPath <> objFilePath.CurrentFolder.FullPath Then
             binPath.DeleteItems
             binPath.CreateFolder
-            If prjPath.CurrentFolder.CopyTo(binPath, UseIgnoreFile:=True).IsAbort Then Exit Sub
+            If objFilePath.CurrentFolder.CopyTo(binPath, UseIgnoreFile:=True).IsAbort Then Exit Sub
         End If
     End If
     
@@ -1858,8 +1858,8 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     '既存ソースを一旦別のフォルダに移動して、出力後に比較して、完全一致なら巻き戻す。
     If ExportSrcFolder <> "" Then
         Dim srcPath As kccPath
-        Set srcPath = prjPath.SelectPathToFolderPath(ExportSrcFolder)
-        Set srcPath = srcPath.ReplacePathAuto(DateTime:=NowDateTime, FileName:=prjPath.Name)
+        Set srcPath = objFilePath.SelectPathToFolderPath(ExportSrcFolder)
+        Set srcPath = srcPath.ReplacePathAuto(DateTime:=NowDateTime, FileName:=objFilePath.Name)
         srcPath.CreateFolder
         
         'src_backフォルダを作成してsrcの中身をsrc_backへ
@@ -1871,9 +1871,8 @@ Public Sub VBComponents_BackupAndExport_Sub( _
         srcPath.MoveTo backPath
         
         'srcフォルダを作成して中にexport
-        srcPath.CreateFolder
         Call VBComponents_Export(ExportObject, srcPath)
-        Call CustomUI_Export(prjPath, srcPath)
+        Call CustomUI_Export(objFilePath, srcPath)
         
         'backから変更がないfrxを復元
         Dim f1 As File, f2 As File
@@ -1906,13 +1905,13 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     
     'binとsrcのバックアップ
     If BackupBinFile <> "" Then
-        binPath.CopyTo prjPath.SelectPathToFilePath(BackupBinFile).ReplacePathAuto(DateTime:=NowDateTime), withoutFilterString:="*~$*"
+        binPath.CopyTo objFilePath.SelectPathToFilePath(BackupBinFile).ReplacePathAuto(DateTime:=NowDateTime), withoutFilterString:="*~$*"
     End If
     If BackupSrcFile <> "" Then
-        srcPath.CopyTo prjPath.SelectPathToFilePath(BackupSrcFile).ReplacePathAuto(DateTime:=NowDateTime)
+        srcPath.CopyTo objFilePath.SelectPathToFilePath(BackupSrcFile).ReplacePathAuto(DateTime:=NowDateTime)
     End If
     
-    Debug.Print "VBA Exported : " & prjPath.FileName
+    Debug.Print "VBA Exported : " & objFilePath.FileName
 End Sub
 
 Rem Application.UserNameを一時的に上書きする
