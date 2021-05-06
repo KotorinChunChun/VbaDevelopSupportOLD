@@ -13,16 +13,20 @@
   //・文字コード判定
   //要：VSCode VBA
   "files.associations": {
-    "*.frm": "vba",
-    "*.bas": "vba",
-    "*.cls": "vba",
-    "*.vba": "vba",
+    "*.frm": "vb",
+    "*.bas": "vb",
+    "*.cls": "vb",
+    "*.vba": "vb",
+    "*.xml": "xml",
     "*.md": "markdown"
   },
 
   //文字コード設定
-  "[vba]": {
+  "[vb]": {
     "files.encoding": "shiftjis"
+  },
+  "[xml]": {
+    "files.encoding": "utf8"
   },
   "[markdown]": {
     "files.encoding": "utf8"
