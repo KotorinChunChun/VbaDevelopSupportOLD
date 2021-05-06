@@ -69,7 +69,7 @@ Excelを立ち上げたら自動で起動する常駐アドインとしたい場
 
 想定しているフォルダ構成は以下の通りです。
 
-![image](VBAソースコードバックアップ構成図.drawio.svg)
+![image](./VBAソースコードバックアップ構成図.drawio.svg)
 
 
 
@@ -100,14 +100,14 @@ Excelを立ち上げたら自動で起動する常駐アドインとしたい場
     // binPath リリースフォルダ
     "ExportBinFolder": ".\\..\\bin",
     // srcPath ソースコードフォルダ
-    "ExportSrcFolder": ".\\..\\src",
-    //"ExportSrcFolder": ".\\..\\src\\[FILENAME]",
+    //"ExportSrcFolder": ".\\..\\src",
+    "ExportSrcFolder": ".\\..\\src\\[FILENAME]",
     // src
     // backup binフォルダ
     "BackupBinFile": ".\\..\\backup\\bin\\[YYYYMMDD]_[HHMMSS]_[FILENAME]",
     // backup srcフォルダ
-    "BackupSrcFile": ".\\..\\backup\\src\\[YYYYMMDD]_[HHMMSS]_[FILENAME]"
-        //"BackupSrcFile": ".\\..\\backup\\src\\[FILENAME]\\[YYYYMMDD]_[HHMMSS]_[FILENAME]"
+    //"BackupSrcFile": ".\\..\\backup\\src\\[YYYYMMDD]_[HHMMSS]_[FILENAME]"
+    "BackupSrcFile": ".\\..\\backup\\src\\[FILENAME]\\[YYYYMMDD]_[HHMMSS]_[FILENAME]"
 }
 ```
 
