@@ -627,6 +627,7 @@ Type 一文字変数と数字Type
     r1                      As Long
     r2                      As Long
     r3                      As Long
+    r4                      As Long
 End Type
 
 Type 定数用Type
@@ -682,6 +683,9 @@ Type オリジナルメンバType
     ok                      As Long
     keta                    As Long
     mode                    As Long
+    btn                     As Long
+    token                   As Long
+    app                     As Long
 End Type
 
 '過去に大文字と決めてしまって今更変えられなくなった名前
