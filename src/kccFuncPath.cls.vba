@@ -742,11 +742,6 @@ Rem         Next
 Rem     Next
 Rem End Sub
 
-Rem 一時ファイルのフルパスを取得
-Public Function GetPathByTemporaryFile() As String
-    GetPathByTemporaryFile = GetPathTemporary & "\" & fso.GetTempName
-End Function
-
 Rem --------------------------------------------------------------------------------
 Rem   フォルダの一括作成
 Rem --------------------------------------------------------------------------------
@@ -785,8 +780,11 @@ Public Function GetPathAppData() As String: GetPathAppData = GetPathWSH("AppData
 Rem デスクトップフォルダ
 Public Function GetPathDesktop() As String: GetPathDesktop = GetPathWSH("Desktop"): End Function
 
-Rem テンポラ\一時ファイルリフォルダ
-Public Function GetPathTemporary() As String: GetPathTemporary = fso.GetSpecialFolder(TemporaryFolder): End Function
+Rem テンポラリフォルダ
+Rem
+Rem  @return C:\Users\%USERNAME%\AppData\Local\Temp
+Rem
+Public Function GetSpecialFolderAppDataLocalTemp() As String: GetSpecialFolderAppDataLocalTemp = fso.GetSpecialFolder(TemporaryFolder): End Function
 
 Rem アプリ名のサブフォルダを生成してラップして返す
 Public Function GetAppPath(SpecialFolders_Keyword, ProjectFolderName) As String
@@ -809,24 +807,39 @@ Public Function GetAppPath(SpecialFolders_Keyword, ProjectFolderName) As String
 End Function
 
 Rem AppDataフォルダ
+Rem
+Rem  @return C:\Users\%USERNAME%\AppData\Roaming\[ProjectFolderName]\
+Rem
 Public Function GetAppPathAppData(Optional ProjectFolderName) As String: GetAppPathAppData = GetAppPath("AppData", ProjectFolderName): End Function
 
-Rem テンポラリフォルダ取得
+Rem テンポラリフォルダのファイル用パスを取得
 Rem
-Rem  @return C:\Users\%USERNAME%\AppData\Local\Temp
+Rem  @return C:\Users\%USERNAME%\AppData\Local\Temp\radA9D19.tmp
 Rem
-Public Function GetAppPathTemporary() As String
-    GetAppPathTemporary = ""
+Public Function GetPathAppDataLocalTempFile() As String
+    GetPathAppDataLocalTempFile = GetSpecialFolderAppDataLocalTemp() & "\" & fso.GetTempName
+End Function
+
+Rem テンポラリフォルダのパスを取得
+Rem
+Rem  @param ProjectFolderName 一時フォルダ名。省略時はランダム値。
+Rem
+Rem  @return C:\Users\%USERNAME%\AppData\Local\Temp\[ProjectFolderName]\
+Rem
+Rem  @note   すぐに使えるようフォルダは作成状態となる
+Rem
+Public Function GetPathAppDataLocalTempFolder(Optional ProjectFolderName) As String
+    If ProjectFolderName = "" Then ProjectFolderName = fso.GetTempName
+    GetPathAppDataLocalTempFolder = ""
     With CreateObject("Scripting.FileSystemObject")
         Dim strFolder As String
-        strFolder = GetPathTemporary() & "\Temp"
-        If .FolderExists(strFolder) Then
-        Else
+        strFolder = GetSpecialFolderAppDataLocalTemp() & "\" & ProjectFolderName
+        If Not .FolderExists(strFolder) Then
             On Error Resume Next
                 .CreateFolder strFolder
             On Error GoTo 0
         End If
-        GetAppPathTemporary = .BuildPath(strFolder, "\")
+        GetPathAppDataLocalTempFolder = .BuildPath(strFolder, "\")
     End With
 End Function
 

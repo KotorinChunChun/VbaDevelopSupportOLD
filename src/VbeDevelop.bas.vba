@@ -1863,52 +1863,23 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     End If
     
     '既存ソースの削除とエクスポート
-    '既存ソースを一旦別のフォルダに移動して、出力後に比較して、完全一致なら巻き戻す。
     If ExportSrcFolder <> "" Then
+        '一時フォルダにエクスポート
+        Dim bufPath As kccPath
+        Set bufPath = kccPath.Init(kccFuncPath.GetPathAppDataLocalTempFolder(APP_NAME))
+        Call VBComponents_Export(ExportObject, bufPath)
+        Call CustomUI_Export(objFilePath, bufPath)
+        
+        '正式出力フォルダの確保
         Dim srcPath As kccPath
         Set srcPath = objFilePath.SelectPathToFolderPath(ExportSrcFolder)
         Set srcPath = srcPath.ReplacePathAuto(DateTime:=NowDateTime, FileName:=objFilePath.Name)
-        srcPath.CreateFolder
         
-        'src_backフォルダを作成してsrcの中身をsrc_backへ
-        Dim backPath As kccPath
-        Set backPath = srcPath.SelectPathToFolderPath("..\" & srcPath.Name & "_back\")
-        backPath.CreateFolder
-        backPath.DeleteFiles
-        backPath.DeleteFolders
-        srcPath.MoveTo backPath
+        '一時フォルダを出力フォルダに同期
+        bufPath.SyncTo srcPath, "*.vba;*.xml", "*.frx", ".frm.vba;.frm.frx"
         
-        'srcフォルダを作成して中にexport
-        Call VBComponents_Export(ExportObject, srcPath)
-        Call CustomUI_Export(objFilePath, srcPath)
-        
-        'backから変更がないfrxを復元
-        Dim f1 As File, f2 As File
-        For Each f1 In srcPath.Folder.Files
-            If f1.Name Like "*.frx" Then
-                Dim isRestore As Boolean: isRestore = False
-                For Each f2 In backPath.Folder.Files
-                    If f1.Name = f2.Name Then
-                        If f1.Size = f2.Size Then
-                            '一致
-                            Debug.Print "restore : " & f1.Name
-                            f2.Copy f1.Path, True
-                            isRestore = True
-                        End If
-                    End If
-                Next
-#If DEBUG_MODE Then
-                'frxが何故か全部更新されてしまうときの確認用
-                If Not isRestore Then Stop
-#End If
-            End If
-        Next
-        
-        'タイムスタンプの復元
-        
-        
-        'backフォルダの削除
-        backPath.DeleteFolder
+        'bufフォルダの削除
+        bufPath.DeleteFolder
     End If
     
     'binとsrcのバックアップ

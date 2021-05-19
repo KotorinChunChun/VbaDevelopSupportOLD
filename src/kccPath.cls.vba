@@ -408,7 +408,11 @@ Rem ファイルをすべて削除する
 Rem エラー処理は保留
 Public Function DeleteFiles()
     On Error Resume Next
-    fso.DeleteFile Me.FullPath & "\*"
+    If Me.IsFile Then
+        fso.DeleteFile Me.FullPath
+    Else
+        fso.DeleteFile Me.FullPath & "\*"
+    End If
 End Function
 
 Public Function DeleteFolders()
@@ -556,6 +560,110 @@ CopyFilesError:
         Case VbMsgBoxResult.vbRetry: MoveCopyTo.Add False, dest.FullPath & " 失敗し再試行しました": Resume
         Case VbMsgBoxResult.vbIgnore: MoveCopyTo.Add False, dest.FullPath & " 失敗し省略されました": Resume Next
     End Select
+End Function
+
+Rem 指定フォルダにファイル一式を同期
+Rem
+Rem  @param src 同期先
+Rem  @param filter_body_type ファイル内容チェックに基づく同期 セミコロン区切り
+Rem  @param filter_size_type ファイルサイズチェックに基づく同期 セミコロン区切り
+Rem  @param pair_type ヒットした時セットでコピー処理を行う形式 名前置換前後セミコロン区切り、LF区切り（未実装）
+Rem
+Rem 同一の名前のファイルは変化していたら上書き
+Rem 消滅したファイルは同期先からも削除
+Rem
+Public Function SyncTo( _
+            srcPath As kccPath, _
+            filter_body_type As String, _
+            filter_size_type As String, _
+            pair_type As String)
+    Dim bufPath As kccPath
+    Set bufPath = Me
+    srcPath.CreateFolder
+    
+    'ファイルリストを取得して静的文字列コレクションに変換
+    Dim bufFL As Collection: Set bufFL = kccFuncPath.GetFileFolderList(bufPath.FullPath, add_files:=True)
+    Dim srcFL As Collection: Set srcFL = kccFuncPath.GetFileFolderList(srcPath.FullPath, add_files:=True)
+    
+    'buf有 src有 … 内容を比較して変更があれば上書き
+    Dim ext
+    Dim bufFN, srcFN
+    Dim bufKccPath As kccPath
+    Dim srcKccPath As kccPath
+    Dim IsExists As Boolean
+    For Each bufFN In bufFL
+        IsExists = False
+        For Each ext In Split(filter_body_type, ";")
+            If bufFN Like ext Then IsExists = True: Exit For
+        Next
+        If IsExists Then
+            For Each srcFN In srcFL
+                If bufFN = srcFN Then
+                    Set bufKccPath = bufPath.SelectPathToFilePath(".\" & bufFN)
+                    Set srcKccPath = srcPath.SelectPathToFilePath(".\" & srcFN)
+                    
+                    Dim bufTxt As String: bufTxt = fso.OpenTextFile(bufKccPath.FullPath, ForReading).ReadAll()
+                    Dim srcTxt As String: srcTxt = fso.OpenTextFile(srcKccPath.FullPath, ForReading).ReadAll()
+                    
+                    If bufTxt <> srcTxt Then
+                        bufKccPath.CopyTo srcKccPath, OverWriteFiles:=True
+                        
+                        'セットで移動
+                        Dim filetype_pair: filetype_pair = Split(pair_type, ";")
+                        If bufFN Like "*" & filetype_pair(0) Then
+                            Set bufKccPath = bufPath.SelectPathToFilePath(".\" & Replace(bufFN, filetype_pair(0), filetype_pair(1)))
+                            Set srcKccPath = srcPath.SelectPathToFilePath(".\" & Replace(srcFN, filetype_pair(0), filetype_pair(1)))
+                            bufKccPath.CopyTo srcKccPath, OverWriteFiles:=True
+                        End If
+                    End If
+                End If
+            Next
+        End If
+    Next
+    
+    'frxのファイルサイズが変化…frxのみ差し替え
+    For Each bufFN In bufFL
+        IsExists = False
+        For Each ext In Split(filter_size_type, ";")
+            If bufFN Like ext Then IsExists = True: Exit For
+        Next
+        If IsExists Then
+            For Each srcFN In srcFL
+                If bufFN = srcFN Then
+                    Set bufKccPath = bufPath.SelectPathToFilePath(".\" & bufFN)
+                    Set srcKccPath = srcPath.SelectPathToFilePath(".\" & srcFN)
+                    If bufKccPath.File.Size <> srcKccPath.File.Size Then
+                        bufKccPath.CopyTo srcKccPath, OverWriteFiles:=True
+                    End If
+                End If
+            Next
+        End If
+    Next
+    
+    'buf有 src無 … bufからコピー
+    For Each bufFN In bufFL
+        IsExists = False
+        For Each srcFN In srcFL
+            If bufFN = srcFN Then IsExists = True: Exit For
+        Next
+        If Not IsExists Then
+            Set bufKccPath = bufPath.SelectPathToFilePath(".\" & bufFN)
+            Set srcKccPath = srcPath.SelectPathToFilePath(".\" & bufFN)
+            bufKccPath.CopyTo srcKccPath, OverWriteFiles:=True
+        End If
+    Next
+    
+    'buf無 src有 … srcから消去
+    For Each srcFN In srcFL
+        IsExists = False
+        For Each bufFN In bufFL
+            If bufFN = srcFN Then IsExists = True: Exit For
+        Next
+        If Not IsExists Then
+            Set srcKccPath = srcPath.SelectPathToFilePath(".\" & srcFN)
+            srcKccPath.DeleteFiles
+        End If
+    Next
 End Function
 
 Rem ignoreでファイルリストを絞り込み
