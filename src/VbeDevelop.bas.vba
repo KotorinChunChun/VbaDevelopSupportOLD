@@ -1068,8 +1068,8 @@ Private Sub proc(msg As String)
 End Sub
 
 Rem nとmを足す関数
-Private Function FuncSum(n As Long, M As Long) As Long
-    FuncSum = n + M
+Private Function FuncSum(n As Long, m As Long) As Long
+    FuncSum = n + m
 End Function
 
 Private Sub Test1()
@@ -1250,9 +1250,9 @@ End Sub
 
 Private Function GetVbeWindow(t As VBIDE.VBExt_WindowType) As Collection
     Dim retCol As Collection: Set retCol = New Collection
-    Dim W As VBIDE.Window
-    For Each W In Application.VBE.Windows
-        If W.Type = t Then retCol.Add W
+    Dim w As VBIDE.Window
+    For Each w In Application.VBE.Windows
+        If w.Type = t Then retCol.Add w
     Next
     Set GetVbeWindow = retCol
 End Function
@@ -1263,11 +1263,11 @@ Rem １．VBIDEを使用する場合は「ツール」の「参照設定」メニューで
 Rem 「Microsoft Visiual Basic for Applications Extensibility」を追加します。
 Public Sub ShowImmediate()
     Application.VBE.MainWindow.Visible = True
-    Dim W As VBIDE.Window
+    Dim w As VBIDE.Window
     Set Application.VBE.ActiveVBProject = Application.VBE.VBProjects("HomePersonal")
-    For Each W In Application.VBE.Windows
-        If W.Type = VBIDE.vbext_wt_Immediate Then
-            W.SetFocus
+    For Each w In Application.VBE.Windows
+        If w.Type = VBIDE.vbext_wt_Immediate Then
+            w.SetFocus
         End If
     Next
 End Sub
@@ -2357,9 +2357,9 @@ End Sub
 
 Rem 全てのコードウインドウを閉じる
 Public Sub CloseCodePanes()
-    Dim C As CodePane
-    For Each C In Application.VBE.CodePanes
-        C.Window.Close
+    Dim c As CodePane
+    For Each c In Application.VBE.CodePanes
+        c.Window.Close
     Next
 End Sub
 

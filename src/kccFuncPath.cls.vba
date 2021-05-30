@@ -412,7 +412,7 @@ Rem StrCmpLogicalW関数
 Rem エクスプローラのファイル順に並び替える
 Rem https://docs.microsoft.com/en-us/windows/desktop/api/shlwapi/nf-shlwapi-strcmplogicalw
 #If VBA7 Then
-Private Declare PtrSafe Function StrCmpLogicalW Lib "shlwapi" _
+Private Declare PtrSafe Function StrCmpLogicalW Lib "SHLWAPI" _
                 (ByVal lpStr1 As String, ByVal lpStr2 As String) As Long
 #Else
 Private Declare Function StrCmpLogicalW Lib "shlwapi" _

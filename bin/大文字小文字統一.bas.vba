@@ -290,6 +290,7 @@ Type KeywordUpperLowerCaseUnification_VBA_NamedParam
     Compare                 As Long
     Cursor                  As Long
     Output                  As Long
+    SaveChanges             As Long
 End Type
 
 'Excelキーワード
@@ -595,30 +596,30 @@ End Type
 Type 一文字変数Type
     a                       As Long
     b                       As Long
-    C                       As Long
+    c                       As Long
     d                       As Long
-    E                       As Long
+    e                       As Long
     f                       As Long
     g                       As Long
-    H                       As Long
+    h                       As Long
     i                       As Long
     j                       As Long
     k                       As Long
     l                       As Long
-    M                       As Long
+    m                       As Long
     n                       As Long
     o                       As Long
     p                       As Long
-    Q                       As Long
+    q                       As Long
     r                       As Long
     s                       As Long
     t                       As Long
     u                       As Long
     v                       As Long
-    W                       As Long
+    w                       As Long
     x                       As Long
     y                       As Long
-    Z                       As Long
+    z                       As Long
 End Type
 
 Type 一文字変数と数字Type

@@ -156,14 +156,14 @@ End Sub
 
 'For Eachではコレクションの要素を書き換えられない
 Sub Test_CollectionForeach()
-    Dim C As Collection: Set C = New Collection
-    C.Add "a\"
-    C.Add "b\"
+    Dim c As Collection: Set c = New Collection
+    c.Add "a\"
+    c.Add "b\"
     Dim i
-    For Each i In C
+    For Each i In c
         i = "a"
     Next
-    For Each i In C
+    For Each i In c
         Debug.Print i
     Next
 End Sub

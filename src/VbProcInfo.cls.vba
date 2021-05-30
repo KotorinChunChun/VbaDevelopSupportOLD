@@ -120,25 +120,25 @@ Private Function CreateVbProcParamInfo(ParamsText) As Collection
     Dim ret As New Collection
     
     'パラメータ毎の文字列配列
-    Dim params: params = Split(vbNullString)
+    Dim Params: Params = Split(vbNullString)
     If ParamsText <> "" Then
-        params = Split(ParamsText, ",")
-        For i = LBound(params) To UBound(params)
-            params(i) = Trim(params(i))
+        Params = Split(ParamsText, ",")
+        For i = LBound(Params) To UBound(Params)
+            Params(i) = Trim(Params(i))
         Next
     End If
     
     'パラメータ毎のクラスオブジェクトのコレクション
-    If UBound(params) >= 0 Then
-        For i = LBound(params) To UBound(params)
-            ret.Add VbProcParamInfo.Init(params(i))
+    If UBound(Params) >= 0 Then
+        For i = LBound(Params) To UBound(Params)
+            ret.Add VbProcParamInfo.Init(Params(i))
         Next
     End If
     Set CreateVbProcParamInfo = ret
 End Function
 
-Function params(idx) As VbProcParamInfo
-    Set params = Me.params(idx)
+Function Params(idx) As VbProcParamInfo
+    Set Params = Me.Params(idx)
 End Function
 
 Public Property Get ProcKindName() As String
