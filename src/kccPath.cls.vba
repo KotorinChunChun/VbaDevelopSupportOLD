@@ -319,22 +319,7 @@ Rem                         True  : 成功(削除に成功 or 元々フォルダが無い)
 Rem                         False : 失敗(フォルダが残っている)
 Rem
 Public Function DeleteFolder() As Boolean
-    Dim cPath As String: cPath = Me.CurrentFolderPath
-    If fso.FolderExists(cPath) Then
-        '1秒空けて3回リトライ
-        Dim n As Long: n = 3
-        Do
-            On Error Resume Next
-            fso.DeleteFolder cPath
-            If Err.Number = 0 Then Exit Do
-            On Error GoTo 0
-            Application.Wait [Now() + "00:00:01"]
-            n = n - 1
-            If n = 0 Then Exit Do 'Err.Raise 9999, "DeleteFolder", "削除できません"
-        Loop
-        DoEvents
-    End If
-    DeleteFolder = Not fso.FolderExists(cPath)
+    DeleteFolder = kccFuncPath.DeleteFolderReplay(Me.CurrentFolderPath)
 End Function
 
 Rem ファイル・フォルダが存在するか
@@ -346,9 +331,9 @@ Public Function Exists() As Boolean
     End If
 End Function
 
-Rem ファイルをコピーする
+Rem ファイルをコピーする（fso仕様準拠）
 Rem
-Rem  @param dest            コピー先ファイル名またはフォルダ
+Rem  @param dest            コピー先ファイル名またはフォルダパス
 Rem  @param OverWriteFiles  コピー先ファイルが存在する時上書きするか(既定:True)
 Rem
 Rem  @note
@@ -384,7 +369,8 @@ Public Function CopyFile(dest As kccPath, _
     End If
     
     On Error GoTo CopyFileError
-    fl.Copy dest.FullPath, OverWriteFiles:=OverWriteFiles
+'    fl.Copy dest.FullPath, OverWriteFiles:=OverWriteFiles
+    kccFuncPath.CopyFile fl.Path, dest.FullPath, OverWriteFiles:=OverWriteFiles
     On Error GoTo 0
     
     CopyFile.Add True, PROC_NAME & " 完了しました。"
@@ -536,7 +522,7 @@ Public Function MoveCopyTo(dest As kccPath, _
         On Error GoTo CopyFilesError
             Set fl = fso.GetFile(MePath & vf)
             If IsCopy Then
-                fl.Copy fd, True
+                kccFuncPath.CopyFile fl.Path, fd, True
             Else
                 fl.Move fd
             End If

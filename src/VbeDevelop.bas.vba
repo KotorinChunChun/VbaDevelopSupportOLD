@@ -1825,7 +1825,7 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     If ProjectFolder = "" Then Stop: Exit Sub
     Dim NowDateTime As Date: NowDateTime = Now()
     Dim objFilePath As kccPath: Set objFilePath = kccPath.Init(ExportObject)
-    Dim prjPath As kccPath: Set prjPath = kccPath.Init(ProjectFolder)
+    Dim prjFolderPath As kccPath: Set prjFolderPath = kccPath.Init(ProjectFolder, False)
     
     If Not objFilePath.Workbook Is Nothing Then
         If objFilePath.Workbook.ReadOnly Then
@@ -1854,11 +1854,11 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     'プロジェクトをリリースフォルダへ複製
     If ExportBinFolder <> "" Then
         Dim binPath As kccPath
-        Set binPath = objFilePath.SelectPathToFolderPath(ExportBinFolder).ReplacePathAuto(DateTime:=NowDateTime)
+        Set binPath = prjFolderPath.SelectPathToFolderPath(ExportBinFolder).ReplacePathAuto(DateTime:=NowDateTime)
         If binPath.FullPath <> objFilePath.CurrentFolder.FullPath Then
             binPath.DeleteItems
             binPath.CreateFolder
-            If objFilePath.CurrentFolder.CopyTo(binPath, UseIgnoreFile:=True).IsAbort Then Exit Sub
+            If prjFolderPath.CopyTo(binPath, UseIgnoreFile:=True).IsAbort Then Exit Sub
         End If
     End If
     
@@ -1866,14 +1866,17 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     If ExportSrcFolder <> "" Then
         '一時フォルダにエクスポート
         Dim bufPath As kccPath
-        Set bufPath = kccPath.Init(kccFuncPath.GetPathAppDataLocalTempFolder(APP_NAME))
+        Set bufPath = kccPath.Init(kccFuncPath.GetFolderPathAppDataLocalTemp(APP_NAME))
         Call VBComponents_Export(ExportObject, bufPath)
         Call CustomUI_Export(objFilePath, bufPath)
         
         '正式出力フォルダの確保
         Dim srcPath As kccPath
-        Set srcPath = objFilePath.SelectPathToFolderPath(ExportSrcFolder)
-        Set srcPath = srcPath.ReplacePathAuto(DateTime:=NowDateTime, FileName:=objFilePath.Name)
+        '[FILENAME]にはdevからの相対パスが必要
+        '現在は[prjFolderPath]\./../src\[FILENAME]になっている
+        
+        Set srcPath = prjFolderPath.SelectPathToFolderPath(ExportSrcFolder)
+        Set srcPath = srcPath.ReplacePathAuto(DateTime:=NowDateTime, FileName:=Replace(objFilePath.FullPath, prjFolderPath.FullPath, ""))
         
         '一時フォルダを出力フォルダに同期
         bufPath.SyncTo srcPath, "*.vba;*.xml", "*.frx", ".frm.vba;.frm.frx"

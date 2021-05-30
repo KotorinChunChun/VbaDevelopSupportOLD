@@ -15,5 +15,5 @@
     "BackupBinFile": ".\\..\\backup\\bin\\[YYYYMMDD]_[HHMMSS]_[FILENAME]",
     // backup srcフォルダ
     "BackupSrcFile": ".\\..\\backup\\src\\[YYYYMMDD]_[HHMMSS]_[FILENAME]"
-        //"BackupSrcFile": ".\\..\\backup\\src\\[FILENAME]\\[YYYYMMDD]_[HHMMSS]_[FILENAME]"
+    //"BackupSrcFile": ".\\..\\backup\\src\\[FILENAME]\\[YYYYMMDD]_[HHMMSS]_[FILENAME]"
 }

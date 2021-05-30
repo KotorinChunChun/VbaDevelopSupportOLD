@@ -321,6 +321,34 @@ Public Function RightStrRev(base_str, cut_str, _
     End If
 End Function
 
+
+
+Rem Left関数拡張  最後に出現する区切り文字列を切れ目として左側の文字を返す
+Rem
+Rem  @param base_str      取り出し元文字列
+Rem  @param cut_str       切断文字列（該当する文字列の手前までを取り出す）  存在しない場合は入力文字列で埋めるか
+Rem  @param cut_inc       切断文字列を含めて返すかどうか（通常は除外する）
+Rem  @param shift_len     取り出し文字列を余分に取り出す文字数（プラス）、削り落とす文字数（マイナス）
+Rem  @param should_fill   存在しない場合は入力文字列で埋めるか（既定True）
+Rem
+Rem  @return As String
+Rem
+Rem  @example
+Rem
+Public Function LeftStrRev(base_str, cut_str, Optional cut_inc As Boolean = False, _
+                                Optional shift_len As Long = 0, Optional should_fill = True) As String
+    If InStrRev(base_str, cut_str, -1) > 0 And cut_str <> "" Then
+        If cut_inc Then
+            LeftStrRev = Left(base_str, InStrRev(base_str, cut_str, -1) - 1 + shift_len + Len(cut_str))
+        Else
+            LeftStrRev = Left(base_str, InStrRev(base_str, cut_str, -1) - 1 + shift_len)
+        End If
+    ElseIf should_fill Then
+        LeftStrRev = base_str
+    Else
+        LeftStrRev = ""
+    End If
+End Function
 Rem フォルダの絶対パスとファイルの相対パスを合成して、目的のファイルの絶対パスを取得する関数
 Rem
 Rem  @name     AbsolutePathNameEx

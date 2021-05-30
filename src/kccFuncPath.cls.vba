@@ -200,13 +200,13 @@ Option Explicit
 Rem WNetGetConnection
 Rem ローカルデバイスに関連付けられたネットワークリソースの名前を取得します。
 #If VBA7 Then
-    Private Declare PtrSafe Function WNetGetConnection Lib "mpr.dll" Alias "WNetGetConnectionW" ( _
+    Private Declare PtrSafe Function WNetGetConnection Lib "mpr" Alias "WNetGetConnectionW" ( _
                                             ByVal lpszLocalName As LongPtr, _
                                             ByVal lpszRemoteName As LongPtr, _
                                             cbRemoteName As Long _
                                             ) As Long
 #Else
-    Private Declare Function WNetGetConnection Lib "mpr.dll" Alias "WNetGetConnectionW" ( _
+    Private Declare Function WNetGetConnection Lib "mpr" Alias "WNetGetConnectionW" ( _
                                             ByVal lpszLocalName As Long, _
                                             ByVal lpszRemoteName As Long, _
                                             cbRemoteName As Long _
@@ -419,6 +419,9 @@ Private Declare Function StrCmpLogicalW Lib "shlwapi" _
                 (ByVal lpStr1 As String, ByVal lpStr2 As String) As Long
 #End If
 
+Rem スリープ
+Private Declare PtrSafe Sub Sleep Lib "Kernel32" (ByVal ms As LongPtr)
+
 Rem wsh.SpecialFoldersプロパティ
 Private Const SpecialFolderKey_AllUsersDesktop = "AllUsersDesktop"
 Private Const SpecialFolderKey_AllUsersStartMenu = "AllUsersStartMenu"
@@ -500,20 +503,52 @@ Rem ----------------------------------------------------------------------------
 Rem 指定したパスのフォルダを一気に作成する
 Rem 失敗した時だけFalseを返す。既に存在した場合は無視でOK
 Rem
-Rem  @param folder_path 作成したいフォルダ
+Rem  @param folder_path             作成したいフォルダのフルパス
+Rem  @param without_lastfilename    True:パスの最後の\から末尾はファイル名とみなしてフォルダを作らない
+Rem  @param errValue                実行結果を表すエラーコードを返す
 Rem
 Rem  @return As Boolen  成功したかどうか
 Rem                      作成に成功 : True
 Rem                      既に存在   : True
 Rem                      作成に失敗 : False
+Rem  @note
+Rem   OldName : CreateAllFolder, CreateFolderEx
 Rem
-Public Function CreateDirectoryEx(folder_path As String, Optional ByRef errValue) As Boolean
-    errValue = SHCreateDirectoryEx(0&, StrPtr(SupportMaxPath260over(folder_path)), 0&)
-    Select Case errValue
+Public Function CreateDirectoryEx( _
+        ByVal folder_path As String, _
+        Optional ByVal without_LastFileName As Boolean = False, _
+        Optional ByRef returnErrorCode) As Boolean
+    If without_LastFileName Then folder_path = kccFuncString.LeftStrRev(folder_path, "\")
+    returnErrorCode = SHCreateDirectoryEx(0&, StrPtr(SupportMaxPath260over(folder_path)), 0&)
+    Select Case returnErrorCode
         Case 0:  CreateDirectoryEx = True '成功
         Case 183: CreateDirectoryEx = True '既に存在
         Case Else: CreateDirectoryEx = False '失敗
     End Select
+End Function
+
+Rem 指定したパスのフォルダを一気に作成する
+Public Function CreateDirectoryExNoAPI(ByVal strPath As String, Optional without_LastFileName As Boolean = False) As Boolean
+
+    Dim s, v, f
+    Dim i As Long
+    
+    v = Split(strPath, "\")
+
+    On Error Resume Next
+    For i = LBound(v) To UBound(v)
+        If without_LastFileName And i = UBound(v) Then Exit For
+    
+        If f = "" Then
+            f = v(i)
+            fso.CreateFolder f & "\"
+        Else
+            f = f & "\" & v(i)
+            fso.CreateFolder f
+        End If
+    
+    Next
+
 End Function
 
 Rem Public Function CreateDirectoryExA(folder_path As String) As Boolean
@@ -742,122 +777,154 @@ Rem         Next
 Rem     Next
 Rem End Sub
 
-Rem --------------------------------------------------------------------------------
-Rem   フォルダの一括作成
-Rem --------------------------------------------------------------------------------
-Public Sub CreateAllFolder(ByVal strPath As String, Optional without_lastfilename As Boolean = False)
-
-    Dim s, v, f
-    Dim i As Long
-    
-    v = Split(strPath, "\")
-
-    On Error Resume Next
-    For i = LBound(v) To UBound(v)
-        If without_lastfilename And i = UBound(v) Then Exit For
-    
-        If f = "" Then
-            f = v(i)
-            fso.CreateFolder f & "\"
-        Else
-            f = f & "\" & v(i)
-            fso.CreateFolder f
-        End If
-    
-    Next
-
-End Sub
-
-Function GetPathWSH(WSH_SpecialFolders_Keyword) As String
-    On Error Resume Next
-    GetPathWSH = CreateObject("Wscript.Shell").SpecialFolders(WSH_SpecialFolders_Keyword)
-End Function
-
-Rem ドキュメントフォルダ
-Public Function GetPathMyDocument() As String: GetPathMyDocument = GetPathWSH("MyDocuments"): End Function
-Rem AppDataフォルダ
-Public Function GetPathAppData() As String: GetPathAppData = GetPathWSH("AppData"): End Function
-Rem デスクトップフォルダ
-Public Function GetPathDesktop() As String: GetPathDesktop = GetPathWSH("Desktop"): End Function
-
-Rem テンポラリフォルダ
+Rem フォルダを削除（成功するまで繰り返す）
 Rem
-Rem  @return C:\Users\%USERNAME%\AppData\Local\Temp
+Rem  @param strFolderPath    削除するフォルダのフルパス
+Rem  @param nTimeOut         試行回数
 Rem
-Public Function GetSpecialFolderAppDataLocalTemp() As String: GetSpecialFolderAppDataLocalTemp = fso.GetSpecialFolder(TemporaryFolder): End Function
-
-Rem アプリ名のサブフォルダを生成してラップして返す
-Public Function GetAppPath(SpecialFolders_Keyword, ProjectFolderName) As String
-    If VBA.IsMissing(ProjectFolderName) Then ProjectFolderName = ""
-    If ProjectFolderName = "" Then ProjectFolderName = ThisWorkbook.Name
-    
-    GetAppPath = ""
-    With CreateObject("Scripting.FileSystemObject")
-        Dim strFolder As String
-        strFolder = .BuildPath(GetPathAppData, ProjectFolderName)
-        If .FolderExists(strFolder) Then
-        Else
+Rem  @return As Boolean 削除結果
+Rem                         True  : 成功(削除に成功 or 元々フォルダが無い)
+Rem                         False : 失敗(フォルダが残っている)
+Rem
+Public Function DeleteFolderReplay(strFolderPath As String, Optional nTimeOut As Long = 3) As Boolean
+    If fso.FolderExists(strFolderPath) Then
+        Dim n As Long: n = nTimeOut
+        Do
             On Error Resume Next
-                .CreateFolder strFolder
+            fso.DeleteFolder strFolderPath
+            If Err.Number = 0 Then Exit Do
             On Error GoTo 0
-        End If
-        GetAppPath = .BuildPath(strFolder, "\")
-    End With
-
+            Sleep 1000
+            n = n - 1
+            If n = 0 Then Exit Do 'Err.Raise 9999, "DeleteFolder", "削除できません"
+        Loop
+        DoEvents
+    End If
+    DeleteFolderReplay = Not fso.FolderExists(strFolderPath)
 End Function
 
-Rem AppDataフォルダ
-Rem
-Rem  @return C:\Users\%USERNAME%\AppData\Roaming\[ProjectFolderName]\
-Rem
-Public Function GetAppPathAppData(Optional ProjectFolderName) As String: GetAppPathAppData = GetAppPath("AppData", ProjectFolderName): End Function
-
-Rem テンポラリフォルダのファイル用パスを取得
-Rem
-Rem  @return C:\Users\%USERNAME%\AppData\Local\Temp\radA9D19.tmp
-Rem
-Public Function GetPathAppDataLocalTempFile() As String
-    GetPathAppDataLocalTempFile = GetSpecialFolderAppDataLocalTemp() & "\" & fso.GetTempName
-End Function
-
-Rem テンポラリフォルダのパスを取得
-Rem
-Rem  @param ProjectFolderName 一時フォルダ名。省略時はランダム値。
-Rem
-Rem  @return C:\Users\%USERNAME%\AppData\Local\Temp\[ProjectFolderName]\
-Rem
-Rem  @note   すぐに使えるようフォルダは作成状態となる
-Rem
-Public Function GetPathAppDataLocalTempFolder(Optional ProjectFolderName) As String
-    If ProjectFolderName = "" Then ProjectFolderName = fso.GetTempName
-    GetPathAppDataLocalTempFolder = ""
+Rem 絶対パスとフォルダ名を結合してフォルダを作成したフルパスを返す
+Rem  @param ProjectFolderName   サブフォルダ名
+Rem  @return As String          フォルダのフルパス
+Private Function FolderBuildAndCreate(strFolderPath As String, Optional ProjectFolderName) As String
+    FolderBuildAndCreate = strFolderPath
+    If VBA.IsMissing(ProjectFolderName) Then Exit Function
+    If ProjectFolderName = "" Then Exit Function
+    
     With CreateObject("Scripting.FileSystemObject")
         Dim strFolder As String
-        strFolder = GetSpecialFolderAppDataLocalTemp() & "\" & ProjectFolderName
+        strFolder = .BuildPath(FolderBuildAndCreate, ProjectFolderName)
         If Not .FolderExists(strFolder) Then
             On Error Resume Next
                 .CreateFolder strFolder
             On Error GoTo 0
         End If
-        GetPathAppDataLocalTempFolder = .BuildPath(strFolder, "\")
+        FolderBuildAndCreate = .BuildPath(strFolder, "\")
     End With
 End Function
 
-Rem テンポラリフォルダ取得
-Public Function CreateTempFolder(SpecialFolderKey As String, Optional folder_name_format As String = "yyyymmdd_hhmmss") As String
-    CreateTempFolder = CreateObject("Wscript.Shell").SpecialFolders(CVar(SpecialFolderKey)) & "\" & Format(Now, folder_name_format)
+Rem WSH.SpecialFoldersを使った汎用フォルダのパス取得
+Rem  @param WSH_SpecialFolders_Keyword   WSH.SpecialFoldersのフォルダを示すキー
+Rem  @return C:\Users\%USERNAME%[WSH_SpecialFolders_Keyword]\
+Public Function GetFolderPathWSH(WSH_SpecialFolders_Keyword) As String
     On Error Resume Next
-    If fso.CreateFolder(CreateTempFolder) Then
-        If Err Then Debug.Print "ERROR CreateTempFolder : " & Err.Description
-    End If
-    CreateTempFolder = CreateTempFolder & "\"
+    GetFolderPathWSH = CreateObject("Wscript.Shell").SpecialFolders(WSH_SpecialFolders_Keyword) & "\"
+    On Error GoTo 0
+End Function
+
+Rem AppDataフォルダのパス取得
+Rem  一般的にアプリケーションの設定ファイルの保存に使用する
+Rem  @param ProjectFolderName   サブフォルダ名
+Rem  @return C:\Users\%USERNAME%\AppData\Roaming\
+Rem  @return C:\Users\%USERNAME%\AppData\Roaming\[ProjectFolderName]\
+Public Function GetFolderPathAppData(Optional ProjectFolderName) As String
+    GetFolderPathAppData = FolderBuildAndCreate(GetFolderPathWSH("AppData"), ProjectFolderName)
+End Function
+
+Rem デスクトップフォルダのパス取得
+Rem  一般的にアプリケーションのショートカットの保存に使用する
+Rem  @param ProjectFolderName   サブフォルダ名
+Rem  @return C:\Users\%USERNAME%\Desktop\
+Rem  @return C:\Users\%USERNAME%\Desktop\[ProjectFolderName]\
+Public Function GetFolderPathDesktop(Optional ProjectFolderName) As String
+    GetFolderPathDesktop = FolderBuildAndCreate(GetFolderPathWSH("Desktop"), ProjectFolderName)
+End Function
+
+Rem ドキュメントフォルダのパス取得
+Rem  一般的にアプリケーションのデータファイルの保存に使用する
+Rem  @param ProjectFolderName   サブフォルダ名
+Rem  @return C:\Users\%USERNAME%\Documents\
+Rem  @return C:\Users\%USERNAME%\Documents\[ProjectFolderName]\
+Public Function GetFolderPathMyDocument(Optional ProjectFolderName) As String
+    GetFolderPathMyDocument = FolderBuildAndCreate(GetFolderPathWSH("MyDocuments"), ProjectFolderName)
+End Function
+
+Rem テンポラリフォルダのパス取得
+Rem  クリーンアップ時に削除されても良い一時保存置き場として使用する
+Rem  @param ProjectFolderName   サブフォルダ名
+Rem  @return C:\Users\%USERNAME%\AppData\Local\Temp\
+Rem  @return C:\Users\%USERNAME%\AppData\Local\Temp\[ProjectFolderName]\
+Public Function GetFolderPathAppDataLocalTemp(Optional ProjectFolderName) As String
+    GetFolderPathAppDataLocalTemp = FolderBuildAndCreate(fso.GetSpecialFolder(TemporaryFolder) & "\", ProjectFolderName)
+End Function
+
+Rem テンポラリフォルダの新規一時フォルダのパス取得
+Rem  @return C:\Users\%USERNAME%\AppData\Local\Temp\radAB71F.tmp\
+Public Function GetFolderPathAppDataLocalTempFolder() As String
+    GetFolderPathAppDataLocalTempFolder = FolderBuildAndCreate(GetFolderPathAppDataLocalTemp(), fso.GetTempName)
+End Function
+
+Rem テンポラリフォルダの新規一時ファイルのパス取得
+Rem  @return C:\Users\%USERNAME%\AppData\Local\Temp\radA9D19.tmp
+Public Function GetFilePathAppDataLocalTempFile() As String
+    GetFilePathAppDataLocalTempFile = GetFolderPathAppDataLocalTemp() & fso.GetTempName
 End Function
 
 Rem カレントディレクトリの変更　―　ネットワークパスをカレントディレクトリにする
 Rem 　ChDir　CurDir　パス変更　現在のフォルダ
-Sub SetCurrentDirectory_WScriptShell(new_path)
+Public Sub SetCurrentDirectory_WScriptShell(new_path)
     CreateObject("WScript.Shell").CurrentDirectory = new_path
 End Sub
+
+Rem ファイルの属性を保持したまコピー
+Rem
+Rem  @param strFilePath1    コピー元ファイル名
+Rem  @param strFilePath2    コピー先ファイル名またはフォルダパス
+Rem  @param OverWriteFiles  コピー先ファイルが存在する時上書きするか(既定:True)
+Rem
+Rem  @note
+Rem    strFilePath2:=ファイル指定・・・対象ファイル名で書き込み
+Rem    strFilePath2:=フォルダ指定・・・対象フォルダに元と同じファイル名で書き込み
+Rem
+Public Function CopyFile(strFilePath1, strFilePath2, Optional OverWriteFiles = True) As Boolean
+    Rem コピー元が存在しない: エラー
+    If Not fso.FileExists(strFilePath1) Then Err.Raise 9999, ""
+    
+    Rem コピー先が存在しないorフォルダ：即時実行
+    If Not fso.FileExists(strFilePath2) Then fso.CopyFile strFilePath1, strFilePath2: Exit Function
+    
+    Rem コピー先の上書きを認めない：エラー
+    If Not OverWriteFiles Then
+        Err.Raise 9999, ""
+    End If
+    
+    Rem コピー先ファイルの読み取り専用属性を解除
+    Dim f As Scripting.File
+    Set f = fso.GetFile(strFilePath2)
+    
+    Dim IsReadOnly As Boolean
+    IsReadOnly = (f.Attributes And Scripting.ReadOnly)
+    If IsReadOnly Then
+        f.Attributes = (f.Attributes Xor Scripting.ReadOnly)
+    End If
+    
+    fso.CopyFile strFilePath1, strFilePath2, OverWriteFiles:=True
+    
+    'コピー先ファイルの読み取り専用属性を再適用
+    If IsReadOnly Then
+        f.Attributes = f.Attributes Or Scripting.ReadOnly
+    End If
+End Function
 
 Rem 四捨五入　―　数値を任意の有効桁数に四捨五入する
 Rem   Round ワークシート関数
