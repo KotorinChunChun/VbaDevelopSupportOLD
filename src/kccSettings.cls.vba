@@ -13,30 +13,30 @@ Const SETTINGS_FILE_NAME = "kccsettings.json"
 
 Private fso As New FileSystemObject
 
-Private TargetFilePath As String
+Private TargetFolderPath As String
 Private dic As Dictionary
 Private dt As Date
 
 Public Function Init(sProjectPath) As kccSettings
     Set Init = Me
-    TargetFilePath = sProjectPath
+    TargetFolderPath = sProjectPath
 End Function
 
+Rem 設定ファイルの存在する一番近い上位の階層を求める
 Public Property Get fn()
-    Rem 再帰的に所在を求める
-    Dim fd As String: fd = TargetFilePath
+    Dim fd As String: fd = TargetFolderPath
     Do
         If fso.FileExists(fd & SETTINGS_FILE_NAME) Then
-            fn = TargetFilePath & SETTINGS_FILE_NAME
+            fn = fd & SETTINGS_FILE_NAME
             Exit Do
         End If
-        fd = fso.GetParentFolderName(fd)
-        If fd = "" Then fn = "": Exit Do
+        fd = fso.GetParentFolderName(fd) & "\"
+        If fd = "" Or fd = "\" Then fn = "": Exit Do
     Loop
 End Property
 
 Private Function CheckInit() As Boolean
-    If TargetFilePath = "" Then Err.Raise 9999
+    If TargetFolderPath = "" Then Err.Raise 9999
 End Function
 
 Public Sub LoadFile()
@@ -80,7 +80,7 @@ Public Property Get ProjectFolder() As String
         Call LoadFile
         ProjectFolder = fso.GetFile(fn).ParentFolder.Path
     Else
-        ProjectFolder = TargetFilePath
+        ProjectFolder = TargetFolderPath
     End If
 End Property
 
