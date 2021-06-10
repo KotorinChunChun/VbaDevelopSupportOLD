@@ -15,7 +15,6 @@
 Option Explicit
 
 'WinAPI‚ÌDLL•¶š—ñ
-<<<<<<< HEAD
 Declare PtrSafe Sub WinAPI01 Lib "Kernel32" ()
 Declare PtrSafe Sub WinAPI02 Lib "User32" ()
 Declare PtrSafe Sub WinAPI03 Lib "Gdi32" ()
@@ -29,21 +28,6 @@ Declare PtrSafe Sub WinAPI10 Lib "xdwapi" ()
 Declare PtrSafe Sub WinAPI11 Lib "advapi32" ()
 Declare PtrSafe Sub WinAPI12 Lib "SHLWAPI" ()
 Declare PtrSafe Sub WinAPI13 Lib "VBE7" ()
-=======
-Declare PtrSafe Sub CopyMemory Lib "Kernel32" ()
-Declare PtrSafe Function GetAsyncKeyState% Lib "User32" ()
-Declare PtrSafe Function CreateCompatibleDC Lib "Gdi32" (ByVal hDc As LongPtr) As Long
-Declare PtrSafe Function GdipCreateSolidFill Lib "GDIPlus" ()
-Declare PtrSafe Function SHCreateDirectoryEx Lib "Shell32" ()
-Declare PtrSafe Function ObjectFromLresult Lib "oleacc" ()
-Declare PtrSafe Function IIDFromString Lib "ole32" (ByVal lpsz As LongPtr, ByRef lpiid As GUID) As Long
-Declare PtrSafe Function OleCreatePictureIndirect Lib "oleaut32" (PicDesc As PICTDESC, ByRef refiid As GUID, ByVal fPictureOwnsHandle As Long, obj As Any) As Long
-Declare PtrSafe Function WNetGetConnection Lib "mpr" Alias "WNetGetConnectionW" ()
-Declare PtrSafe Function XDW_Finalize Lib "xdwapi" (ByVal reserved As String) As Long
-Declare PtrSafe Function RegCloseKey Lib "advapi32" (ByVal hKey As LongPtr) As Long
-Declare PtrSafe Sub ColorRGBToHLS Lib "SHLWAPI" ()
-Declare PtrSafe Function rtcCallByName Lib "VBE7" ()
->>>>>>> 13f244c5e163ce0185d9dd0a52abf1c44daec412
 
 'VBA•W€ŠÖ”
 Type KeywordUpperLowerCaseUnification_VBA_Function
