@@ -415,7 +415,7 @@ Rem https://docs.microsoft.com/en-us/windows/desktop/api/shlwapi/nf-shlwapi-strc
 Private Declare PtrSafe Function StrCmpLogicalW Lib "SHLWAPI" _
                 (ByVal lpStr1 As String, ByVal lpStr2 As String) As Long
 #Else
-Private Declare Function StrCmpLogicalW Lib "shlwapi" _
+Private Declare Function StrCmpLogicalW Lib "SHLWAPI" _
                 (ByVal lpStr1 As String, ByVal lpStr2 As String) As Long
 #End If
 
@@ -469,7 +469,7 @@ Private Declare PtrSafe Function SetCurrentDirectory _
         ByVal psa As LongPtr) As LongPtr
         
 Rem     Private Declare PtrSafe Function SHCreateDirectoryExA Lib "shell32" ( _
-Rem         ByVal hwnd As LongPtr, _
+Rem         ByVal hWnd As LongPtr, _
 Rem         ByVal pszPath As String, _
 Rem         ByVal psa As LongPtr) As LongPtr
 #Else

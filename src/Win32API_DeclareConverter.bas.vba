@@ -477,7 +477,7 @@ Rem
 Rem  @example
 Rem    IN : GetWindow
 Rem   OUT : Declare PtrSafe Function GetWindow Lib "user32" ( _
-Rem                 ByVal hwnd As LongPtr, _
+Rem                 ByVal hWnd As LongPtr, _
 Rem                 ByVal wCmd As Long _
 Rem                 ) As LongPtr
 Rem
