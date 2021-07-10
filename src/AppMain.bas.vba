@@ -5,7 +5,7 @@ Rem  @module        AppMain
 Rem
 Rem  @description   VBA開発を支援するVBE拡張アドイン
 Rem
-Rem  @update        0.2.x
+Rem  @update        0.3.x
 Rem
 Rem  @author        @KotorinChunChun (GitHub / Twitter)
 Rem
@@ -30,6 +30,9 @@ Rem    2021/04/30 0.2.x 複数のマクロブックから構成されたプロジェクトへ対応
 Rem                     フォルダ構成をkccsettings.jsonで定義できるように変更
 Rem                     出力パスsrcの既定値が ./src/[FILENAME]/*.vba に変更
 Rem
+Rem    2021/06/14 0.3.x エクスポート設定にユーザーフォームを採用
+Rem                     kccsettings.jsonの項目を追加し一部データ構造を配列に変更
+Rem
 Rem --------------------------------------------------------------------------------
 Rem  @note
 Rem    Public Function ParamsToString(Optional Delimiter = " ,") As String のコンマ適切にパースできない不具合がある
@@ -42,7 +45,7 @@ Option Explicit
 
 Public Const APP_NAME = "VBA開発支援アドイン"
 Public Const APP_CREATER = "@KotorinChunChun"
-Public Const APP_VERSION = "0.2.x"
+Public Const APP_VERSION = "0.3.x"
 Public Const APP_SETTINGFILE = APP_NAME & ".xml"
 Public Const APP_MENU_MODULE_NAME = "AppMain"
 Public Const APP_URL = "https://github.com/KotorinChunChun/VbaDevelopSupport"
@@ -58,19 +61,10 @@ Public Sub Close_Addin(): Call ThisWorkbook.Close(False): End Sub
 
 Rem メニューに追加するプロシージャ
 Public Sub Group_ソースコード管理(): End Sub
-Public Sub ソースをSRCにエクスポートする():             Call VBComponents_Export_SRC: End Sub
-Public Sub ソースをバックアップとエクスポートする():    Call VBComponents_BackupAndExport: End Sub
-Public Sub ソースをYYYYMMDにエクスポートする():         Call VBComponents_Export_YYYYMMDD: End Sub
-Public Sub ソースコードのプロシージャ一覧を出力する():  Call VbeProcInfo_Output: End Sub
-
-Public Sub ソースをSRCからインポートする():             Call VBComponents_Import_SRC: End Sub
-
-Public Sub CustomUIをエクスポートする():                Call CurrentProject_CustomUI_Export: End Sub
-Public Sub CustomUIをインポートする():                  Call CurrentProject_CustomUI_Import: End Sub
-
-Public Sub Accessのソースをバックアップとエクスポートする():    Call VBComponents_BackupAndExportForAccess: End Sub
-Public Sub PowerPointのソースをバックアップとエクスポートする():    Call VBComponents_BackupAndExportForPowerPoint: End Sub
-Public Sub Wordのソースをバックアップとエクスポートする():    Call VBComponents_BackupAndExportForWord: End Sub
+Public Sub ソースをエクスポート():                      Call VBComponents_Export_Form: End Sub
+Public Sub ソースをインポート():                        Call VBComponents_Import_SRC: End Sub
+Public Sub CustomUIをインポート():                      Call CurrentProject_CustomUI_Import: End Sub
+Public Sub プロシージャ一覧を出力():                    Call VbeProcInfo_Output: End Sub
 
 Public Sub Group_コーディング支援(): End Sub
 Public Sub Declareの生成():                             Call OpenFormDeclareSourceGenerate: End Sub

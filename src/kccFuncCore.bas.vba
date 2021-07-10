@@ -124,3 +124,14 @@ Sub DebugPrintByteArray(arrBytes() As Byte, Optional BreakCount)
     Next
     Debug.Print
 End Sub
+
+Rem MsgBoxÇÃÉâÉbÉpÅ[
+Function MsgBox(ByVal Prompt, _
+        Optional ByVal Buttons As VbMsgBoxStyle, _
+        Optional ByVal Title, _
+        Optional ByVal HelpFile, _
+        Optional ByVal Context)
+    Buttons = Buttons Or vbMsgBoxSetForeground
+    If IsMissing(Title) Then Title = APP_NAME
+    VBA.MsgBox Prompt, Buttons, Title, HelpFile, Context
+End Function

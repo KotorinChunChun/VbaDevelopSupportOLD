@@ -33,7 +33,7 @@ Rem       https://social.msdn.microsoft.com/Forums/ja-JP/7a46a3c9-f904-4fb0-a205
 Rem
 Rem     OKwave
 Rem       別インスタンスのブック（個人用マクロブック以外）をすべて閉じる
-Rem       MREXCEL.COM > Forum > Question Forums > Excel Questions > GetObject and HWND
+Rem       MREXCEL.COM > Forum > Question Forums > Excel Questions > GetObject and hWnd
 Rem       https://okwave.jp/qa/q9196890.html
 Rem
 Rem     Qita
@@ -80,8 +80,7 @@ Private Declare PtrSafe Function FindWindowEx Lib "User32" Alias "FindWindowExA"
 Private Declare PtrSafe Function GetWindow Lib "User32" ( _
     ByVal hWnd As LongPtr, _
     ByVal wCmd As Long) As LongPtr
-
-                        
+    
 Private Const WM_KEYDOWN As Long = &H100
 Private Const KEYSTATE_KEYDOWN As Long = &H80
 
@@ -132,7 +131,7 @@ Public Sub OpenWebSite(URL)
     kccFuncWindowsProcess.OpenAssociationAPI URL
 End Sub
 
-Sub Test_VBP()
+Sub Test_ActiveVBProject()
     Dim objFilePath As kccPath: Set objFilePath = kccPath.Init(Application.VBE.ActiveVBProject)
     Dim obj
     Set obj = objFilePath.VBProject
@@ -1558,15 +1557,6 @@ Private Sub Immediate_Window_SetFocus_Sample()
   End With
 End Sub
 
-Rem  すべてのプロジェクトのファイル名をイミディエイト ウィンドウに表示します。
-Private Sub VBProjects_Sample()
-  Dim i As Long
-
-  For i = 1 To Application.VBE.VBProjects.Count
-    Debug.Print Application.VBE.VBProjects(i).FileName
-  Next i
-End Sub
-
 Rem  アクティブ プロジェクトのプロパティをイミディエイト ウィンドウに表示します。
 Private Sub ActiveVBProject_Sample()
   With Application.VBE.ActiveVBProject
@@ -1699,8 +1689,8 @@ Sub Test_Load_kccsettings_class()
     Set st = kccSettings.Init(ThisWorkbook.Path)
     Debug.Print st.ExportBinFolder
     Debug.Print st.ExportSrcFolder
-    Debug.Print st.BackupBinFile
-    Debug.Print st.BackupSrcFile
+    Debug.Print st.ExportBackupBinFolders
+    Debug.Print st.ExportBackupSrcFolders
     Stop
 End Sub
 
@@ -1710,8 +1700,8 @@ Sub Test_Load_kccsettings_default()
     st.CreateDefaultSetting
     Debug.Print st.ExportBinFolder
     Debug.Print st.ExportSrcFolder
-    Debug.Print st.BackupBinFile
-    Debug.Print st.BackupSrcFile
+    Debug.Print st.ExportBackupBinFolders
+    Debug.Print st.ExportBackupSrcFolders
     Stop
 End Sub
 
@@ -1750,7 +1740,7 @@ Public Sub VBComponents_Export_SRC()
     Dim obj As Object: Set obj = Application.VBE.ActiveVBProject
     Dim fn As String: fn = kccPath.Init(obj).CurrentFolder.FullPath
     Dim st As kccSettings: Set st = kccSettings.Init(fn)
-    If st.fn = "" Then Set st = st.CreateDefaultSetting()
+    If st.Path = "" Then Set st = st.CreateDefaultSetting()
     With st
         Call VBComponents_BackupAndExport_Sub( _
                 obj, _
@@ -1759,6 +1749,13 @@ Public Sub VBComponents_Export_SRC()
                 .ExportSrcFolder, _
                 "", "")
     End With
+End Sub
+
+Rem フォーム設定に従ってエクスポート
+Rem
+Rem
+Public Sub VBComponents_Export_Form()
+    VbeExportForm.Show
 End Sub
 
 Rem アクティブなプロジェクトをGIT用バックアップ＆エクスポート
@@ -1777,8 +1774,8 @@ Public Sub VBComponents_BackupAndExport()
                 .ProjectFolder, _
                 .ExportBinFolder, _
                 .ExportSrcFolder, _
-                .BackupBinFile, _
-                .BackupSrcFile)
+                .ExportBackupBinFolders, _
+                .ExportBackupSrcFolders)
     End With
 End Sub
 
@@ -1805,6 +1802,72 @@ Private Sub VBComponents_BackupAndExportForApps(AppClass As String)
             ".\.\backup\src\[YYYYMMDD]_[HHMMSS]\[FILENAME]")
 End Sub
 
+Rem 起動している各種OfficeのVBProjectコレクションを返す
+Public Function GetVBProjects() As Collection
+    Set GetVBProjects = New Collection
+    
+    Rem 外部アプリのVBProject(二重起動非対応)
+    Dim AppClass As Variant
+    For Each AppClass In VBA.Array("Excel.Application", "Word.Application", "PowerPoint.Application", "Access.Application")
+        Dim objApplication As Object
+        Set objApplication = Nothing
+        On Error Resume Next
+            Set objApplication = GetObject(, AppClass)
+        On Error GoTo 0
+        If Not objApplication Is Nothing Then
+            Dim objVBPs As Object
+            Set objVBPs = Nothing
+            On Error Resume Next
+                Set objVBPs = objApplication.VBE.VBProjects
+                If Err.Number = -2147188160 Then
+                    Debug.Print AppClass & " - " & Err.Description
+                End If
+            On Error GoTo 0
+            If Not objVBPs Is Nothing Then
+                Dim pj As VBProject
+                For Each pj In objApplication.VBE.VBProjects
+                    Dim fn As String
+                    fn = kccPath.Init(pj).FullPath
+                    If Not fn Like "*.xlsx" And Not fn Like "*.docx" And Not fn Like "*.pptx" And fn Like "*\*" Then
+                        GetVBProjects.Add pj
+                    End If
+                Next
+            End If
+        End If
+    Next
+End Function
+'
+Rem 起動している各種OfficeのVBProjectのファイルパスを出力
+Private Sub Test_GetVBProjects()
+    Dim pj As VBProject
+    For Each pj In GetVBProjects()
+        Debug.Print kccPath.Init(pj).FullPath
+    Next
+End Sub
+
+Rem 起動しているカレントアプリケーションのVBProjectのフルパスを出力
+Rem ただし未保存の新規Excelブックはエラーで失敗します。
+Private Sub Test_ApplicationVBProjects()
+    Dim pj As VBProject
+    For Each pj In Application.VBE.VBProjects
+        On Error Resume Next
+        Debug.Print pj.FileName
+        If Err Then Debug.Print "Error"
+        On Error GoTo 0
+    Next
+End Sub
+
+Rem プロジェクトのファイルパスからプロジェクトのオブジェクトを取得
+Public Function GetVBProjectByPath(strProjectFilePath As String) As VBProject
+    Dim pj As VBProject
+    For Each pj In GetVBProjects
+        If kccPath.Init(pj).FullPath = strProjectFilePath Then
+            Set GetVBProjectByPath = pj
+            Exit Function
+        End If
+    Next
+End Function
+
 Rem  プロジェクトのソースコードをエクスポートしたりバックアップする処理
 Rem
 Rem  @param ExportObject    出力プロジェクト（Workbook,VBProject)
@@ -1818,8 +1881,8 @@ Public Sub VBComponents_BackupAndExport_Sub( _
             ByVal ProjectFolder As String, _
             ByVal ExportBinFolder As String, _
             ByVal ExportSrcFolder As String, _
-            ByVal BackupBinFile As String, _
-            ByVal BackupSrcFile As String)
+            ByVal BackupBinFile As Variant, _
+            ByVal BackupSrcFile As Variant)
     Const PROC_NAME = "VBComponents_Export"
     
     If ProjectFolder = "" Then Stop: Exit Sub
@@ -1856,6 +1919,7 @@ Public Sub VBComponents_BackupAndExport_Sub( _
         Dim binPath As kccPath
         Set binPath = prjFolderPath.SelectPathToFolderPath(ExportBinFolder).ReplacePathAuto(DateTime:=NowDateTime)
         If binPath.FullPath <> objFilePath.CurrentFolder.FullPath Then
+            Debug.Print "binPath : " & binPath.FullPath
             binPath.DeleteItems
             binPath.CreateFolder
             If prjFolderPath.CopyTo(binPath, UseIgnoreFile:=True).IsAbort Then Exit Sub
@@ -1867,6 +1931,7 @@ Public Sub VBComponents_BackupAndExport_Sub( _
         '一時フォルダにエクスポート
         Dim bufPath As kccPath
         Set bufPath = kccPath.Init(kccFuncPath.GetFolderPathAppDataLocalTemp(APP_NAME))
+        Debug.Print "bufPath : " & bufPath.FullPath
         Call VBComponents_Export(ExportObject, bufPath)
         Call CustomUI_Export(objFilePath, bufPath)
         
@@ -1877,6 +1942,7 @@ Public Sub VBComponents_BackupAndExport_Sub( _
         
         Set srcPath = prjFolderPath.SelectPathToFolderPath(ExportSrcFolder)
         Set srcPath = srcPath.ReplacePathAuto(DateTime:=NowDateTime, FileName:=Replace(objFilePath.FullPath, prjFolderPath.FullPath, ""))
+        Debug.Print "srcPath : " & srcPath.FullPath
         
         '一時フォルダを出力フォルダに同期
         bufPath.SyncTo srcPath, "*.vba;*.xml", "*.frx", ".frm.vba;.frm.frx"
@@ -1886,12 +1952,15 @@ Public Sub VBComponents_BackupAndExport_Sub( _
     End If
     
     'binとsrcのバックアップ
-    If BackupBinFile <> "" Then
-        binPath.CopyTo objFilePath.SelectPathToFilePath(BackupBinFile).ReplacePathAuto(DateTime:=NowDateTime), withoutFilterString:="*~$*"
-    End If
-    If BackupSrcFile <> "" Then
-        srcPath.CopyTo objFilePath.SelectPathToFilePath(BackupSrcFile).ReplacePathAuto(DateTime:=NowDateTime)
-    End If
+    Dim fn As Variant
+    If BackupBinFile Is Nothing Then Set BackupBinFile = New Collection
+    For Each fn In BackupBinFile
+        binPath.CopyTo objFilePath.SelectPathToFilePath(fn).ReplacePathAuto(DateTime:=NowDateTime), withoutFilterString:="*~$*"
+    Next
+    If BackupSrcFile Is Nothing Then Set BackupSrcFile = New Collection
+    For Each fn In BackupSrcFile
+        srcPath.CopyTo objFilePath.SelectPathToFilePath(fn).ReplacePathAuto(DateTime:=NowDateTime)
+    Next
     
     Debug.Print "VBA Exported : " & objFilePath.FileName
 End Sub

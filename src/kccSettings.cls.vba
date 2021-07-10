@@ -13,93 +13,139 @@ Const SETTINGS_FILE_NAME = "kccsettings.json"
 
 Private fso As New FileSystemObject
 
+Rem
 Private TargetFolderPath As String
-Private dic As Dictionary
-Private dt As Date
+
+Public IsBackupProject As Boolean
+Public ExportSrcFolder As String
+Public ExportBinFolder As String
+Public ExportBackupSrcFolders As Collection
+Public ExportBackupBinFolders As Collection
+
+Public IgnoreEmptyModule As Boolean
+Public HasExtension As Boolean
+Public StrExtension As String
+Public IsExportCustomUI As Boolean
 
 Public Function Init(sProjectPath) As kccSettings
     Set Init = Me
-    TargetFolderPath = sProjectPath
+    TargetFolderPath = fso.GetParentFolderName(sProjectPath) & "\"
 End Function
 
 Rem 設定ファイルの存在する一番近い上位の階層を求める
-Public Property Get fn()
+Public Property Get Path()
     Dim fd As String: fd = TargetFolderPath
     Do
         If fso.FileExists(fd & SETTINGS_FILE_NAME) Then
-            fn = fd & SETTINGS_FILE_NAME
+            Path = fd & SETTINGS_FILE_NAME
             Exit Do
         End If
         fd = fso.GetParentFolderName(fd) & "\"
-        If fd = "" Or fd = "\" Then fn = "": Exit Do
+        If fd = "" Or fd = "\" Then Path = "": Exit Do
     Loop
 End Property
 
-Private Function CheckInit() As Boolean
-    If TargetFolderPath = "" Then Err.Raise 9999
-End Function
-
-Public Sub LoadFile()
-    Call CheckInit
-    
-    If Not fso.FileExists(fn) Then Exit Sub
-    If dt = fso.GetFile(fn).DateLastModified Then Exit Sub
-    dt = fso.GetFile(fn).DateLastModified
-    
-    Dim txt As String
-    txt = kccPath.ReadUTF8Text(fn)
-    txt = kccWsFuncRegExp.RegexReplace(txt, "[ ]*//.*\r\n", "")
-    Set dic = JsonConverter.ParseJson(txt)
-End Sub
-
-Public Sub SaveFile()
-    Call CheckInit
-    Dim txt As String
-    txt = JsonConverter.ConvertToJson(dic)
-'    Call kccPath.WriteUTF8Txt(fn, txt)
-End Sub
-
-Rem 設定ファイルが存在しない場合の既定値
-Public Function CreateDefaultSetting(Optional AddFileName = False) As kccSettings
-    Set dic = New Dictionary
-    dt = 0
-    
-    dic("ExportBinFolder") = ".\..\bin"
-    dic("ExportSrcFolder") = IIf(AddFileName, _
-                                ".\..\src\[FILENAME]", _
-                                ".\..\src")
-    dic("BackupBinFile") = ".\..\backup\bin\[YYYYMMDD]_[HHMMSS]_[FILENAME]"
-    dic("BackupSrcFile") = IIf(AddFileName, _
-                                ".\..\backup\src\[FILENAME]\[YYYYMMDD]_[HHMMSS]_[FILENAME]", _
-                                ".\..\backup\src\[YYYYMMDD]_[HHMMSS]_[FILENAME]")
-    Set CreateDefaultSetting = Me
-End Function
-
+Rem プロジェクトフォルダパス
 Public Property Get ProjectFolder() As String
-    If fn <> "" Then
+    If Path <> "" Then
         Call LoadFile
-        ProjectFolder = fso.GetFile(fn).ParentFolder.Path
+        ProjectFolder = fso.GetFile(Path).ParentFolder.Path
     Else
         ProjectFolder = TargetFolderPath
     End If
 End Property
 
-Public Property Get ExportBinFolder() As String
-    If fn <> "" Then Call LoadFile
+Rem 初期化
+Public Sub ClearAllField()
+    IsBackupProject = False
+    ExportBinFolder = ""
+    ExportSrcFolder = ""
+    ExportSrcFolder = ""
+    Set ExportBackupSrcFolders = New Collection
+    IgnoreEmptyModule = False
+    HasExtension = False
+    StrExtension = ""
+    IsExportCustomUI = False
+End Sub
+
+Rem 設定ファイルが存在しない場合の既定値
+Public Function CreateDefaultSetting(Optional AddFileName = False) As kccSettings
+    Dim dic As Dictionary
+    Set dic = New Dictionary
+    
+    Call SetDefaultSetting(dic)
+    
+    Set CreateDefaultSetting = Me
+End Function
+
+Rem Dictionaryが未定義のとき初期値を設定
+Private Sub SetDefaultSetting(dic As Dictionary, Optional AddFileName = False)
+    If Not dic.Exists("ExportBinFolder") Then dic("ExportBinFolder") = ".\..\bin"
+    If Not dic.Exists("ExportSrcFolder") Then dic("ExportSrcFolder") = IIf(AddFileName, ".\..\src\[FILENAME]", ".\..\src")
+
+    If Not dic.Exists("ExportBackupBinFolders") Then Set dic("ExportBackupBinFolders") = New Collection
+    If Not dic.Exists("ExportBackupSrcFolders") Then Set dic("ExportBackupSrcFolders") = New Collection
+    
+    If Not dic.Exists("IgnoreEmptyModule") Then dic("IgnoreEmptyModule") = True
+    If Not dic.Exists("HasExtension") Then dic("HasExtension") = True
+    If Not dic.Exists("StrExtension") Then dic("StrExtension") = ".vba"
+    If Not dic.Exists("IsExportCustomUI") Then dic("IsExportCustomUI") = False
+End Sub
+
+Rem Json設定値をDictionaryで取得
+Public Function GetDictionaryBySettingFile() As Dictionary
+    Dim txt As String
+    txt = kccPath.ReadUTF8Text(Path)
+    txt = kccWsFuncRegExp.RegexReplace(txt, "[ ]*//.*\r\n", "")
+    If txt = "" Then
+        Set GetDictionaryBySettingFile = New Dictionary
+    Else
+        Set GetDictionaryBySettingFile = JsonConverter.ParseJson(txt)
+    End If
+    Call SetDefaultSetting(GetDictionaryBySettingFile)
+End Function
+
+Rem 設定値を読み込み
+Rem  @return    読込が成功したか(True:成功or読込済 / False:失敗)
+Public Function LoadFile() As Boolean
+    Static dt As Date
+    If Not fso.FileExists(Path) Then dt = 0: Call ClearAllField: Exit Function
+    
+    LoadFile = True
+    If dt = fso.GetFile(Path).DateLastModified Then Exit Function
+    dt = fso.GetFile(Path).DateLastModified
+    
+    Dim dic As Dictionary
+    Set dic = GetDictionaryBySettingFile()
+    IsBackupProject = dic("IsBackupProject")
     ExportBinFolder = dic("ExportBinFolder")
-End Property
-
-Public Property Get ExportSrcFolder() As String
-    If fn <> "" Then Call LoadFile
     ExportSrcFolder = dic("ExportSrcFolder")
-End Property
+    Set ExportBackupBinFolders = dic("ExportBackupBinFolders")
+    Set ExportBackupSrcFolders = dic("ExportBackupSrcFolders")
+    IgnoreEmptyModule = dic("IgnoreEmptyModule")
+    HasExtension = dic("HasExtension")
+    StrExtension = dic("StrExtension")
+    IsExportCustomUI = dic("IsExportCustomUI")
+End Function
 
-Public Property Get BackupBinFile() As String
-    If fn <> "" Then Call LoadFile
-    BackupBinFile = dic("BackupBinFile")
-End Property
-
-Public Property Get BackupSrcFile() As String
-    If fn <> "" Then Call LoadFile
-    BackupSrcFile = dic("BackupSrcFile")
-End Property
+Rem 現在の設定値をファイルに書き出し
+Public Sub SaveFile()
+    If TargetFolderPath = "" Then Err.Raise 9999
+    
+    Dim dic As Dictionary
+    Set dic = GetDictionaryBySettingFile()
+    
+    dic("ExportBinFolder") = ExportBinFolder
+    dic("ExportSrcFolder") = ExportSrcFolder
+    Set dic("ExportBackupBinFolders") = ExportBackupBinFolders
+    Set dic("ExportBackupSrcFolders") = ExportBackupSrcFolders
+    
+    dic("IgnoreEmptyModule") = IgnoreEmptyModule
+    dic("HasExtension") = HasExtension
+    dic("StrExtension") = StrExtension
+    dic("IsExportCustomUI") = IsExportCustomUI
+    
+    Dim txt As String
+    txt = JsonConverter.ConvertToJson(dic, " ")
+    Call kccPath.Init(Path, True).WriteUTF8Text(txt)
+End Sub

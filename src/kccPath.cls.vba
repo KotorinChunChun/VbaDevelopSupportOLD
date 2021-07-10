@@ -451,6 +451,10 @@ Public Function CopyTo(dest As kccPath, _
                             OverWriteFiles:=OverWriteFiles)
 End Function
 
+Public Function GetIgnoreFile() As kccPath
+    Set GetIgnoreFile = Me.SelectPathToFilePath(".\" & IGNORE_FILE)
+End Function
+
 Rem フォルダ内のファイル・フォルダをまとめてコピーする
 Rem
 Rem  @param dest                コピー先ファイル名またはフォルダ
@@ -814,7 +818,8 @@ End Sub
 
 Rem UTF-8で作成されたファイルを読む
 Public Function ReadUTF8Text(argPath As String) As String
-
+    If Not fso.FileExists(argPath) Then Exit Function
+    
     Dim buf  As String
 
     With CreateObject("ADODB.Stream")
@@ -830,3 +835,20 @@ Public Function ReadUTF8Text(argPath As String) As String
     ReadUTF8Text = buf
 
 End Function
+
+Rem UTF-8でファイルへ書き込む
+Public Sub WriteUTF8Text(strText As String)
+    If Me.IsFile Then Else Exit Sub
+    If fso.FileExists(Me.FullPath) Then Else Exit Sub
+    
+    Dim fn As String: fn = Me.FullPath
+    With CreateObject("ADODB.Stream")
+        .Charset = "UTF-8"
+        .Type = 2           'adTypeText
+        .LineSeparator = -1 'adCrLf
+        .Open
+        .WriteText strText, 0
+        .SaveToFile fn, 2
+        .Close
+    End With
+End Sub

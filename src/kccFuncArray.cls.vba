@@ -58,6 +58,31 @@ Rem ----------------------------------------------------------------------------
 Option Explicit
 Option Compare Binary   '厳密に考慮する。デフォルト値
 
+Rem --------------------------------------------------------------------------------
+Rem FuncCore共通
+
+Rem 変数に値を代入
+Rem
+Rem  @creator https://qiita.com/nukie_53/items/bde16afd9a6ca789949d
+Rem
+Rem  @param outVariable     出力先変数
+Rem  @param inExpression    書き込み内容
+Rem
+Rem  @example SetVar(out) = in
+Rem
+Private Property Let SetVar(outVariable As Variant, inExpression As Variant)
+    If VBA.IsObject(inExpression) Then
+        Set outVariable = inExpression
+    ElseIf VBA.VarType(inExpression) = vbDataObject Then
+        Set outVariable = inExpression
+    Else
+        Let outVariable = inExpression
+    End If
+End Property
+
+Rem --------------------------------------------------------------------------------
+Rem 処理本体
+
 Rem 配列の次元数を求める
 Rem
 Rem  @param arr         対象配列
@@ -132,4 +157,40 @@ Public Function Concat(obj, Optional left_add_str, Optional right_add_str) As Va
                 Let Concat = left_add_str & obj & right_add_str
             End If
     End Select
+End Function
+
+Rem コレクションを一次元配列に変換
+Rem
+Rem 引数
+Rem  @param colTarget 入力コレクション
+Rem
+Rem 戻り値
+Rem  @return       Variant/Variant(0 To #)
+Rem     要素無し    Variant/Variant(0 To -1)
+Rem     失敗        Variant/Variant(0 To -1)
+Rem     成功時      Variant/Variant(0 To n)
+Rem
+Public Function CollectionToArray(ByVal colTarget As Collection) As Variant
+    
+    Dim ret As Variant
+    Dim i As Long
+    Dim v As Variant
+    
+    If colTarget Is Nothing Then
+        ret = VBA.Array()
+        
+    ElseIf colTarget.Count = 0 Then
+        ret = VBA.Array()
+        
+    Else
+        ReDim ret(1 To colTarget.Count)
+        i = LBound(ret)
+        For Each v In colTarget
+            SetVar(ret(i)) = v
+            i = i + 1
+        Next
+    End If
+    
+    CollectionToArray = ret
+    
 End Function
