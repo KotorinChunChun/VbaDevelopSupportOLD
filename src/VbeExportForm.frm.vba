@@ -187,7 +187,7 @@ Function SaveKccsettingsByGui() As Boolean
     st.ExportSrcFolder = dic.Items(0)
     If dic.Count > 1 Then
         dic.Remove dic.Keys(0)
-        st.ExportBackupSrcFolders = Join(dic.Items, ";")
+        st.ExportBackupSrcFolders = dic.Items
     End If
     st.IgnoreEmptyModule = chkSrcIgnoreEmptyFile.Value
     st.HasExtension = chkSrcAddExt.Value
@@ -200,7 +200,7 @@ Function SaveKccsettingsByGui() As Boolean
     st.ExportBinFolder = dic.Items(0)
     If dic.Count > 1 Then
         dic.Remove dic.Keys(0)
-        st.ExportBackupBinFolders = Join(dic.Items, ";")
+        st.ExportBackupBinFolders = dic.Items
     End If
     st.IsBackupProject = chkBinBackup.Value
     

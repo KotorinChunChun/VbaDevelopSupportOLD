@@ -19,13 +19,45 @@ Private TargetFolderPath As String
 Public IsBackupProject As Boolean
 Public ExportSrcFolder As String
 Public ExportBinFolder As String
-Public ExportBackupSrcFolders As Collection
-Public ExportBackupBinFolders As Collection
+Private ExportBackupSrcFolders__ As Collection
+Private ExportBackupBinFolders__ As Collection
 
 Public IgnoreEmptyModule As Boolean
 Public HasExtension As Boolean
 Public StrExtension As String
 Public IsExportCustomUI As Boolean
+
+Public Property Let ExportBackupSrcFolders(obj)
+    Set ExportBackupSrcFolders__ = ToCollection(obj)
+End Property
+
+Public Property Get ExportBackupSrcFolders() As Collection
+    If ExportBackupSrcFolders__ Is Nothing Then Set ExportBackupSrcFolders__ = New Collection
+    Set ExportBackupSrcFolders = ExportBackupSrcFolders__
+End Property
+
+Public Property Let ExportBackupBinFolders(obj)
+    Set ExportBackupBinFolders__ = ToCollection(obj)
+End Property
+
+Public Property Get ExportBackupBinFolders() As Collection
+    If ExportBackupBinFolders__ Is Nothing Then Set ExportBackupBinFolders__ = New Collection
+    Set ExportBackupBinFolders = ExportBackupBinFolders__
+End Property
+
+Private Function ToCollection(obj) As Collection
+    Set ToCollection = New Collection
+    If TypeName(obj) = "Collection" Then
+        Set ToCollection = obj
+    ElseIf IsArray(obj) Then
+        Dim v
+        For Each v In obj
+            ToCollection.Add v
+        Next
+    Else
+        Err.Raise 9999
+    End If
+End Function
 
 Public Function Init(sProjectPath) As kccSettings
     Set Init = Me
@@ -61,7 +93,8 @@ Public Sub ClearAllField()
     ExportBinFolder = ""
     ExportSrcFolder = ""
     ExportSrcFolder = ""
-    Set ExportBackupSrcFolders = New Collection
+    ExportBackupBinFolders = New Collection
+    ExportBackupSrcFolders = New Collection
     IgnoreEmptyModule = False
     HasExtension = False
     StrExtension = ""
@@ -120,12 +153,13 @@ Public Function LoadFile() As Boolean
     IsBackupProject = dic("IsBackupProject")
     ExportBinFolder = dic("ExportBinFolder")
     ExportSrcFolder = dic("ExportSrcFolder")
-    Set ExportBackupBinFolders = dic("ExportBackupBinFolders")
-    Set ExportBackupSrcFolders = dic("ExportBackupSrcFolders")
+    ExportBackupBinFolders = dic("ExportBackupBinFolders")
+    ExportBackupSrcFolders = dic("ExportBackupSrcFolders")
     IgnoreEmptyModule = dic("IgnoreEmptyModule")
     HasExtension = dic("HasExtension")
     StrExtension = dic("StrExtension")
     IsExportCustomUI = dic("IsExportCustomUI")
+    IsBackupProject = dic("IsBackupProject")
 End Function
 
 Rem 現在の設定値をファイルに書き出し
@@ -144,6 +178,7 @@ Public Sub SaveFile()
     dic("HasExtension") = HasExtension
     dic("StrExtension") = StrExtension
     dic("IsExportCustomUI") = IsExportCustomUI
+    dic("IsBackupProject") = IsBackupProject
     
     Dim txt As String
     txt = JsonConverter.ConvertToJson(dic, " ")

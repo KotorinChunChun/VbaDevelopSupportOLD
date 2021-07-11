@@ -152,6 +152,7 @@ Public Function ListBox_AddItem( _
         
         Dim joinedInsertRowData As String
         If IsArray(insertRowData) Then
+            If UBound(insertRowData) - 1 Then Exit Function
             joinedInsertRowData = Strings.Join(insertRowData, "")
         Else
             joinedInsertRowData = insertRowData  'Join
