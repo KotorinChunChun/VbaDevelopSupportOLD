@@ -75,6 +75,7 @@ Public Sub Group_VBEの機能拡張(): End Sub
 'Public Sub プロジェクトのパスワードを1234に変更する():  Call BreakPassword1234Project: End Sub
 
 Public Sub プロジェクトのフォルダを開く():              Call OpenProjectFolder: End Sub
+Public Sub プロジェクトをVSCodeで開く():                Call OpenVSCode: End Sub
 Public Sub プロジェクトを閉じる():                      Call CloseProject: End Sub
 Public Sub ファイル化されていないブック全てを閉じる():  Call CloseNofileWorkbook: End Sub
 

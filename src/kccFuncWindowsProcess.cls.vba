@@ -132,8 +132,10 @@ Rem
 Rem  ※"open"動作が設定されていないとエラーになる
 Rem   -2147023741
 Rem   Run' メソッドは失敗しました: 'IWshShell3' オブジェクト
-Public Function OpenAssociationWSH(ByVal FileName)
-    OpenAssociationWSH = CreateObject("Wscript.Shell").Run(FileName, SW_SHOWMAXIMIZED)
+Public Function OpenAssociationWSH(ByVal strFileName, Optional strParam = "", Optional nMode = SW_SHOWMAXIMIZED)
+    Dim strP As String: strP = strFileName
+    If strParam <> "" Then strP = strP & " " & strParam
+    OpenAssociationWSH = CreateObject("Wscript.Shell").Run(strP, nMode) 'SW_HIDE SW_SHOWMAXIMIZED
 End Function
 
 Rem 指定ファイルを関連付けられたアプリケーションで開く(Excelのハイパーリンク機能)

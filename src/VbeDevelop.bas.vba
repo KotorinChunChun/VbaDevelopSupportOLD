@@ -126,6 +126,32 @@ On Error Resume Next
     kccFuncWindowsProcess.ShellExplorer fn, True
 End Sub
 
+Rem VSCodeで開く
+Rem https://vscode-doc-jp.github.io/docs/userguide/command-line.html
+Public Sub OpenVSCode()
+On Error Resume Next
+    Dim fn: fn = Application.VBE.ActiveVBProject.FileName
+    fn = fso.GetParentFolderName(fn)
+    fn = """" & fn & """"
+'    kccFuncWindowsProcess.OpenAssociationAPI "code"
+'    kccFuncWindowsProcess.OpenAssociationWSH "code"
+    kccFuncWindowsProcess.OpenAssociationWSH "code " & fn
+'    Const VSCodePath = "C:\Users\kc\AppData\Local\Programs\Microsoft VS Code\Code.exe"
+'    kccFuncWindowsProcess.OpenAssociationShell VSCodePath & " " & fn
+End Sub
+
+Rem VSCodeでDIFF
+Public Sub OpenVSCode_DIFF()
+On Error Resume Next
+    Dim fn: fn = Application.VBE.ActiveVBProject.FileName
+    Dim st As kccSettings: Set st = kccSettings.Init(fn)
+    fn = st.RepositoryPath
+    Dim fn1, fn2
+    fn1 = """" & fn & "\backup\src\20210412_110119\kccFuncArray.cls.vba" & """"
+    fn2 = """" & fn & "\src\kccFuncArray.cls.vba" & """"
+    kccFuncWindowsProcess.OpenAssociationWSH "code", "--diff " & fn1 & " " & fn2, 0
+End Sub
+
 Rem WEBサイトを開く（関連付けプログラムで開く）
 Public Sub OpenWebSite(URL)
     kccFuncWindowsProcess.OpenAssociationAPI URL
