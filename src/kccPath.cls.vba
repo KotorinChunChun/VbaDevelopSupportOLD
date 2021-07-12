@@ -839,7 +839,6 @@ End Function
 Rem UTF-8‚Åƒtƒ@ƒCƒ‹‚Ö‘‚«‚Ş
 Public Sub WriteUTF8Text(strText As String)
     If Me.IsFile Then Else Exit Sub
-    If fso.FileExists(Me.FullPath) Then Else Exit Sub
     
     Dim fn As String: fn = Me.FullPath
     With CreateObject("ADODB.Stream")

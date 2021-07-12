@@ -182,5 +182,9 @@ Public Sub SaveFile()
     
     Dim txt As String
     txt = JsonConverter.ConvertToJson(dic, " ")
-    Call kccPath.Init(Path, True).WriteUTF8Text(txt)
+    If Path = "" Then
+        Call kccPath.Init(TargetFolderPath & SETTINGS_FILE_NAME).WriteUTF8Text(txt)
+    Else
+        Call kccPath.Init(Path, True).WriteUTF8Text(txt)
+    End If
 End Sub
