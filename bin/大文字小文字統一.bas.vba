@@ -671,6 +671,8 @@ Type オリジナルメンバType
     btn                     As Long
     token                   As Long
     app                     As Long
+    offsetRow               As Long
+    offsetCol               As Long
 End Type
 
 '過去に大文字と決めてしまって今更変えられなくなった名前
