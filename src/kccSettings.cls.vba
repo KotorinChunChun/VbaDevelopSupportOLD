@@ -77,6 +77,20 @@ Public Property Get Path()
     Loop
 End Property
 
+Rem 設定ファイルの存在する一番近い上位の階層を求める
+Public Property Get RepositoryPath()
+    Const GIT_FOLDER_NAME = ".git"
+    Dim fd As String: fd = TargetFolderPath
+    Do
+        If fso.FolderExists(fd & GIT_FOLDER_NAME) Then
+            RepositoryPath = fd
+            Exit Do
+        End If
+        fd = fso.GetParentFolderName(fd) & "\"
+        If fd = "" Or fd = "\" Then RepositoryPath = "": Exit Do
+    Loop
+End Property
+
 Rem プロジェクトフォルダパス
 Public Property Get ProjectFolder() As String
     If Path <> "" Then
