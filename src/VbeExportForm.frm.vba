@@ -106,6 +106,9 @@ End Sub
 
 Private Sub UserForm_Initialize()
     Dim obj As Object: Set obj = Application.VBE.ActiveVBProject
+    On Error Resume Next
+    Dim fn As String: fn = obj.FileName
+    On Error GoTo 0
     cmbExportProject.Style = fmStyleDropDownList
     
     kccFuncMSForms_p.UserForm_TopMost Me, True
@@ -114,7 +117,7 @@ Private Sub UserForm_Initialize()
     For Each pj In GetVBProjects
         cmbExportProject.AddItem kccPath.Init(pj).FullPath
     Next
-    cmbExportProject.Text = obj.FileName
+    If fn <> "" Then cmbExportProject.Text = obj.FileName
     
     tbSrc.AddItem ".\..\src"
     tbSrc.AddItem ".\..\src\[FILENAME]"
