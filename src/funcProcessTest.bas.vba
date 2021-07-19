@@ -4,7 +4,7 @@ Rem ê¨å˜
 Option Explicit
 Option Private Module
  
-Private Declare PtrSafe Function AccessibleObjectFromWindow Lib "oleacc.dll" ( _
+Private Declare PtrSafe Function AccessibleObjectFromWindow Lib "oleacc" ( _
     ByVal hWnd As LongPtr, ByVal dwId As Long, ByRef riid As Any, ByRef ppvObject As Object) As Long
  
 Private Declare PtrSafe Function FindWindowEx Lib "User32" Alias "FindWindowExA" _

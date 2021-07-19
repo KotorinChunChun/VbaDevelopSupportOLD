@@ -62,13 +62,13 @@ Private Const SE_ERR_PNF = 3              'éwíËÇ≥ÇÍÇΩÉpÉXÇ™ÅAå©Ç¬Ç©ÇËÇ‹ÇπÇÒÇ≈ÇµÇ
 Private Const SE_ERR_SHARE = 26           'ã§óLà·îΩÇ™î≠ê∂ÇµÇ‹ÇµÇΩÅB
 
 #If VBA7 Then
-    Private Declare PtrSafe Function ShellExecute Lib "shell32.dll" Alias "ShellExecuteA" ( _
+    Private Declare PtrSafe Function ShellExecute Lib "Shell32" Alias "ShellExecuteA" ( _
         ByVal hWnd As LongPtr, _
         ByVal lpOperation As String, ByVal lpFile As String, _
         ByVal lpParameters As String, _
         ByVal lpDirectory As String, ByVal nShowCmd As LongPtr) As LongPtr
 #Else
-    Private Declare Function ShellExecute Lib "shell32.dll" Alias "ShellExecuteA" ( _
+    Private Declare Function ShellExecute Lib "Shell32" Alias "ShellExecuteA" ( _
         ByVal hWnd As Long, _
         ByVal lpOperation As String, _
         ByVal lpFile As String, _

@@ -62,8 +62,8 @@ Public Sub Close_Addin(): Call ThisWorkbook.Close(False): End Sub
 Rem メニューに追加するプロシージャ
 Public Sub Group_ソースコード管理(): End Sub
 Public Sub ソースをエクスポート():                      Call VBComponents_Export_Form: End Sub
-Public Sub ソースをインポート():                        Call VBComponents_Import_SRC: End Sub
-Public Sub CustomUIをインポート():                      Call CurrentProject_CustomUI_Import: End Sub
+'Public Sub ソースをインポート():                        Call VBComponents_Import_SRC: End Sub
+'Public Sub CustomUIをインポート():                      Call CurrentProject_CustomUI_Import: End Sub
 Public Sub プロシージャ一覧を出力():                    Call VbeProcInfo_Output: End Sub
 
 Public Sub Group_コーディング支援(): End Sub
