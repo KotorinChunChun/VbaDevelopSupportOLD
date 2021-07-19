@@ -2452,9 +2452,9 @@ End Sub
 
 Rem 全てのコードウインドウを閉じる
 Public Sub CloseCodePanes()
-    Dim C As CodePane
-    For Each C In Application.VBE.CodePanes
-        C.Window.Close
+    Dim cp As CodePane
+    For Each cp In Application.VBE.CodePanes
+        cp.Window.Close
     Next
 End Sub
 
