@@ -467,11 +467,6 @@ Private Declare PtrSafe Function SetCurrentDirectory _
         ByVal hWnd As LongPtr, _
         ByVal pszPath As LongPtr, _
         ByVal psa As LongPtr) As LongPtr
-        
-Rem     Private Declare PtrSafe Function SHCreateDirectoryExA Lib "shell32" ( _
-Rem         ByVal hWnd As LongPtr, _
-Rem         ByVal pszPath As String, _
-Rem         ByVal psa As LongPtr) As LongPtr
 #Else
     Private Declare Function SHCreateDirectoryEx Lib "Shell32" Alias "SHCreateDirectoryExW" ( _
         ByVal hWnd As Long, _
@@ -487,6 +482,34 @@ Const ERROR_FILE_EXISTS = 80&           'ディレクトリは存在する。
 Const ERROR_ALREADY_EXISTS = 183&       'ディレクトリは存在する。
 Const ERROR_CANCELLED = 0&              'ユーザーは操作を取り消した。
 Const ERROR_ACCESS_DENIED = 5&          'アクセスが拒否されました。
+
+
+Rem ADODB.Streamに関する設定値
+Rem https://tonari-it.com/excel-vba-utf8n-bom/
+Rem http://www.k-sugi.sakura.ne.jp/windows/vb/3650/
+
+Rem TypeプロパティにはStreamTypeEnumの値を設定します。
+Const adTypeBinary As Integer = 1                   ' バイナリデータ
+Const adTypeText As Integer = 2                     ' 既定値。Charsetで指定された文字セットにあるテキストデータを表します。
+
+Rem ReadTextメソッドの引数
+Const adReadAll As Integer = -1                     ' 既定値。現在の位置からEOSマーカー方向に、すべてのバイトをストリームから読み込みます。
+Const adReadLine  As Integer = -2                   ' ストリームから次の行を読み込みます。
+                                                    ' 通常はCRLFで区切られます｡ (変更したい場合はLineSeparatorプロパティに設定)
+
+Rem WriteTextメソッドの第2引数
+Const adWriteChar As Integer = 0                    ' 既定値。指定したテキスト文字列を書き込みます。
+Const adWriteLine As Integer = 1                    ' ファイルに書き込む際、テキスト文字列と行区切り文字を書き込みます。
+   
+Rem SaveToFileメソッドの第2引数
+Const adSaveCreateNotExist As Integer = 1           ' 既定値。指定したファイルがない場合、新しいファイルが作成されます。
+Const adSaveCreateOverWrite  As Integer = 2         ' 指定したファイルが既に存在する場合、上書きします。
+ 
+Rem .LineSeparator=Delimeter
+Const adCR As Integer = 13                          ' 復帰
+Const adCRLF As Integer = -1                        ' 復帰+改行(デフォルト)
+Const adLF As Integer = 10                          ' 改行
+
 
 Rem エラーコード表
 Rem https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes
@@ -1296,6 +1319,120 @@ Public Function ShellFolderDialog(Optional DefaultFolder As String, Optional Tit
         ShellFolderDialog = shApp.Items.Item.Path
     End If
 End Function
+
+Rem SJISで作成されたファイルの文字コードをUTF8(BOM無し)に変換する
+Public Function ConvertCharCode_SJIS_to_utf8(argPath As String) As Boolean
+    Dim destWithBOM As Object: Set destWithBOM = CreateObject("ADODB.Stream")
+    With destWithBOM
+        .Type = 2
+        .Charset = "utf-8"
+        .Open
+        
+        ' ファイルをSJIS で開いて、dest へ 出力
+        With CreateObject("ADODB.Stream")
+            .Type = 2
+            .Charset = "shift-jis"
+            .Open
+            .LoadFromFile argPath
+            .Position = 0
+            .CopyTo destWithBOM
+            .Close
+        End With
+        
+        ' BOM消去
+        ' 3バイト無視してからバイナリとして出力
+        .Position = 0
+        .Type = 1 ' adTypeBinary
+        .Position = 3
+        
+        Dim dest: Set dest = CreateObject("ADODB.Stream")
+        With dest
+            .Type = 1 ' adTypeBinary
+            .Open
+            destWithBOM.CopyTo dest
+            .SaveToFile argPath, 2
+            .Close
+        End With
+        
+        .Close
+    End With
+    ConvertCharCode_SJIS_to_utf8 = True
+End Function
+
+Rem UTF-8で作成されたファイルを読み込む
+Public Function ReadUTF8Text(argPath As String) As String
+    If Not fso.FileExists(argPath) Then Exit Function
+    
+    With CreateObject("ADODB.Stream")
+        .Charset = "UTF-8"
+        .Type = 2           'adTypeText
+        .LineSeparator = -1 'adCrLf
+        .Open
+        .LoadFromFile argPath
+        ReadUTF8Text = .ReadText(-1) 'adReadAll
+        .Close
+    End With
+End Function
+
+Rem UTF-8でファイルへ書き込む
+Public Function WriteUTF8Text(argPath As String, strText As String) As Boolean
+    With CreateObject("ADODB.Stream")
+        .Charset = "UTF-8"
+        .Type = 2           'adTypeText
+        .LineSeparator = -1 'adCrLf
+        .Open
+        .WriteText strText, 0
+        .SaveToFile argPath, 2
+        .Close
+    End With
+    
+    WriteUTF8Text = True
+End Function
+
+Rem BOMなしのUTF-8でCSVファイルへ書き込む
+Public Function WriteUTF8CSVText(data As Variant, argPath As String, offsetRow As Long) As Boolean
+     
+    'ADODB.Streamオブジェクトを生成
+    Dim adoSt As Object
+    Set adoSt = CreateObject("ADODB.Stream")
+     
+    Dim strLine As String
+    Dim i As Long, j As Long
+     
+    With adoSt
+        .Charset = "UTF-8"
+        .LineSeparator = adLF
+        .Open
+        
+        For i = 1 + offsetRow To UBound(data, 1)
+            If data(i, 1) <> "" Then
+               strLine = ""
+               For j = 1 To UBound(data, 2)
+                   strLine = strLine & data(i, j) & ","
+               Next
+               strLine = Left(strLine, Len(strLine) - 1)
+               .WriteText strLine, adWriteLine
+            End If
+        Next
+     
+        .Position = 0           'ストリームの位置を0にする
+        .Type = adTypeBinary    'データの種類をバイナリデータに変更
+        .Position = 3           'ストリームの位置を3にする
+     
+        Dim byteData() As Byte  '一時格納用
+        byteData = .Read        'ストリームの内容を一時格納用変数に保存
+        .Close                  '一旦ストリームを閉じる（リセット）
+     
+        .Open                   'ストリームを開く
+        .Write byteData         'ストリームに一時格納したデータを流し込む
+        .SaveToFile argPath, adSaveCreateOverWrite
+        .Close
+     
+    End With
+     
+    WriteUTF8CSVText = True
+End Function
+
 
 Rem 'アプリケーション、フォルダ、関連付けられたファイルの起動
 Rem Public Sub Exec(Path As String)

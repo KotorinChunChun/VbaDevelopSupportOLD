@@ -774,80 +774,21 @@ Public Sub OpenAssociation()
     Debug.Print kccFuncWindowsProcess.OpenAssociationShell32(Me.FullPath)
 End Sub
 
-Rem ファイルの文字コードをSJISからUTF8(BOM無し)に変換する
-Public Sub ConvertCharCode_SJIS_to_utf8()
-    If Me.IsFile Then Else Exit Sub
-    If fso.FileExists(Me.FullPath) Then Else Exit Sub
-    
-    Dim fn As String: fn = Me.FullPath
-    Dim destWithBOM As Object: Set destWithBOM = CreateObject("ADODB.Stream")
-    With destWithBOM
-        .Type = 2
-        .Charset = "utf-8"
-        .Open
-        
-        ' ファイルをSJIS で開いて、dest へ 出力
-        With CreateObject("ADODB.Stream")
-            .Type = 2
-            .Charset = "shift-jis"
-            .Open
-            .LoadFromFile fn
-            .Position = 0
-            .CopyTo destWithBOM
-            .Close
-        End With
-        
-        ' BOM消去
-        ' 3バイト無視してからバイナリとして出力
-        .Position = 0
-        .Type = 1 ' adTypeBinary
-        .Position = 3
-        
-        Dim dest: Set dest = CreateObject("ADODB.Stream")
-        With dest
-            .Type = 1 ' adTypeBinary
-            .Open
-            destWithBOM.CopyTo dest
-            .SaveToFile fn, 2
-            .Close
-        End With
-        
-        .Close
-    End With
-End Sub
+Rem SJISで作成されたファイルの文字コードをUTF8(BOM無し)に変換する
+Public Function ConvertCharCode_SJIS_to_utf8() As Boolean
+    If Not Me.IsFile Then Exit Function
+    If fso.FileExists(Me.FullPath) Then Else Exit Function
+    ConvertCharCode_SJIS_to_utf8 = kccFuncPath.ConvertCharCode_SJIS_to_utf8(Me.FullPath)
+End Function
 
-Rem UTF-8で作成されたファイルを読む
-Public Function ReadUTF8Text(argPath As String) As String
-    If Not fso.FileExists(argPath) Then Exit Function
-    
-    Dim buf  As String
-
-    With CreateObject("ADODB.Stream")
-        .Charset = "UTF-8"
-        .Type = 2           'adTypeText
-        .LineSeparator = -1 'adCrLf
-        .Open
-        .LoadFromFile argPath
-        buf = .ReadText(-1) 'adReadAll
-        .Close
-    End With
-
-    ReadUTF8Text = buf
-
+Rem UTF-8で作成されたファイルを読み込む
+Public Function ReadUTF8Text() As String
+    If Not Me.IsFile Then Exit Function
+    ReadUTF8Text = kccFuncPath.ReadUTF8Text(Me.FullPath)
 End Function
 
 Rem UTF-8でファイルへ書き込む
-Public Sub WriteUTF8Text(strText As String)
-    If Me.IsFile Then Else Exit Sub
-    
-    Dim fn As String: fn = Me.FullPath
-    With CreateObject("ADODB.Stream")
-        .Charset = "UTF-8"
-        .Type = 2           'adTypeText
-        .LineSeparator = -1 'adCrLf
-        .Open
-        .WriteText strText, 0
-        .SaveToFile fn, 2
-        .Close
-    End With
-End Sub
+Public Function WriteUTF8Text(strText As String) As Boolean
+    If Not Me.IsFile Then Exit Function
+    WriteUTF8Text = kccFuncPath.WriteUTF8Text(Me.FullPath, strText)
+End Function

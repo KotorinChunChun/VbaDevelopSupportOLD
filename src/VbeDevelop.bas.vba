@@ -1695,7 +1695,7 @@ Sub Test_Load_kccsettings()
     
     Rem JsonテキストをUTF8で読み込み、規約違反のコメント行を削除
     Dim jsonText As String
-    jsonText = kccPath.ReadUTF8Text(ThisWorkbook.Path & "\" & SETTINGS_FILE_NAME)
+    jsonText = kccFuncPath.ReadUTF8Text(ThisWorkbook.Path & "\" & SETTINGS_FILE_NAME)
     jsonText = kccWsFuncRegExp.RegexReplace(jsonText, "[ ]*//.*\r\n", "")
     Debug.Print jsonText
     Stop
@@ -2452,9 +2452,9 @@ End Sub
 
 Rem 全てのコードウインドウを閉じる
 Public Sub CloseCodePanes()
-    Dim c As CodePane
-    For Each c In Application.VBE.CodePanes
-        c.Window.Close
+    Dim C As CodePane
+    For Each C In Application.VBE.CodePanes
+        C.Window.Close
     Next
 End Sub
 

@@ -142,7 +142,7 @@ End Sub
 Rem Jsonİ’è’l‚ğDictionary‚Åæ“¾
 Public Function GetDictionaryBySettingFile() As Dictionary
     Dim txt As String
-    txt = kccPath.ReadUTF8Text(Path)
+    txt = kccFuncPath.ReadUTF8Text(Path)
     txt = kccWsFuncRegExp.RegexReplace(txt, "[ ]*//.*\r\n", "")
     If txt = "" Then
         Set GetDictionaryBySettingFile = New Dictionary
